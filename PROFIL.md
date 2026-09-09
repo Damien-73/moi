@@ -23,7 +23,12 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 ## Attentes vis-à-vis de Claude
 - Franchise totale, contradiction assumée, recherche systématique de la meilleure option.
 
+## Objectif financier
+- **2 500 € nets/mois minimum**, avec perspective d'évolution.
+
 ## À compléter
-- Réserve financière et revenu mensuel minimum à couvrir.
+- Épargne actuelle (en mois de survie sans revenu).
+- Salaire net actuel (montant à remplacer à terme).
+- Heures réellement disponibles par semaine (hors saison / en saison).
 - Langues parlées, diplômes/certifications.
 - Compétences monnayables identifiées (gestion d'équipe, exploitation, budget, sécurité, recrutement — à valider).
