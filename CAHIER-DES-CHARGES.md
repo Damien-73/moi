@@ -765,6 +765,106 @@ toujours affichées ensemble : n'afficher que gagnants/perdants ment par omissio
 3. **Écart entre résultat brut et net**, toujours côte à côte. C'est ce qui montre à
    l'utilisateur ce que les frais lui coûtent réellement.
 
+## 12 bis. Coût de friction par unité de temps — et où se trouve réellement l'avantage
+
+*Section décisive : elle détermine ce qu'on annonce, et elle explique pourquoi le produit peut
+valoir quelque chose sur un marché sans avantage exploitable.*
+
+### 12 bis.1 Le coût, exprimé dans la seule unité qui compte : le R
+
+Un coût en pips ne dit rien. Rapporté à la distance d'invalidation, il dit tout : c'est
+**le seuil que l'avantage brut doit dépasser pour que le trade rapporte quelque chose**.
+
+Hypothèses (ordres de grandeur EUR/USD, à confirmer sur données réelles) : spread aller-retour
+et glissement ≈ 1,4 pip ; distance d'invalidation ≈ 1 ATR ; horizon 20 bougies.
+
+| Unité de temps | ATR typique | Coût de spread | Portage sur l'horizon | **Coût total** |
+|---|---|---|---|---|
+| **H1** | ~12 pips | 0,117 R | ~20 h, négligeable | **~0,12 R** |
+| **H4** | ~35 pips | 0,040 R | ~3,3 jours, 1 à 3 pips | **0,07 à 0,13 R** |
+| **D1** | ~75 pips | 0,019 R | **~28 jours calendaires, 6 à 20 pips** | **0,10 à 0,29 R** |
+
+### 12 bis.2 Le résultat contre-intuitif : le journalier n'est pas le meilleur
+
+Le raisonnement habituel — « plus l'unité de temps est longue, moins les frais pèsent » — est
+**faux dès qu'on intègre le portage**. Le spread se dilue quand l'amplitude augmente, mais le
+swap s'accumule avec la durée de détention. Les deux effets vont en sens inverse.
+
+> **Conclusion : le H4 est très probablement le meilleur compromis.**
+> Assez d'amplitude pour diluer le spread, assez court pour limiter le portage.
+> Le journalier n'est préférable que sur les paires dont le portage est favorable ou neutre —
+> ce qui dépend du sens de la position, et change avec les taux directeurs.
+
+**C'est une hypothèse à mesurer, pas une certitude.** Elle est ici pour être vérifiée par le
+produit lui-même, et elle constitue à elle seule un résultat publiable que personne n'a chiffré.
+
+### 12 bis.3 Politique retenue pour le H1
+
+| Usage | Décision |
+|---|---|
+| **Détection et mesure** | **Conservé.** Le H1 fournit 4 fois plus d'occurrences que le H4 et 24 fois plus que le journalier : c'est là qu'est la puissance statistique |
+| **Annonce** | **Désactivé par défaut**, activable par l'utilisateur avec l'avertissement de coût affiché |
+| Affichage | Coût de friction indiqué en R sur chaque statistique H1, à côté du résultat |
+
+> **On apprend en H1, on trade en H4.**
+> Le H1 sert à découvrir quels critères et quelles figures comptent, parce que l'échantillon y
+> est grand. Le H4 sert à annoncer, parce que la friction y est supportable. Les deux usages
+> sont légitimes et ne demandent pas le même seuil d'exigence.
+
+### 12 bis.4 Comment un avantage nul sur les majeures est contré — cinq leviers, classés
+
+**Levier 1 — Réduire le coût, seul avantage certain.**
+Ce n'est pas un avantage de marché, c'est de l'arithmétique. Passer du H1 au H4 économise
+~0,08 R **par trade, de façon certaine**. Éviter la fenêtre de roulement, éviter les annonces
+macro, éviter les paires à portage défavorable sur les horizons longs : tout cela est acquis,
+pas probabiliste.
+
+> **Le gain le plus important accessible n'est pas de trouver une meilleure figure,
+> c'est de cesser de payer pour une moins bonne.** Et c'est exactement ce que le produit
+> mesure sans effort supplémentaire.
+
+**Levier 2 — Chercher l'avantage dans les critères, pas dans les figures.**
+La littérature ne documente aucun avantage persistant pour les figures chartistes sur les
+majeures. Elle documente en revanche des effets de microstructure réels, parce qu'ils
+proviennent de flux véritables et non d'une erreur de prix arbitrable :
+
+| Effet documenté | Critère du score correspondant |
+|---|---|
+| Concentration des ordres stop sur les niveaux ronds (Osler, 2003) | n° 3 |
+| Saisonnalité intrajournalière : ouverture de Londres, chevauchement Londres–New York | n° 7 |
+| Effets de fixing et de flux de couverture d'entreprise | n° 7 |
+| Persistance de tendance à l'échelle des devises | n° 1 |
+
+**Hypothèse de travail, à publier comme telle : si un avantage apparaît, il viendra des
+critères de contexte, pas de la forme des figures.** C'est une prédiction testable, et le
+produit est exactement l'instrument qui permet de la trancher. Si elle se vérifie, elle
+renverse la hiérarchie habituelle de l'analyse technique — et c'est un résultat que personne
+n'a publié sur données prospectives.
+
+**Levier 3 — Étendre la mesure au crypto, une fois le moteur éprouvé.**
+Marché nettement moins arbitré, plus retail, ouvert en continu, données gratuites, **et le
+même code sans une ligne à écrire**. C'est la couverture la moins chère contre l'hypothèse
+« aucun avantage nulle part sur le change ». Le forex reste le produit ; le crypto est une
+extension de mesure, à ouvrir après le lot 12.
+
+**Levier 4 — L'avantage comportemental, qui n'exige aucune inefficience de marché.**
+Faire passer un trader de −0,30 R à −0,05 R en corrigeant son dimensionnement et ses sorties
+prématurées est une amélioration **considérable et vérifiable**, obtenue sans que le marché
+ait à être inefficient. C'est le seul avantage que le produit peut garantir, et c'est pourquoi
+l'analyse comportementale est le produit payant (§25.2).
+
+**Levier 5 — Ce qu'il ne faut surtout pas faire.**
+
+| Tentation | Pourquoi c'est une impasse |
+|---|---|
+| Ajouter de l'apprentissage automatique | Surapprentissage garanti, résultats non reproductibles |
+| Empiler des indicateurs | Redondance : on compte plusieurs fois la même information (§9.3) |
+| Abaisser les seuils d'occurrences | Fabrique des avantages qui n'existent pas |
+| Étendre le catalogue en espérant qu'une figure marche | C'est la définition même du test multiple (§7) |
+
+Ces quatre chemins produisent tous le même résultat : un système magnifique en historique,
+sans valeur en réel. **Ils sont interdits, et l'interdiction est le produit.**
+
 ---
 ---
 
