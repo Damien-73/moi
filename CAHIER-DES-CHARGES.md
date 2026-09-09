@@ -141,58 +141,65 @@ Le positionnement n'est donc pas « le premier à détecter des figures », mais
 
 ## 4. Utilisateurs et segments
 
-Le produit s'adresse à **tous les publics**, particuliers comme professionnels.
+Le produit s'adresse à **tous les publics**. Il n'existe pourtant que **deux types d'accès**,
+et c'est ce qui le rend tenable pour une équipe d'une personne.
+
+## Deux accès, pas six produits
+
+| Accès | Pour qui | Administration | Facturation |
+|---|---|---|---|
+| **Individuel** | Une personne | Elle-même | Carte, mensuel |
+| **Groupe** | Société de financement, courtier, école, équipe, média | **Un administrateur désigné chez le client, qui crée et retire ses membres lui-même** | Une facture unique, au siège |
+
+> **Règle : le groupe s'administre seul.** L'administrateur du client invite, retire et
+> réattribue ses sièges sans aucune intervention de notre part. C'est ce qui permet de servir
+> mille utilisateurs professionnels sans ajouter une heure de support.
 
 ### La règle qui rend le multi-public tenable
 
 > **Un seul moteur, une seule base, les mêmes chiffres.
-> Les segments diffèrent par la surface — interface, format de livraison, contrat —
-> jamais par le contenu.**
+> Les accès diffèrent par l'administration et la facturation — jamais par le contenu.**
 
-Sans cette règle, chaque segment ajouterait un produit à construire et à maintenir, et les
-chiffres finiraient par diverger d'un public à l'autre — ce qui détruirait l'argument central.
-Avec elle, servir un professionnel coûte une interface d'accès, pas un second produit.
+Un membre d'un groupe voit exactement ce que voit un abonné individuel. Aucune version
+professionnelle, aucun chiffre réservé, aucune marque blanche en v1. Sans cette règle, chaque
+public ajouterait un produit à construire et à maintenir, et les chiffres finiraient par
+diverger d'un client à l'autre — ce qui détruirait l'argument central.
 
-### Les six segments
+### Qui achète quoi
 
-| # | Segment | Ce qu'il achète | Prix | Priorité |
-|---|---|---|---|---|
-| 1 | **Candidat en société de financement** | Le mode contrainte : quelles configurations survivent à une limite de perte quotidienne. Paie déjà 100 à 600 $ par tentative | 49 €/mois | **Segment principal côté particuliers** |
-| 2 | **Trader particulier** déçu par les vendeurs de signaux | Des chiffres vérifiables, et le miroir de son propre comportement | 25 €/mois | Segment d'entrée, atteignable en organique |
-| 3 | **Société de financement** (l'entreprise) | **L'intelligence du risque** : quelles configurations et quels comportements font sauter les comptes. Elle tarife ses examens et ses reversements sur des modèles de risque | 500 à 2 000 €/mois | **Le plus fort levier de revenu du projet** |
-| 4 | **Courtier** | Flux de détections en marque blanche pour ses clients — le modèle économique d'Autochartist, déjà prouvé | 1 000 à 5 000 €/mois, ou 0,50 à 2 € par utilisateur actif | Fort, sous réserve du pare-feu du §21 |
-| 5 | **Formateur, école de trading** | Licence d'usage des statistiques dans ses supports, avec citation | 99 à 299 €/mois | Faible en revenu, fort en notoriété |
-| 6 | **Média, chercheur, régulateur** | Le jeu de données ouvert et les analyses | **Gratuit, avec citation** | Pure acquisition — chaque citation est un lien et une preuve |
+| Public | Accès | Ce qu'il cherche |
+|---|---|---|
+| **Candidat en société de financement** | Individuel | Le mode contrainte : quelles configurations survivent à une limite de perte quotidienne. Il paie déjà 100 à 600 $ par tentative |
+| **Trader particulier** | Individuel | Des chiffres vérifiables, et le miroir de son propre comportement |
+| **Société de financement** | Groupe | Équiper ses candidats, et **l'intelligence du risque** : ce qui fait sauter les comptes. Elle tarife ses examens sur des modèles de risque |
+| **Courtier** | Groupe | Offrir l'outil à ses clients — le modèle économique d'Autochartist, déjà prouvé |
+| **École, formateur** | Groupe | Équiper une promotion, et citer les statistiques dans ses supports |
+| **Média, chercheur, régulateur** | Groupe gratuit | Le jeu de données ouvert, avec citation |
 
 **Explicitement hors cible :** la gestion d'actifs institutionnelle. Elle ne fonde pas ses
 décisions sur l'analyse chartiste. Construire pour elle serait du travail perdu.
 
-### Ce qu'un contrat professionnel vaut, en abonnés particuliers
+### Ce qu'un accès groupe vaut
 
-**Un seul contrat à 2 000 €/mois équivaut à environ 80 abonnés particuliers — avec une
-attrition dix fois moindre et un seul interlocuteur à servir.** C'est la raison pour laquelle
-l'accès professionnel remonte au lot 12 : ce n'est pas un complément de fin de parcours, c'est
-le seul levier qui change l'ordre de grandeur du projet.
+**Un seul groupe à 2 000 €/mois équivaut à environ 80 abonnés individuels — avec une attrition
+dix fois moindre et un seul interlocuteur.** C'est pourquoi l'accès groupe remonte au lot 13 :
+ce n'est pas un complément de fin de parcours, c'est le seul levier qui change l'ordre de
+grandeur du projet.
 
 **Cadrage sur les particuliers :** 70 à 85 % des comptes de détail perdent de l'argent sur les
 CFD (mention réglementaire obligatoire des courtiers). Ce public paie peu et part vite. Il
 reste indispensable — c'est lui qui alimente la base comportementale et la crédibilité
 publique — mais il ne portera pas le chiffre d'affaires seul.
 
-### Ce que le multi-public coûte à construire
+### Ce que l'accès groupe coûte à construire
 
-| Segment | Ce qu'il faut développer en plus | Quand |
-|---|---|---|
-| 3, 5, 6 | **Rien** au-delà de l'export et de l'API déjà prévus. Un rapport mensuel et un accès en lecture suffisent | Lot 12 |
-| 4 | Une surface en marque blanche : thème, sous-domaine, cloisonnement par client | **Uniquement après un contrat signé.** Jamais par anticipation |
+Presque rien, et c'est délibéré : **une table d'organisations, des sièges, un rôle
+d'administrateur, une facturation au siège.** Pas de marque blanche, pas de portail dédié,
+pas de rapport sur mesure en v1.
 
 **Règle : aucun développement professionnel spéculatif.** Un rapport produit à la main pour un
 premier client vaut mieux qu'une plateforme construite pour des clients qui n'existent pas
 encore.
-
-**Portée mondiale :** le forex est identique partout, les données sont universelles, il n'y a
-aucun ancrage géographique. L'internationalisation se réduit à traduire l'interface — sous
-réserve des exclusions de juridiction du §20.
 
 ---
 
@@ -305,59 +312,50 @@ trade. Sortie : **probabilité de réussite de la contrainte**, jamais un rendem
 
 Ce module est aussi le moteur d'acquisition naturelle (§22).
 
-### Module I — Commentaires horodatés et verrouillés (v2)
+### Module I — supprimé
 
-*Un chat en direct est **refusé**. Les commentaires horodatés sont retenus. Les deux ne
-répondent pas au même besoin, et un seul est compatible avec le produit.*
+*Les commentaires horodatés envisagés en version 1 de ce document sont retirés,
+en application du principe ci-dessous.*
 
-#### Pourquoi le chat en direct est refusé
+---
 
-| Motif | Détail |
+## 5 bis. Principe : aucun contenu produit par un utilisateur
+
+> **Personne n'écrit, ne saisit ni ne publie de figure, de trade ou de commentaire dans
+> l'application. Tout ce qui est affiché est produit par le moteur.**
+
+Ce qui est donc exclu, définitivement :
+
+| Exclu | Pourquoi |
 |---|---|
-| **Il contredit la raison d'être du produit** | Tout l'édifice repose sur *« des chiffres vérifiables, pas des opinions »*. Un chat est une machine à opinions. En quelques semaines il devient la fonction la plus utilisée, saturée de « je pense que l'euro va monter » — exactement le bruit que le produit existe pour remplacer. L'identité du produit se dissout |
-| **Exposition réglementaire** | Un utilisateur qui écrit « achetez l'euro maintenant » publie une recommandation **sur votre plateforme**. Le régime d'hébergeur protège tant qu'il n'y a pas d'intervention éditoriale — mais toute modération active brouille cette frontière |
-| **Aimant à escroqueries** | Les salons de discussion forex attirent les vendeurs de signaux, les parrainages vers des courtiers non régulés et les systèmes d'affiliation. Le produit deviendrait le canal d'acquisition de ceux contre qui il se positionne |
-| **Publicité interdite** | Un message promotionnel pour un courtier CFD posté par un utilisateur peut relever de l'interdiction du §19 |
-| **Conseil personnalisé public** | « Dois-je prendre ce trade avec 3 000 € ? » recevra une réponse d'un autre utilisateur, publiquement, sur votre plateforme. C'est le §19 franchi en permanence |
-| **Modération impossible à cette échelle** | Un salon forex non modéré dégénère en quelques semaines. La modération est un travail à temps plein, 24 h sur 5 jours, sur plusieurs fuseaux |
+| Chat, forum, commentaires | Machine à opinions, aimant à escroqueries, modération impossible, conseil personnalisé public |
+| Figures annotées ou soumises par des utilisateurs | Détruirait la reproductibilité : deux personnes ne dessineraient pas la même figure |
+| Signaux ou pronostics publiés par des tiers | Ferait de la plateforme un distributeur de recommandations de tiers |
+| Notation ou vote sur les détections | Une opinion agrégée n'est pas une mesure |
 
-**Précision de vocabulaire :** la transparence recherchée est déjà assurée par le journal
-prospectif, l'ancrage externe et le groupe témoin (§15). Ce qu'un chat apporte, c'est de la
-**conversation**, pas de la transparence. Deux besoins distincts, à traiter séparément.
+### Ce qui n'est pas concerné : l'import du journal personnel
 
-#### Ce qui est retenu à la place : le commentaire horodaté et verrouillé
+L'import d'un relevé de courtier (module E) **n'est pas** un contenu produit par un
+utilisateur, au sens de ce principe :
 
-Un fil de commentaires **attaché à une détection précise**, avec une règle unique :
-
-> **Tout commentaire publié avant la résolution est horodaté et verrouillé définitivement.
-> Il reste affiché à côté de l'issue réelle.**
-
-C'est le principe fondateur du produit — publier avant de savoir — **étendu à la communauté**.
-
-| Conséquence | Effet |
+| Contenu d'utilisateur | Import de journal personnel |
 |---|---|
-| On voit ce que les gens disaient **avant** de connaître le résultat | Personne d'autre ne montre ça |
-| Impossible de réécrire son avis après coup | Auto-régulation : chacun devient prudent quand son opinion reste attachée au résultat |
-| Le fil se ferme à la résolution | Pas de flux permanent à modérer, volume borné |
-| Aucune promotion possible | Un commentaire ne peut porter que sur la détection à laquelle il est attaché |
+| Publié, visible par d'autres | **Strictement privé**, visible du seul déposant |
+| Influence ce que les autres voient | N'influence **aucun** chiffre public |
+| Alimente la base de mesure | Alimente uniquement l'analyse de son propre auteur |
+| Rédigé, donc opinion | Exporté d'un relevé, donc fait |
 
-**Extension possible (v3, sous réserve d'avis juridique) :** l'utilisateur peut enregistrer son
-propre pronostic avant l'issue, et son historique devient public. Même mécanique, appliquée aux
-personnes. Aucun élément monétaire, aucun classement mis en avant tant que l'avis juridique
-n'est pas rendu.
+C'est une donnée que l'utilisateur confie pour obtenir son propre miroir, pas une contribution
+au produit. **Le supprimer supprimerait le module qui fait payer** (§25.2). La distinction est
+maintenue.
 
-#### Obligations si des contenus d'utilisateurs sont hébergés
+### Bénéfice de ce principe
 
-Conditions d'utilisation spécifiques, procédure de signalement et de retrait, point de contact
-publié, journal des retraits, modération a posteriori. Ces obligations existent dès le premier
-commentaire — elles sont une raison de plus de limiter le périmètre au fil verrouillé.
+Une seule source, donc une seule vérité. Aucune modération, aucune obligation d'hébergeur,
+aucune exposition aux publications de tiers, et un argument simple :
 
-#### La communauté, elle, se fait à l'extérieur
-
-Un espace de discussion ouvert (Discord ou Telegram), **hébergé hors du produit et clairement
-séparé de lui**, modéré par un bénévole issu de la communauté. Coût de développement nul,
-aucune exposition sur la plateforme, et le besoin d'échange est satisfait.
-
+> Rien de ce que vous lisez ici n'a été écrit par quelqu'un qui avait un intérêt à ce que vous
+> le lisiez.
 
 ---
 
@@ -368,7 +366,7 @@ aucune exposition sur la plateforme, et le besoin d'échange est satisfait.
 | # | Écran | Accès | Contenu |
 |---|---|---|---|
 | 1 | **Journal en direct** | Public, sans compte | Flux des détections annoncées, statut, issue. La page d'accueil |
-| 2 | Détail d'une détection | Public | Graphique, niveaux, méthode appliquée, score détaillé critère par critère, issue, **fil de commentaires verrouillés (v2)** |
+| 2 | Détail d'une détection | Public | Graphique, niveaux, méthode appliquée, score détaillé critère par critère, issue |
 | 3 | **Détections écartées** | Public | Le groupe témoin, avec motif de rejet et statistique associée |
 | 4 | Fiche figure | Public | Pédagogie + statistiques à jour. **Cible du référencement naturel (§22)** |
 | 5 | Preuve et intégrité | Public | Explication de la chaîne d'empreintes, ancrages publics, procédure de vérification par un tiers |
@@ -1038,15 +1036,24 @@ d'examen.*
 zéro — Autochartist est distribué **gratuitement** par de nombreux courtiers. Ce qui se vend,
 c'est l'analyse comportementale et le mode contrainte, pas la détection.
 
-### Grille professionnels
+### Grille groupe
 
-| Offre | Contenu | Prix |
+Par siège, dégressif, avec un minimum de 10 sièges.
+
+| Sièges | Prix par siège | Exemple |
 |---|---|---|
-| **Intelligence du risque** | Rapport mensuel et accès en lecture : quelles configurations et quels comportements font sauter les comptes, sous contrainte de perte | 500 à 2 000 €/mois |
-| **Flux en marque blanche** | Détections diffusées aux clients d'un courtier, sous sa marque | 1 000 à 5 000 €/mois, ou 0,50 à 2 € par utilisateur actif |
-| **Licence pédagogique** | Usage des statistiques dans des supports de formation, avec citation | 99 à 299 €/mois |
-| **API brute** | Accès programmatique à la base | 199 à 499 €/mois |
-| **Média, recherche** | Jeu de données ouvert | Gratuit, avec citation |
+| 10 à 49 | 15 €/mois | 20 sièges = 300 €/mois |
+| 50 à 199 | 12 €/mois | 100 sièges = 1 200 €/mois |
+| 200 et plus | 9 €/mois | 500 sièges = 4 500 €/mois |
+
+| Option | Contenu | Prix |
+|---|---|---|
+| **Intelligence du risque** | Rapport mensuel : quelles configurations et quels comportements font sauter les comptes, sous contrainte de perte | +500 à 1 500 €/mois |
+| **API** | Accès programmatique à la base | +199 à 499 €/mois |
+| **Média, recherche, régulateur** | Jeu de données ouvert et accès en lecture | **Gratuit, avec citation** |
+
+Le siège de groupe est moins cher que l'abonnement individuel : c'est normal et voulu — le
+client apporte le volume, prend en charge son administration et ne génère aucun support.
 
 ### Pare-feu contractuel — clause non négociable
 
@@ -1226,7 +1233,6 @@ comparée au groupe témoin. Si l'écart disparaît, le produit doit changer de 
 | **11** | Mode contrainte prop firm | Réponse en probabilité de réussite de la contrainte, pas en rendement |
 | **12** | **Ouverture des données de plus de 90 jours + premiers contacts sociétés de financement** | Jeu de données téléchargeable. **Remonté de la fin : voir §25.3** |
 | **13** | Catalogue complet, extension à 28 paires | Occurrences multipliées, seuils franchis |
-| **14** | Commentaires horodatés et verrouillés + obligations d'hébergeur | Un commentaire publié avant l'issue ne peut plus être modifié |
 | **15** | API et licence de la base (B2B contractualisé) | — |
 
 ### 25.1 Le lot 2 est un point de décision, pas une étape
@@ -1293,7 +1299,7 @@ subjective et rare : c'est le pire premier cas possible.
 | 8 | **Attente d'un avantage important sur les majeures** | Marché le plus liquide du monde : 7 500 Md$/jour (BIS 2022). Avantage attendu proche de zéro. **Le produit doit avoir de la valeur même quand les chiffres sont mauvais** (§27) |
 | 9 | **Dépendance à une source de données unique** | Prévoir une seconde source, et documenter que tout changement crée une nouvelle version |
 | 10 | **Exposition juridique hors UE** | §20 : exclusion des États-Unis au lancement |
-| 11 | **Contenus d'utilisateurs** : recommandations publiées par des tiers, promotion de courtiers, escroqueries, conseil personnalisé public | §5 module I : **pas de chat en direct**. Uniquement des commentaires verrouillés attachés à une détection, plus une communauté externe au produit |
+| 11 | **Contenus d'utilisateurs** : recommandations de tiers, promotion de courtiers, escroqueries, conseil personnalisé public | §5 bis : **aucun contenu produit par un utilisateur**, sans exception. La communauté d'échange vit hors du produit |
 
 ---
 

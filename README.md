@@ -36,7 +36,7 @@ formules, le cahier des charges fait foi sur les principes.
 
 ---
 
-## Les dix décisions qui structurent tout
+## Les onze décisions qui structurent tout
 
 | # | Décision | Pourquoi |
 |---|---|---|
@@ -48,8 +48,9 @@ formules, le cahier des charges fait foi sur les principes.
 | 6 | **Déterminisme absolu**, tout recalculable, versions figées | Le produit *est* ses chiffres. Un historique qui bouge détruit tout |
 | 7 | **Les prix sont en direct, la mesure ne l'est pas** | Une détection recalculée à chaque tick serait non reproductible, donc invérifiable |
 | 8 | **L'analyse comportementale est le produit payant**, la base de figures est l'acquisition | Elle ne dépend d'aucun avantage de marché et croît avec les utilisateurs, pas avec le temps |
-| 9 | **Segment principal : les candidats aux sociétés de financement** | Ils paient déjà, ont une question précise, et achètent sur preuve plutôt que sur promesse |
-| 10 | **Publier les mauvais chiffres tels quels**, règle écrite avant tout revenu | Seule protection contre la tentation de les trafiquer quand l'abonnement en dépendra |
+| 9 | **Deux accès seulement — individuel et groupe** ; le groupe s'administre lui-même | Sert tous les publics sans ajouter de produit ni d'heure de support |
+| 10 | **Aucun contenu produit par un utilisateur** : ni figure, ni trade, ni commentaire publié | Une seule source, donc une seule vérité. Aucune modération, aucune exposition aux publications de tiers |
+| 11 | **Publier les mauvais chiffres tels quels**, règle écrite avant tout revenu | Seule protection contre la tentation de les trafiquer quand l'abonnement en dépendra |
 
 ---
 
@@ -58,7 +59,7 @@ formules, le cahier des charges fait foi sur les principes.
 | État | Éléments |
 |---|---|
 | **Spécifié, constructible** | Lots 0 à 5, lot 11, système d'interface |
-| **Spécifié au niveau principe seulement** | Lots 6 à 10 et 12 à 15 : notifications, abonnement, catalogue étendu, référencement programmatique, commentaires verrouillés, API |
+| **Spécifié au niveau principe seulement** | Lots 6 à 10, 12 et 13 : notifications, abonnement, catalogue étendu, référencement programmatique, comptes groupe, API |
 | **Hors compétence, à faire valider** | Validation juridique des CGU et du positionnement (avocat), structure et TVA (comptable) — `CAHIER-DES-CHARGES.md` §28 |
 | **Non décidé, et ce n'est pas un oubli** | Le seuil d'annonce du score : il sera fixé **par les données**, après 400 occurrences, jamais à l'avance |
 
