@@ -2,6 +2,12 @@
 
 Document de référence unique. Version 2 — septembre 2026.
 
+> **Documents d'implémentation associés** — `SPEC-LOT2.md` (détection du range et score),
+> `SPEC-LOT3.md` (journal, chaînage, ancrage), `SPEC-LOT5.md` (journal utilisateur et écart
+> comportemental), `SPEC-LOT11.md` (mode contrainte), `SPEC-DESIGN.md` (interface, ergonomie,
+> temps réel). En cas de divergence, le document d'implémentation fait foi sur les formules,
+> ce cahier des charges sur les principes.
+>
 > **Comment lire.** Les sections techniques commencent par « *Pourquoi ça compte* ».
 > Les termes sont définis au §29 (glossaire). Chaque décision est ferme : quand deux options
 > existaient, une seule figure ici, avec son motif. Les points encore ouverts sont regroupés
@@ -193,7 +199,7 @@ détecter(bougies_jusqu_à_t, paramètres)
 - Chaque détection est écrite dans un journal public : horodatage, paire, unité de temps,
   figure, méthode, niveaux, score et son détail, source de prix, version de la stratégie,
   statut annoncée / écartée avec motif.
-- **Chaînage par empreinte numérique**, et **ancrage quotidien chez un tiers** (§15).
+- **Chaînage par arbre de Merkle**, et **ancrage horaire chez trois tiers indépendants** (§15).
 - L'issue est calculée automatiquement, sans intervention humaine.
 - **Accessible gratuitement, sans compte.** C'est ce qui remplace la publicité interdite.
 - Le backtest est affiché **à côté** du journal prospectif, jamais à sa place : l'écart entre
@@ -474,7 +480,7 @@ que ce soit.
 |---|
 | Configuration à contre-tendance journalière |
 | Annonce économique à fort impact dans l'horizon du trade |
-| Objectif irréaliste : au-delà de 1,5 × ATR cumulé sur l'horizon |
+| Objectif irréaliste : `\|objectif − entrée\| > 1,5 × ATR × √horizon` |
 
 Puis **score ≥ 7 sur 13** pour l'annonce — seuil initial, **à recalibrer sur les données une
 fois 400 occurrences accumulées**, jamais fixé définitivement à l'avance. Le seuil est versionné :
@@ -489,7 +495,7 @@ le modifier crée une nouvelle version de stratégie (§15), et l'ancien histori
 | 3 | **Niveau rond** | +1 | Prix en 00 ou 50. Effet documenté : les ordres stop se concentrent sur ces niveaux (Osler, 2003) |
 | 4 | **Niveaux de référence** | +1 | Plus haut/bas de la veille ou de la semaine, ouverture journalière |
 | 5 | **Divergence de momentum** | +1 | RSI divergent au sommet ou creux de la figure |
-| 6 | **Objectif atteignable** | +1 / **−2 si irréaliste** | Objectif ≤ 1,5 × ATR cumulé sur l'horizon |
+| 6 | **Objectif atteignable** | +1 / **filtre dur si irréaliste** | `D = \|objectif − entrée\| / (ATR × √horizon)`. `D ≤ 0,75` → +1 ; `D > 1,50` → rejet. *Le déplacement d'un actif sur N bougies évolue en √N, non en N* |
 | 7 | **Séance horaire** | +1 chevauchement Londres–New York / **−1 séance asiatique ou heure de roulement** | Heure locale des places, changement d'heure pris en compte |
 | 8 | **Calendrier économique** | **−2** | Annonce à fort impact prévue dans l'horizon |
 | 9 | **Extension du mouvement** | **−1** | Prix à plus de 2 ATR de la MM20 : mouvement déjà mûr |
@@ -601,7 +607,7 @@ ses propres résultats est surajusté : excellent en historique, sans valeur en 
 | Zone support | *Neutralisé — contenu dans la définition* | — |
 | Niveau rond | Creux sur 1,0800 | +1 |
 | Divergence de momentum | RSI divergent au second creux | +1 |
-| Faisabilité de l'objectif | 1,1 × ATR cumulé | +1 |
+| Faisabilité de l'objectif | D = 0,62 | +1 |
 | Séance | Cassure pendant le chevauchement Londres–New York | +1 |
 | Calendrier économique | Aucune annonce à fort impact | 0 |
 | Extension | Prix à 0,8 ATR de la MM20 | 0 |
@@ -776,7 +782,7 @@ reproductible.
 | `version_strategie` | Version figée d'une figure × méthode : code, empreinte, paramètres, seuils, dates d'activation et de retrait |
 | `detection` | Horodatage, niveaux, score et **détail critère par critère**, statut annoncée/écartée + motif, version, empreinte précédente, empreinte propre |
 | `issue` | Atteint / invalidé / sans issue, excursions maximales favorable et défavorable, résultat brut et net, détail des frais |
-| `ancrage` | Empreinte quotidienne publiée à l'extérieur, avec sa preuve (§15) |
+| `ancrage` | Racine de Merkle et tête de chaîne publiées à l'extérieur à chaque cycle horaire, avec les trois preuves (§15) |
 | `trade_utilisateur` | Journal importé, éventuellement rapproché d'une détection |
 | `notification` | Envois, canal, horodatage, latence mesurée |
 
@@ -793,11 +799,15 @@ le seul avantage concurrentiel.*
 toute la chaîne après coup. Le chaînage seul, tel que spécifié en version 1 de ce document,
 était insuffisant.
 
-**Correction obligatoire — ancrage externe quotidien.** Chaque jour, l'empreinte de tête de la
-chaîne est publiée à un endroit que l'éditeur ne contrôle pas et qui est horodaté par un tiers :
+**Correction obligatoire — ancrage externe à chaque cycle de traitement, soit toutes les
+heures.** La règle de dimensionnement est établie dans `SPEC-LOT3.md` §2 : *la fenêtre
+d'ancrage doit être strictement inférieure au délai minimal de résolution d'une détection*,
+faute de quoi une détection pourrait naître, se résoudre et disparaître avant d'avoir été
+engagée publiquement. Un ancrage quotidien laissait une fenêtre de 24 heures : insuffisant.
 
-- dépôt public versionné (commit horodaté et signé), **et**
-- service d'horodatage qualifié, ou toute autre source tierce vérifiable.
+Chaque cycle publie sa racine de Merkle et sa tête de chaîne sur **trois supports
+indépendants** : dépôt public versionné avec commit signé, horodatage RFC 3161 auprès d'une
+autorité tierce, et ancrage OpenTimestamps. Les cycles vides sont ancrés comme les autres.
 
 À partir de là, réécrire l'histoire supposerait de réécrire aussi des enregistrements tiers
 horodatés. **C'est ce qui transforme une affirmation en preuve** — et c'est le fondement de tout
@@ -813,7 +823,7 @@ n'importe qui puisse la refaire.
    l'historique, comparaison des empreintes. Toute divergence fait échouer la compilation et
    impose une nouvelle version de stratégie. *Coût : une journée. Sans ça, l'historique se
    réécrit silencieusement à chaque correction de bug.*
-3. **Ancrage externe quotidien** (§15.1).
+3. **Ancrage externe horaire sur trois supports indépendants** (§15.1). Aucune suppression n'est possible : une erreur se corrige par une détection d'annulation ajoutée à la suite.
 4. **Versionnement des stratégies.** Une stratégie modifiée est une stratégie **nouvelle**.
    L'ancienne conserve son historique. On ne supprime jamais, on remplace.
 5. **Résolution intra-bougie en M1** obligatoire. C'est l'erreur qui gonfle artificiellement
@@ -848,7 +858,7 @@ reconstituable.*
 | Flux de données interrompu ou bougie manquante | Détections manquantes → journal incomplet → crédibilité perdue |
 | Traitement par lots échoué ou en retard | Idem |
 | Latence de notification > 60 s | Promesse produit non tenue (§5, module G) |
-| Ancrage quotidien non publié | La preuve du jour est absente |
+| Ancrage horaire non publié | La preuve du cycle est absente, et le trou restera visible définitivement |
 | Échec du test de déterminisme | L'historique a peut-être bougé |
 
 **Page publique d'intégrité** (écran 5) : taux de complétude des données, ancrages publiés,
@@ -1100,7 +1110,7 @@ comparée au groupe témoin. Si l'écart disparaît, le produit doit changer de 
 | **0** | Compte Stripe (activité décrite comme **logiciel d'analyse statistique**) validé. Consultation juridique de cadrage | **Avant d'écrire du code** : un refus bloquerait toute monétisation après des mois de travail |
 | **1** | Ingestion, stockage, **harnais de déterminisme et test point-in-time** | Le test d'injection de données futures échoue si on triche. Recalcul complet reproductible à l'identique |
 | **2** | **Une seule stratégie : le range**, de bout en bout, résolution M1 et frais complets. **Backtest honnête walk-forward avec correction de tests multiples** | 500 détections résolues, résultat net calculé, reproductible deux fois à l'identique. **Ce lot est un point de décision** (§25.1) |
-| **3** | Journal prospectif + chaînage + **ancrage externe quotidien** + page publique gratuite + **script de vérification publié** | En ligne et accumulant des détections **pendant** que le reste se développe. Un tiers doit pouvoir vérifier la chaîne sans aide |
+| **3** | Journal prospectif + Merkle + **ancrage externe horaire, trois supports** + page publique gratuite + **vérificateur public publié** | En ligne et accumulant des détections **pendant** que le reste se développe. Un tiers doit pouvoir vérifier la chaîne sans aide |
 | **4** | Score de confluence + filtres durs + **conservation du groupe témoin** | Une détection écartée est conservée avec motif et score détaillé |
 | **5** | **Import du journal utilisateur + écart comportemental** | Un rapport MT5 réel s'importe et produit un écart chiffré. **Remonté du lot 9 : voir §25.2** |
 | **6** | Abonnement Stripe + Stripe Tax + documents légaux | Un paiement de bout en bout, TVA correcte, CGU en ligne |
