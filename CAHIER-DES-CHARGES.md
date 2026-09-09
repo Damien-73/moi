@@ -65,6 +65,33 @@ L'utilisateur peut importer son propre journal de trades et se comparer à cette
 | **L'écart comportemental** (journal de l'utilisateur × base) | 12-18 mois, et seulement après avoir accumulé la base. Crée un coût de sortie |
 | Le moteur de détection | **3 mois — et il existe déjà chez un concurrent (§3). Aucune valeur défensive.** Ne jamais bâtir l'argumentaire dessus |
 
+### Principe de conception fondamental : publier des **comparaisons**, jamais des absolus
+
+*C'est la décision qui rend le produit robuste au seul risque qu'il ne contrôle pas :
+l'absence d'avantage exploitable sur le marché.*
+
+Un produit qui vend « cette figure gagne » s'effondre si l'espérance mesurée est nulle.
+Un produit qui vend « cette figure gagne **0,14 R de plus que celle-là**, et **0,23 R de plus
+en séance de Londres qu'en séance asiatique** » garde toute sa valeur, **même si les deux
+espérances sont négatives**.
+
+| Ce qu'on ne vend pas | Ce qu'on vend |
+|---|---|
+| « Le double creux est rentable » | « Le double creux fait 0,12 R de mieux que le triangle, mesuré sur 2 400 cas » |
+| « Tradez cette configuration » | « En H1 les frais consomment 15 % du mouvement, contre 2 % en journalier » |
+| « 62 % de réussite » | « L'entrée sur retour bat l'entrée sur cassure de 0,09 R » |
+
+Deux raisons, la seconde étant technique :
+
+1. **L'information relative reste actionnable même quand l'avantage absolu est nul.** Savoir
+   où l'on perd le moins a de la valeur pour quelqu'un qui trade de toute façon.
+2. **Les comparaisons sont statistiquement bien plus robustes.** Les biais communs aux deux
+   termes — qualité de la source de prix, modèle de frais, choix de l'horizon — s'annulent en
+   grande partie dans une différence, alors qu'ils faussent entièrement une valeur absolue.
+
+**Conséquence sur l'interface : tout chiffre publié est accompagné de son terme de comparaison.
+Aucune statistique n'est affichée seule.**
+
 ### L'honnêteté comme barrière à l'entrée
 
 Le marché des outils forex vit de promesses invérifiables. Un produit dont le mécanisme central
@@ -990,11 +1017,43 @@ architecture.** À traiter comme une fonctionnalité de premier plan, pas comme 
 | **Espace communautaire propre, hébergé à l'extérieur** (Discord ou Telegram) | Satisfait le besoin d'échange sans exposer la plateforme (§5, module I) |
 | Sociétés de financement | Partenariats de contenu — leur intérêt est que leurs candidats réussissent |
 
+### Revenus interdits
+
+**Aucune rémunération d'apport d'affaires versée par un courtier, jamais.** C'est le revenu le
+plus facile à obtenir sur ce marché, et le seul qui détruirait instantanément le positionnement :
+un produit qui mesure les coûts de transaction ne peut pas être payé par ceux qui les facturent.
+Refus inscrit dans les conditions d'utilisation et publié.
+
+### Ouverture des données anciennes
+
+Les détections **résolues depuis plus de 90 jours** sont publiées en jeu de données ouvert,
+téléchargeable et réutilisable avec citation.
+
+*Pourquoi c'est un gain net :* la valeur commerciale est dans le flux courant et dans l'analyse,
+pas dans des lignes vieilles de trois mois. En les ouvrant, on devient **la source que les autres
+citent** — chercheurs, formateurs, vidéastes, journalistes. Chaque citation est un lien, une
+autorité, et une preuve supplémentaire qu'il n'y a rien à cacher. Aucun concurrent de ce marché
+ne peut se le permettre.
+
+### Outils gratuits à fort volume de recherche
+
+Calculatrice de position, valeur du pip, horloge des séances, matrice de corrélation, calendrier
+économique. Aucun avantage de marché n'est nécessaire pour les construire, ils répondent à des
+requêtes très recherchées, et ils alimentent le référencement du reste du site.
+
 ### Publication mensuelle des résultats
 
-Un rapport public mensuel : espérance du mois, écarts par rapport à l'historique, incidents.
-**Y compris les mauvais mois.** C'est le rituel qui construit la réputation, et c'est
-exactement ce qu'aucun concurrent ne peut imiter.
+Un rapport public mensuel, **à date fixe et format fixe**, publié même quand les chiffres sont
+mauvais : espérance du mois, écarts par rapport à l'historique, incidents techniques.
+C'est le rituel qui construit la réputation, et c'est exactement ce qu'aucun concurrent ne peut
+imiter.
+
+### L'invitation à la vérification
+
+Le script de vérification de la chaîne d'empreintes et des ancrages est **publié et documenté**.
+N'importe qui est invité à recalculer l'historique et à contester un chiffre.
+Sur un marché saturé de résultats fabriqués, c'est l'argument le plus difficile à ignorer —
+et il ne coûte qu'une page de documentation.
 
 ---
 
@@ -1036,21 +1095,63 @@ comparée au groupe témoin. Si l'écart disparaît, le produit doit changer de 
 
 | Lot | Contenu | Critère d'acceptation |
 |---|---|---|
-| **0** | Ouvrir le compte Stripe (activité décrite comme **logiciel d'analyse statistique**), vérifier la validation. Consultation juridique de cadrage | Compte validé. **Avant d'écrire du code** : un refus bloquerait toute monétisation après des mois de travail |
+| **0** | Compte Stripe (activité décrite comme **logiciel d'analyse statistique**) validé. Consultation juridique de cadrage | **Avant d'écrire du code** : un refus bloquerait toute monétisation après des mois de travail |
 | **1** | Ingestion, stockage, **harnais de déterminisme et test point-in-time** | Le test d'injection de données futures échoue si on triche. Recalcul complet reproductible à l'identique |
-| **2** | **Une seule stratégie : le range**, de bout en bout, résolution M1 et frais complets compris | 500 détections historiques résolues, résultat net calculé, backtest reproductible deux fois à l'identique |
-| **3** | Journal prospectif + **chaînage + ancrage externe quotidien** + page publique gratuite | En ligne et accumulant des détections **pendant** que le reste se développe. C'est l'actif qui prend de la valeur avec le temps : il doit démarrer le plus tôt possible. Un tiers doit pouvoir vérifier la chaîne |
-| **4** | Score de confluence + filtres durs + **conservation du groupe témoin** | Une détection écartée est conservée avec son motif et son score détaillé |
-| **5** | Interface stratégie + premier lot de figures (10 à 15) | Ajouter une figure ne demande aucune modification du moteur |
-| **6** | Base interrogeable + seuils de publication + correction de tests multiples | Une figure sous 100 occurrences affiche « données insuffisantes », jamais un pourcentage |
+| **2** | **Une seule stratégie : le range**, de bout en bout, résolution M1 et frais complets. **Backtest honnête walk-forward avec correction de tests multiples** | 500 détections résolues, résultat net calculé, reproductible deux fois à l'identique. **Ce lot est un point de décision** (§25.1) |
+| **3** | Journal prospectif + chaînage + **ancrage externe quotidien** + page publique gratuite + **script de vérification publié** | En ligne et accumulant des détections **pendant** que le reste se développe. Un tiers doit pouvoir vérifier la chaîne sans aide |
+| **4** | Score de confluence + filtres durs + **conservation du groupe témoin** | Une détection écartée est conservée avec motif et score détaillé |
+| **5** | **Import du journal utilisateur + écart comportemental** | Un rapport MT5 réel s'importe et produit un écart chiffré. **Remonté du lot 9 : voir §25.2** |
+| **6** | Abonnement Stripe + Stripe Tax + documents légaux | Un paiement de bout en bout, TVA correcte, CGU en ligne |
 | **7** | Notifications (courriel, web push) + supervision de la latence | Annonce envoyée en moins de 60 s, latence journalisée |
-| **8** | Abonnement Stripe + Stripe Tax + documents légaux | Un paiement de bout en bout, TVA correcte, CGU en ligne |
-| **9** | Import du journal utilisateur + écart comportemental | Un rapport MT5 réel s'importe et produit un écart chiffré |
-| **10** | Fiches figures + **référencement programmatique** | Les pages se génèrent depuis la base et se mettent à jour seules |
+| **8** | Interface stratégie + premier lot de figures (10 à 15) | Ajouter une figure ne demande aucune modification du moteur |
+| **9** | Base interrogeable + seuils de publication + correction de tests multiples + **affichage systématique des comparaisons** | Une figure sous 100 occurrences affiche « données insuffisantes ». Aucun chiffre affiché sans terme de comparaison |
+| **10** | Fiches figures + **référencement programmatique** + **outils gratuits** (calculatrice de position, corrélations, séances) | Les pages se génèrent depuis la base et se mettent à jour seules |
 | **11** | Mode contrainte prop firm | Réponse en probabilité de réussite de la contrainte, pas en rendement |
-| **12** | Catalogue complet, extension à 28 paires | Occurrences multipliées, seuils franchis |
-| **13** | Commentaires horodatés et verrouillés + obligations d'hébergeur | Un commentaire publié avant l'issue ne peut plus être modifié et reste affiché à côté du résultat |
-| **14** | API et licence de la base (B2B) | — |
+| **12** | **Ouverture des données de plus de 90 jours + premiers contacts sociétés de financement** | Jeu de données téléchargeable. **Remonté de la fin : voir §25.3** |
+| **13** | Catalogue complet, extension à 28 paires | Occurrences multipliées, seuils franchis |
+| **14** | Commentaires horodatés et verrouillés + obligations d'hébergeur | Un commentaire publié avant l'issue ne peut plus être modifié |
+| **15** | API et licence de la base (B2B contractualisé) | — |
+
+### 25.1 Le lot 2 est un point de décision, pas une étape
+
+Le backtest honnête du lot 2 donne, **en quelques semaines au lieu de six mois**, une première
+indication sur l'existence d'un avantage. Il ne prouve rien pour un client — mais il informe la
+décision de positionnement :
+
+| Résultat du lot 2 | Conséquence |
+|---|---|
+| Espérance nette clairement positive après correction | Le discours « quelles configurations gagnent » est tenable |
+| Espérance proche de zéro | **Basculer immédiatement sur le discours comparatif** (§2) et sur l'analyse comportementale. Ne pas attendre six mois pour l'apprendre |
+| Espérance nettement négative | Le produit devient *l'outil qui chiffre ce que l'analyse technique coûte* — position unique et vendable, mais qui change les fiches produit et l'argumentaire |
+
+Coût de cette information : quelques semaines. Valeur : elle oriente tout le reste.
+
+### 25.2 Pourquoi l'analyse comportementale remonte au lot 5
+
+Décision structurante, motivée par trois faiblesses du plan initial :
+
+1. **Elle ne dépend pas de l'existence d'un avantage de marché.** Dire à quelqu'un qu'il entre
+   deux bougies trop tôt garde toute sa valeur même si aucune figure n'est rentable.
+   C'est la seule fonction robuste au risque principal du projet.
+2. **Sa valeur est personnelle et immédiate**, donc c'est la fonction qui convertit en
+   abonnement. La base de figures attire ; le miroir comportemental fait payer.
+3. **Elle compose avec le nombre d'utilisateurs, pas avec le calendrier.** Le journal prospectif
+   met deux ans à devenir un fossé ; la base comportementale grandit dès le premier import.
+
+**Position retenue : la base de figures est le moteur d'acquisition, l'analyse comportementale
+est le produit payant.** Aucun concurrent ne peut la reproduire, car un journal de trading sans
+base de référence ne peut comparer à rien.
+
+### 25.3 Pourquoi le B2B remonte au lot 12
+
+Le référencement met 12 à 24 mois à composer et la publicité est interdite : la distribution est
+le vrai goulot du projet, pas le produit.
+
+Une société de financement compte des dizaines de milliers de candidats. **Un seul partenariat
+apporte en un mois ce que le référencement met deux ans à construire.** Et ce public achète
+sur preuve, pas sur promesse — ce qui transforme la principale faiblesse commerciale du produit
+en avantage. Les premiers contacts n'exigent qu'un journal prospectif de six mois et le mode
+contrainte : ils sont possibles bien avant la fin du développement.
 
 ### Pourquoi commencer par le range
 
