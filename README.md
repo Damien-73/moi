@@ -28,6 +28,9 @@ utilisateur sur son propre comportement.
 | `SPEC-LOT5.md` | Import du journal utilisateur et écart comportemental | 228 |
 | `SPEC-LOT11.md` | Mode contrainte pour les sociétés de financement | 201 |
 | `SPEC-DESIGN.md` | Interface, ergonomie, système visuel, périmètre du temps réel | 285 |
+| `SPEC-ECRANS.md` | Structure et contenu des douze écrans, avec maquettes | 300 |
+| `SPEC-FIGURES.md` | Définition géométrique du catalogue de figures (lots 8 et 14) | 230 |
+| `SPEC-LOTS-6-15.md` | Comptes et abonnement, notifications, moteur statistique, référencement programmatique, données ouvertes, accès groupe, API, extension crypto | 299 |
 
 **Ordre de lecture recommandé pour un novice :** le glossaire (`CAHIER-DES-CHARGES.md` §29),
 puis le §1, puis le §2. Le reste se lit dans l'ordre.
@@ -60,8 +63,7 @@ formules, le cahier des charges fait foi sur les principes.
 | État | Éléments |
 |---|---|
 | **Livré, testé** | Lot 1 — code dans `app/`, 25 tests verts |
-| **Spécifié, constructible** | Lots 0, 2 à 5, lot 11, système d'interface |
-| **Spécifié au niveau principe seulement** | Lots 6 à 10 et 12 à 15 : notifications, abonnement, catalogue étendu, référencement programmatique, comptes groupe, API |
+| **Spécifié, constructible** | **Tous les lots, 0 à 15**, écrans compris |
 | **Hors compétence, à faire valider** | Validation juridique des CGU et du positionnement (avocat), structure et TVA (comptable) — `CAHIER-DES-CHARGES.md` §28 |
 | **Non décidé, et ce n'est pas un oubli** | Le seuil d'annonce du score : il sera fixé **par les données**, après 400 occurrences, jamais à l'avance |
 
