@@ -68,10 +68,36 @@ Mise en place et pilotage des séquences automatisées d'une boutique en ligne
 | Piste | Motif |
 |---|---|
 | Rédaction / SEO générique | Tarifs effondrés, valeur détruite par l'IA générative |
-| Dropshipping, trading | Capital requis, revenu non récurrent, espérance négative |
+| Dropshipping, trading | Capital requis, revenu non récurrent, espérance négative (détail ci-dessous) |
 | Coaching, formation en ligne | Exige une audience préalable — 18 mois minimum |
 | Digitalisation des centres de vacances | Marché associatif et subventionné, cycles d'achat 6-12 mois |
 | Assistant virtuel | Plafond trop bas, non récurrent, aucune montée en tarif |
+
+## Cas du dropshipping automatisé par IA (n8n + Claude)
+
+Données 2026 : **80-90 % des boutiques ferment en 18 mois**, 10-20 % deviennent rentables,
+marge nette réelle **5-15 %**, coût du clic **0,80-2,50 €** (contre 0,10-0,30 € en 2018),
+budget de démarrage réaliste **2 000-5 000 €** dont 70 % en publicité.
+
+Conséquence chiffrée : à 10 % de marge, dégager 2 000 € nets/mois exige **20 000 € de CA mensuel**.
+
+**Pourquoi l'automatisation IA ne corrige pas le problème :**
+un test produit coûte ~200 € de publicité et ~2 h de travail. L'IA supprime les 2 h,
+pas les 200 €. Le budget publicitaire reste le facteur limitant, et c'est un **prix d'enchères**
+fixé par la concurrence. Comme l'IA abaisse le coût de production pour tous les entrants,
+elle augmente le nombre d'enchérisseurs — donc elle fait **monter** le seul coût qui décide
+de la rentabilité.
+
+**Ce que n8n + Claude améliorent réellement :** la charge opérationnelle
+(service client, commandes, fournisseurs, reporting). Cela améliore la survie, pas la rentabilité.
+
+**Reformulation utile :** construire cette pile technique développe exactement les compétences
+de l'étape 2 (automatisation). Deux façons de les monétiser : les vendre à des clients
+(payé pour apprendre, aucun capital risqué), ou les tester sur sa propre boutique
+(payer pour apprendre, épargne engagée). Avec 3 000 € et 12 mois, la première l'emporte.
+
+Position retenue : **pas en premier, jamais avec l'épargne de départ.** Légitime en année 2,
+financé par les revenus de prestation, avec de l'argent perdable.
 
 ## Séquence proposée
 
