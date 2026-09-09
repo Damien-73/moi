@@ -124,7 +124,7 @@ réserve des exclusions de juridiction du §20.
 
 ---
 
-## 5. Périmètre fonctionnel — les huit modules
+## 5. Périmètre fonctionnel — les neuf modules
 
 ### Module A — Ingestion et stockage des données
 
@@ -233,6 +233,60 @@ trade. Sortie : **probabilité de réussite de la contrainte**, jamais un rendem
 
 Ce module est aussi le moteur d'acquisition naturelle (§22).
 
+### Module I — Commentaires horodatés et verrouillés (v2)
+
+*Un chat en direct est **refusé**. Les commentaires horodatés sont retenus. Les deux ne
+répondent pas au même besoin, et un seul est compatible avec le produit.*
+
+#### Pourquoi le chat en direct est refusé
+
+| Motif | Détail |
+|---|---|
+| **Il contredit la raison d'être du produit** | Tout l'édifice repose sur *« des chiffres vérifiables, pas des opinions »*. Un chat est une machine à opinions. En quelques semaines il devient la fonction la plus utilisée, saturée de « je pense que l'euro va monter » — exactement le bruit que le produit existe pour remplacer. L'identité du produit se dissout |
+| **Exposition réglementaire** | Un utilisateur qui écrit « achetez l'euro maintenant » publie une recommandation **sur votre plateforme**. Le régime d'hébergeur protège tant qu'il n'y a pas d'intervention éditoriale — mais toute modération active brouille cette frontière |
+| **Aimant à escroqueries** | Les salons de discussion forex attirent les vendeurs de signaux, les parrainages vers des courtiers non régulés et les systèmes d'affiliation. Le produit deviendrait le canal d'acquisition de ceux contre qui il se positionne |
+| **Publicité interdite** | Un message promotionnel pour un courtier CFD posté par un utilisateur peut relever de l'interdiction du §19 |
+| **Conseil personnalisé public** | « Dois-je prendre ce trade avec 3 000 € ? » recevra une réponse d'un autre utilisateur, publiquement, sur votre plateforme. C'est le §19 franchi en permanence |
+| **Modération impossible à cette échelle** | Un salon forex non modéré dégénère en quelques semaines. La modération est un travail à temps plein, 24 h sur 5 jours, sur plusieurs fuseaux |
+
+**Précision de vocabulaire :** la transparence recherchée est déjà assurée par le journal
+prospectif, l'ancrage externe et le groupe témoin (§15). Ce qu'un chat apporte, c'est de la
+**conversation**, pas de la transparence. Deux besoins distincts, à traiter séparément.
+
+#### Ce qui est retenu à la place : le commentaire horodaté et verrouillé
+
+Un fil de commentaires **attaché à une détection précise**, avec une règle unique :
+
+> **Tout commentaire publié avant la résolution est horodaté et verrouillé définitivement.
+> Il reste affiché à côté de l'issue réelle.**
+
+C'est le principe fondateur du produit — publier avant de savoir — **étendu à la communauté**.
+
+| Conséquence | Effet |
+|---|---|
+| On voit ce que les gens disaient **avant** de connaître le résultat | Personne d'autre ne montre ça |
+| Impossible de réécrire son avis après coup | Auto-régulation : chacun devient prudent quand son opinion reste attachée au résultat |
+| Le fil se ferme à la résolution | Pas de flux permanent à modérer, volume borné |
+| Aucune promotion possible | Un commentaire ne peut porter que sur la détection à laquelle il est attaché |
+
+**Extension possible (v3, sous réserve d'avis juridique) :** l'utilisateur peut enregistrer son
+propre pronostic avant l'issue, et son historique devient public. Même mécanique, appliquée aux
+personnes. Aucun élément monétaire, aucun classement mis en avant tant que l'avis juridique
+n'est pas rendu.
+
+#### Obligations si des contenus d'utilisateurs sont hébergés
+
+Conditions d'utilisation spécifiques, procédure de signalement et de retrait, point de contact
+publié, journal des retraits, modération a posteriori. Ces obligations existent dès le premier
+commentaire — elles sont une raison de plus de limiter le périmètre au fil verrouillé.
+
+#### La communauté, elle, se fait à l'extérieur
+
+Un espace de discussion ouvert (Discord ou Telegram), **hébergé hors du produit et clairement
+séparé de lui**, modéré par un bénévole issu de la communauté. Coût de développement nul,
+aucune exposition sur la plateforme, et le besoin d'échange est satisfait.
+
+
 ---
 
 ## 6. Parcours et écrans
@@ -242,7 +296,7 @@ Ce module est aussi le moteur d'acquisition naturelle (§22).
 | # | Écran | Accès | Contenu |
 |---|---|---|---|
 | 1 | **Journal en direct** | Public, sans compte | Flux des détections annoncées, statut, issue. La page d'accueil |
-| 2 | Détail d'une détection | Public | Graphique, niveaux, méthode appliquée, score détaillé critère par critère, issue |
+| 2 | Détail d'une détection | Public | Graphique, niveaux, méthode appliquée, score détaillé critère par critère, issue, **fil de commentaires verrouillés (v2)** |
 | 3 | **Détections écartées** | Public | Le groupe témoin, avec motif de rejet et statistique associée |
 | 4 | Fiche figure | Public | Pédagogie + statistiques à jour. **Cible du référencement naturel (§22)** |
 | 5 | Preuve et intégrité | Public | Explication de la chaîne d'empreintes, ancrages publics, procédure de vérification par un tiers |
@@ -933,6 +987,7 @@ architecture.** À traiter comme une fonctionnalité de premier plan, pas comme 
 | Journal prospectif public | Preuve permanente, motif de retour régulier |
 | Vidéo (résultats mensuels commentés, échecs compris) | Le format le plus crédible pour ce public |
 | Communautés (forums, Reddit, Discord de traders) | Contribution par les chiffres, jamais par la promotion |
+| **Espace communautaire propre, hébergé à l'extérieur** (Discord ou Telegram) | Satisfait le besoin d'échange sans exposer la plateforme (§5, module I) |
 | Sociétés de financement | Partenariats de contenu — leur intérêt est que leurs candidats réussissent |
 
 ### Publication mensuelle des résultats
@@ -994,7 +1049,8 @@ comparée au groupe témoin. Si l'écart disparaît, le produit doit changer de 
 | **10** | Fiches figures + **référencement programmatique** | Les pages se génèrent depuis la base et se mettent à jour seules |
 | **11** | Mode contrainte prop firm | Réponse en probabilité de réussite de la contrainte, pas en rendement |
 | **12** | Catalogue complet, extension à 28 paires | Occurrences multipliées, seuils franchis |
-| **13** | API et licence de la base (B2B) | — |
+| **13** | Commentaires horodatés et verrouillés + obligations d'hébergeur | Un commentaire publié avant l'issue ne peut plus être modifié et reste affiché à côté du résultat |
+| **14** | API et licence de la base (B2B) | — |
 
 ### Pourquoi commencer par le range
 
@@ -1019,6 +1075,7 @@ subjective et rare : c'est le pire premier cas possible.
 | 8 | **Attente d'un avantage important sur les majeures** | Marché le plus liquide du monde : 7 500 Md$/jour (BIS 2022). Avantage attendu proche de zéro. **Le produit doit avoir de la valeur même quand les chiffres sont mauvais** (§27) |
 | 9 | **Dépendance à une source de données unique** | Prévoir une seconde source, et documenter que tout changement crée une nouvelle version |
 | 10 | **Exposition juridique hors UE** | §20 : exclusion des États-Unis au lancement |
+| 11 | **Contenus d'utilisateurs** : recommandations publiées par des tiers, promotion de courtiers, escroqueries, conseil personnalisé public | §5 module I : **pas de chat en direct**. Uniquement des commentaires verrouillés attachés à une détection, plus une communauté externe au produit |
 
 ---
 
