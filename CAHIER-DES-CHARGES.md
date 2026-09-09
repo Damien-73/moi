@@ -1,227 +1,176 @@
-# Cahier des charges — Application d'analyse de figures chartistes sur le forex
+# Cahier des charges
 
-Document de référence unique. Version 2 — septembre 2026.
+## Application d'analyse statistique de configurations chartistes sur le marché des changes
 
-> **Documents d'implémentation associés** — `SPEC-LOT2.md` (détection du range et score),
-> `SPEC-LOT3.md` (journal, chaînage, ancrage), `SPEC-LOT5.md` (journal utilisateur et écart
-> comportemental), `SPEC-LOT11.md` (mode contrainte), `SPEC-DESIGN.md` (interface, ergonomie,
-> temps réel). En cas de divergence, le document d'implémentation fait foi sur les formules,
-> ce cahier des charges sur les principes.
->
-> **Comment lire.** Les sections techniques commencent par « *Pourquoi ça compte* ».
-> Les termes sont définis au §29 (glossaire). Chaque décision est ferme : quand deux options
-> existaient, une seule figure ici, avec son motif. Les points encore ouverts sont regroupés
-> au §28 — et nulle part ailleurs.
+Version 3 — septembre 2026. Document de référence, autoportant.
 
-**Sommaire**
+---
 
-| Partie | Sections |
+## Comment lire ce document
+
+| | |
 |---|---|
-| **I — Produit** | 1 à 6 |
-| **II — Méthode** (le cœur) | 7 à 12 |
-| **III — Technique** | 13 à 18 |
-| **IV — Exploitation** | 19 à 24 |
-| **V — Exécution** | 25 à 30 |
+| **Destinataire** | Toute personne appelée à construire, financer ou évaluer le produit |
+| **Prérequis** | Aucun. Les termes techniques sont définis au §32 |
+| **Statut des décisions** | Toutes les décisions de ce document sont **arrêtées**. Les rares points encore ouverts sont regroupés au §31, et nulle part ailleurs |
+| **Documents d'implémentation** | `SPEC-LOT2.md` · `SPEC-LOT3.md` · `SPEC-LOT5.md` · `SPEC-LOT11.md` · `SPEC-DESIGN.md` |
+| **Règle de préséance** | Un document d'implémentation fait foi sur les formules. Ce cahier des charges fait foi sur les principes |
+
+Les sections techniques commencent par une ligne *Pourquoi ça compte*.
+
+---
+
+## Sommaire
+
+| Partie | Contenu | Sections |
+|---|---|---|
+| **I** | Le produit | 1 à 6 |
+| **II** | La méthode — le cœur du dossier | 7 à 14 |
+| **III** | La technique | 15 à 21 |
+| **IV** | L'exploitation | 22 à 27 |
+| **V** | L'exécution | 28 à 33 |
 
 ---
 ---
 
-# PARTIE I — PRODUIT
+# PARTIE I — LE PRODUIT
 
 ## 1. Résumé exécutif
 
-L'application détecte automatiquement les figures chartistes et les configurations de marché
-sur le forex, explique **comment ce type de configuration se trade habituellement**, puis
-**publie si l'objectif a été atteint ou non**.
+L'application détecte automatiquement les configurations chartistes sur le marché des changes,
+explique **comment ce type de configuration se trade habituellement**, publie chaque détection
+**avant d'en connaître l'issue** dans un registre infalsifiable ancré chez des tiers, puis
+mesure le résultat **frais déduits** — y compris pour les configurations qu'elle a écartées.
 
-Chaque détection est horodatée et publiée **avant** de connaître son issue, dans un journal
-public infalsifiable. Elle est ensuite résolue automatiquement. Au fil du temps se constitue une
-base de dizaines de milliers de configurations documentées et mesurées **frais déduits** —
-c'est le cœur du produit.
+L'utilisateur peut importer son propre relevé de courtier et se comparer à cette base.
 
-L'utilisateur peut importer son propre journal de trades et se comparer à cette base.
-
-### Ce qui n'existe nulle part aujourd'hui
-
-| Ce que font les autres | Ce que fait cette application |
-|---|---|
-| Un backtest fabriqué a posteriori | Un journal **prospectif** : publié avant l'issue, ancré publiquement, non modifiable |
-| Un taux de réussite brut | Une **espérance en R, nette de tous frais** |
-| Seulement les configurations retenues | Les configurations **écartées aussi**, comme groupe témoin |
-| Du contenu pédagogique déconnecté des chiffres | **La méthode enseignée est exactement celle qui est mesurée** |
-| « 90 % de réussite » | « Données insuffisantes : 37 occurrences, 100 nécessaires » |
-
-### La phrase qui résume le positionnement
+### La proposition en une phrase
 
 > Nous ne vous disons pas quoi acheter. Nous vous disons ce que cette configuration a
 > réellement donné les 1 240 fois précédentes, frais compris — y compris quand le résultat
 > nous dessert.
 
----
+### Ce que fait ce produit et que personne ne fait
 
-## 2. Proposition de valeur et avantages concurrentiels
-
-**Objectif produit :** devenir la référence mondiale sur une seule question —
-*« cette configuration chartiste, ça donne quoi réellement ? »*
-
-| Avantage | Copiable en combien de temps ? |
+| L'existant | Ce produit |
 |---|---|
-| **L'historique prospectif ancré publiquement** | **Jamais rattrapable.** Un backtest se refait en une nuit ; deux ans de détections publiées à l'avance et horodatées par un tiers ne se fabriquent pas rétroactivement. Sa valeur augmente chaque jour, sans effort |
-| **Le groupe témoin** (configurations écartées, conservées et mesurées) | Impossible pour qui ne l'a pas fait dès le départ. Sans lui, aucun concurrent ne peut prouver que son filtrage sert à quelque chose |
-| **L'écart comportemental** (journal de l'utilisateur × base) | 12-18 mois, et seulement après avoir accumulé la base. Crée un coût de sortie |
-| Le moteur de détection | **3 mois — et il existe déjà chez un concurrent (§3). Aucune valeur défensive.** Ne jamais bâtir l'argumentaire dessus |
+| Un historique fabriqué après coup | Un registre **prospectif**, publié avant l'issue, horodaté par des tiers indépendants |
+| Un taux de réussite brut | Une **espérance en R, nette de tous frais** — spread, glissement et portage |
+| Seulement les configurations retenues | **Les configurations écartées aussi**, comme groupe témoin publié |
+| Un contenu pédagogique déconnecté des chiffres | **La méthode enseignée est exactement celle qui est mesurée** |
+| « 92 % de réussite » | « Données insuffisantes : 37 occurrences, 100 nécessaires » |
 
-### Principe de conception fondamental : publier des **comparaisons**, jamais des absolus
+## 2. Les quinze décisions arrêtées
 
-*C'est la décision qui rend le produit robuste au seul risque qu'il ne contrôle pas :
-l'absence d'avantage exploitable sur le marché.*
+*Un développeur qui ne lirait que ce tableau saurait déjà à quoi il a affaire.*
 
-Un produit qui vend « cette figure gagne » s'effondre si l'espérance mesurée est nulle.
-Un produit qui vend « cette figure gagne **0,14 R de plus que celle-là**, et **0,23 R de plus
-en séance de Londres qu'en séance asiatique** » garde toute sa valeur, **même si les deux
-espérances sont négatives**.
+| # | Décision | Motif |
+|---|---|---|
+| 1 | **Publier avant de savoir**, avec ancrage horaire chez trois tiers indépendants | Seule preuve qu'un concurrent ne peut pas fabriquer rétroactivement |
+| 2 | **Conserver et publier les configurations écartées** | Sans groupe témoin, la valeur du filtrage est indémontrable |
+| 3 | **Publier des comparaisons, jamais un chiffre seul** | Rend le produit robuste à l'absence d'avantage de marché — l'issue la plus probable |
+| 4 | **Espérance nette en R** en indicateur principal, jamais le taux de réussite | 70 % de réussite à 0,3 R perd de l'argent ; 40 % à 2 R en gagne |
+| 5 | **Aucune personnalisation** : jamais le capital ni le profil de risque | Seule chose qui évite le statut de conseiller en investissement financier |
+| 6 | **Aucun contenu produit par un utilisateur** : ni figure, ni trade, ni commentaire publié | Une seule source, donc une seule vérité. Aucune modération, aucune exposition aux tiers |
+| 7 | **Déterminisme absolu**, tout recalculable, versions figées | Le produit *est* ses chiffres. Un historique qui bouge détruit tout |
+| 8 | **Les prix sont en direct, la mesure ne l'est pas** | Une détection recalculée à chaque tick serait non reproductible, donc invérifiable |
+| 9 | **On apprend en H1, on annonce en H4** | La puissance statistique est en H1, la friction supportable en H4 |
+| 10 | **Détecter tout le catalogue, ne publier qu'au-delà de 100 occurrences** | Sans seuil, tester 500 combinaisons fabrique une vingtaine de faux avantages |
+| 11 | **Le score de confluence est déterministe et versionné**, son seuil fixé par les données | Une confluence non chiffrée réintroduit la subjectivité au cœur du système |
+| 12 | **L'analyse comportementale est le produit payant**, la base de figures est l'acquisition | Elle ne dépend d'aucun avantage de marché et croît avec les utilisateurs |
+| 13 | **Deux accès seulement : individuel et groupe**, le groupe s'administrant lui-même | Sert tous les publics sans ajouter de produit ni d'heure de support |
+| 14 | **Aucune rémunération d'un courtier indexée sur le volume négocié** | Celui qui facture les coûts ne peut pas payer celui qui les mesure |
+| 15 | **Publier les mauvais chiffres tels quels**, règle écrite avant tout revenu | Seule protection contre la tentation de les trafiquer |
 
-| Ce qu'on ne vend pas | Ce qu'on vend |
-|---|---|
-| « Le double creux est rentable » | « Le double creux fait 0,12 R de mieux que le triangle, mesuré sur 2 400 cas » |
-| « Tradez cette configuration » | « En H1 les frais consomment 15 % du mouvement, contre 2 % en journalier » |
-| « 62 % de réussite » | « L'entrée sur retour bat l'entrée sur cassure de 0,09 R » |
+## 3. Position concurrentielle
 
-Deux raisons, la seconde étant technique :
-
-1. **L'information relative reste actionnable même quand l'avantage absolu est nul.** Savoir
-   où l'on perd le moins a de la valeur pour quelqu'un qui trade de toute façon.
-2. **Les comparaisons sont statistiquement bien plus robustes.** Les biais communs aux deux
-   termes — qualité de la source de prix, modèle de frais, choix de l'horizon — s'annulent en
-   grande partie dans une différence, alors qu'ils faussent entièrement une valeur absolue.
-
-**Conséquence sur l'interface : tout chiffre publié est accompagné de son terme de comparaison.
-Aucune statistique n'est affichée seule.**
-
-### L'honnêteté comme barrière à l'entrée
-
-Le marché des outils forex vit de promesses invérifiables. Un produit dont le mécanisme central
-est *« nous publions nos échecs »* est inimitable par les acteurs installés : basculer vers la
-transparence détruirait les chiffres qu'ils affichent déjà.
-
-**Cible assumée : non pas celui qui cherche des signaux, mais celui qui s'est déjà fait avoir
-par des signaux.** Segment réel, atteignable uniquement en organique — ce qui tombe bien,
-puisque la publicité payante est de toute façon fermée (§19).
-
----
-
-## 3. Analyse concurrentielle
-
-*Pourquoi ça compte : un cahier des charges qui revendique l'unicité sans nommer ses
-concurrents n'est pas sérieux.*
+*Un cahier des charges qui revendique l'unicité sans nommer ses concurrents n'est pas sérieux.*
 
 | Acteur | Ce qu'il fait | Ce qu'il ne fait pas |
 |---|---|---|
-| **Autochartist** — le concurrent réel | Reconnaissance automatique de figures, niveaux clés, indice de qualité, statistiques historiques. Distribué en marque blanche par de nombreux courtiers | Pas de journal prospectif public et infalsifiable, pas de groupe témoin publié, pas de résultats nets de swap et slippage, pas de croisement avec le journal de l'utilisateur, pas de mode contrainte. C'est un produit **B2B vendu aux courtiers**, sans réputation propre auprès du public |
-| TradingView | Graphiques, screener, quelques détections, communauté immense | Aucune statistique d'issue mesurée et publiée |
-| Bulkowski (*Encyclopedia of Chart Patterns*) | Statistiques de référence sur 60+ figures | Un livre. Actions américaines, rétrospectif, sans frais, figé, non interrogeable |
+| **Autochartist** — le concurrent réel | Reconnaissance automatique de figures, indice de qualité, statistiques historiques. Distribué en marque blanche par de nombreux courtiers | Aucun registre prospectif public et ancré, aucun groupe témoin, aucun résultat net de portage, aucun croisement avec le journal de l'utilisateur, aucun mode contrainte. Produit **vendu aux courtiers**, sans réputation propre auprès du public |
+| TradingView | Graphiques, screener, communauté immense | Aucune statistique d'issue mesurée et publiée |
+| Bulkowski, *Encyclopedia of Chart Patterns* | Statistiques de référence sur plus de 60 figures | Un livre. Actions américaines, rétrospectif, sans frais, figé, non interrogeable |
 | Tradezella, Edgewonk, TraderVue | Journaux de trading et statistiques personnelles | Aucune base de référence à laquelle se comparer |
-| Vendeurs de signaux (Telegram, Discord) | Signaux, promesses | Aucune vérifiabilité. C'est le repoussoir, et le vivier de clients |
+| Vendeurs de signaux | Des promesses | Aucune vérifiabilité. C'est le repoussoir — et le vivier de clients |
 
-### Conclusion à retenir
+### Ce qu'il faut en conclure
 
 **Le moteur de détection n'est pas un avantage : Autochartist prouve qu'il est une marchandise
-banale.** La différenciation est entièrement dans ce que personne ne fait :
+banale, copiable en trois mois.** La différenciation tient entièrement à cinq choses que
+personne ne fait : registre prospectif ancré, groupe témoin publié, résultats nets de tous
+frais, croisement avec le journal personnel, mode contrainte.
 
-1. journal prospectif public et ancré chez un tiers ;
-2. groupe témoin publié ;
-3. résultats nets de **tous** les frais, swap compris ;
-4. croisement avec le journal personnel ;
-5. mode contrainte de perte maximale.
-
-Le positionnement n'est donc pas « le premier à détecter des figures », mais
+Le positionnement n'est donc pas *« le premier à détecter des figures »* mais
 **« le seul dont les chiffres sont vérifiables par un tiers »**.
 
----
+### L'honnêteté comme barrière à l'entrée
 
-## 4. Utilisateurs et segments
+Le marché des outils de trading vit de promesses invérifiables. Un produit dont le mécanisme
+central est *« nous publions nos échecs »* est inimitable par les acteurs installés : basculer
+vers la transparence détruirait les chiffres qu'ils affichent déjà.
 
-Le produit s'adresse à **tous les publics**. Il n'existe pourtant que **deux types d'accès**,
-et c'est ce qui le rend tenable pour une équipe d'une personne.
+**Cible assumée : non pas celui qui cherche des signaux, mais celui qui s'est déjà fait avoir
+par des signaux.** Segment réel, atteignable uniquement en organique — ce qui tombe bien,
+puisque la publicité payante est de toute façon fermée (§22).
 
-## Deux accès, pas six produits
+## 4. Publics et accès
+
+Le produit s'adresse à tous les publics. Il n'existe pourtant que **deux accès**, et c'est ce
+qui le rend tenable pour une équipe d'une personne.
 
 | Accès | Pour qui | Administration | Facturation |
 |---|---|---|---|
-| **Individuel** | Une personne | Elle-même | Carte, mensuel |
-| **Groupe** | Société de financement, courtier, école, équipe, média | **Un administrateur désigné chez le client, qui crée et retire ses membres lui-même** | Une facture unique, au siège |
+| **Individuel** | Une personne | Elle-même | Mensuelle, par carte |
+| **Groupe** | Société de financement, courtier, école, équipe, média | **Un administrateur désigné chez le client, qui crée et retire ses membres lui-même** | Facture unique, au siège |
 
-> **Règle : le groupe s'administre seul.** L'administrateur du client invite, retire et
-> réattribue ses sièges sans aucune intervention de notre part. C'est ce qui permet de servir
-> mille utilisateurs professionnels sans ajouter une heure de support.
-
-### La règle qui rend le multi-public tenable
-
-> **Un seul moteur, une seule base, les mêmes chiffres.
-> Les accès diffèrent par l'administration et la facturation — jamais par le contenu.**
+> **Un seul moteur, une seule base, les mêmes chiffres. Les accès diffèrent par
+> l'administration et la facturation — jamais par le contenu.**
 
 Un membre d'un groupe voit exactement ce que voit un abonné individuel. Aucune version
-professionnelle, aucun chiffre réservé, aucune marque blanche en v1. Sans cette règle, chaque
-public ajouterait un produit à construire et à maintenir, et les chiffres finiraient par
-diverger d'un client à l'autre — ce qui détruirait l'argument central.
+professionnelle, aucun chiffre réservé, aucune marque blanche. Sans cette règle, chaque public
+ajouterait un produit à maintenir et les chiffres finiraient par diverger d'un client à
+l'autre — ce qui détruirait l'argument central.
 
 ### Qui achète quoi
 
 | Public | Accès | Ce qu'il cherche |
 |---|---|---|
-| **Candidat en société de financement** | Individuel | Le mode contrainte : quelles configurations survivent à une limite de perte quotidienne. Il paie déjà 100 à 600 $ par tentative |
+| **Candidat en société de financement** | Individuel | Le mode contrainte : quelles configurations survivent à une limite de perte quotidienne. Il paie déjà 100 à 600 $ par tentative, souvent plusieurs fois |
 | **Trader particulier** | Individuel | Des chiffres vérifiables, et le miroir de son propre comportement |
-| **Société de financement** | Groupe | Équiper ses candidats, et **l'intelligence du risque** : ce qui fait sauter les comptes. Elle tarife ses examens sur des modèles de risque |
-| **Courtier** | Groupe | Offrir l'outil à ses clients — le modèle économique d'Autochartist, déjà prouvé |
-| **École, formateur** | Groupe | Équiper une promotion, et citer les statistiques dans ses supports |
+| **Société de financement** | Groupe | Équiper ses candidats, et savoir ce qui fait sauter les comptes |
+| **Courtier** | Groupe | Offrir l'outil à ses clients — le modèle d'Autochartist, déjà prouvé |
+| **École, formateur** | Groupe | Équiper une promotion, citer les statistiques dans ses supports |
 | **Média, chercheur, régulateur** | Groupe gratuit | Le jeu de données ouvert, avec citation |
 
-**Explicitement hors cible :** la gestion d'actifs institutionnelle. Elle ne fonde pas ses
-décisions sur l'analyse chartiste. Construire pour elle serait du travail perdu.
+**Hors cible, explicitement :** la gestion d'actifs institutionnelle. Elle ne fonde pas ses
+décisions sur l'analyse chartiste ; construire pour elle serait du travail perdu.
 
-### Ce qu'un accès groupe vaut
+**Cadrage :** 70 à 85 % des comptes de détail perdent de l'argent sur les CFD — mention
+réglementaire obligatoire des courtiers. Ce public paie peu et part vite. Il reste
+indispensable : il alimente la base comportementale et la crédibilité publique. Il ne portera
+pas le chiffre d'affaires seul. **Un groupe à 2 000 €/mois vaut environ 80 abonnés individuels,
+avec une attrition dix fois moindre et un seul interlocuteur.**
 
-**Un seul groupe à 2 000 €/mois équivaut à environ 80 abonnés individuels — avec une attrition
-dix fois moindre et un seul interlocuteur.** C'est pourquoi l'accès groupe remonte au lot 13 :
-ce n'est pas un complément de fin de parcours, c'est le seul levier qui change l'ordre de
-grandeur du projet.
+## 5. Les modules
 
-**Cadrage sur les particuliers :** 70 à 85 % des comptes de détail perdent de l'argent sur les
-CFD (mention réglementaire obligatoire des courtiers). Ce public paie peu et part vite. Il
-reste indispensable — c'est lui qui alimente la base comportementale et la crédibilité
-publique — mais il ne portera pas le chiffre d'affaires seul.
-
-### Ce que l'accès groupe coûte à construire
-
-Presque rien, et c'est délibéré : **une table d'organisations, des sièges, un rôle
-d'administrateur, une facturation au siège.** Pas de marque blanche, pas de portail dédié,
-pas de rapport sur mesure en v1.
-
-**Règle : aucun développement professionnel spéculatif.** Un rapport produit à la main pour un
-premier client vaut mieux qu'une plateforme construite pour des clients qui n'existent pas
-encore.
-
----
-
-## 5. Périmètre fonctionnel — les neuf modules
-
-### Module A — Ingestion et stockage des données
+### Module A — Ingestion et stockage
 
 *Pourquoi ça compte : si les données d'entrée sont fausses, tout le reste est faux.*
 
-- Source de vérité : bougies **M1**, agrégées en H1, H4 et journalier.
-- Spread réel reconstruit depuis les données tick, **variable selon l'heure**. À l'heure du
-  roulement quotidien il peut être plusieurs fois supérieur à la normale — personne ne modélise
-  ça, et cela fausse tous les résultats de nuit.
-- Convention d'heure de clôture journalière **documentée et figée** : une bougie qui clôture à
-  17 h New York ne donne pas les mêmes figures qu'à minuit UTC.
-- **Gestion du changement d'heure (été/hiver).** Les séances de Londres et New York se décalent
-  deux fois par an. Un critère de séance codé en heure UTC fixe devient faux deux fois par an :
-  les séances sont définies **par rapport à l'heure locale des places**, jamais en UTC constant.
-- Traitement des gaps du dimanche soir, qui peuvent traverser un niveau d'invalidation.
-- **Valeur du pip par paire** : 0,0001 en général, **0,01 sur les paires en yen**.
+- Source de vérité : bougies **M1**, agrégées en H1, H4 et journalier. Aucun agrégat n'est
+  jamais repris d'un fournisseur.
+- Spread réel reconstruit depuis les données tick, **variable selon l'heure** : au roulement
+  quotidien il est plusieurs fois supérieur à la normale. Personne ne modélise cela, et cela
+  fausse tous les résultats de nuit.
+- Clôture journalière figée à **17:00 America/New_York** — un fuseau, jamais un décalage fixe,
+  pour que le changement d'heure soit absorbé automatiquement.
+- Bougies H4 alignées sur l'ouverture de la journée : une bougie ne chevauche jamais deux
+  journées.
+- Gaps du dimanche soir traités : ils peuvent traverser un niveau d'invalidation.
+- Valeur du pip : 0,0001, sauf paires en yen, 0,01.
 
-### Module B — Moteur de détection et score de confluence
+### Module B — Détection et score
 
 Chaque stratégie est un module indépendant respectant un contrat unique :
 
@@ -232,231 +181,262 @@ détecter(bougies_jusqu_à_t, paramètres)
 
 - **Interdiction absolue d'accéder à une bougie postérieure à `t`.**
 - Détection **déterministe** : pivots par ZigZag à seuil ATR, puis règles géométriques.
-- **Aucun apprentissage automatique en version 1** : non reproductible, non explicable,
-  surapprentissage garanti sur des données de marché.
-- Le score de confluence (§9) est calculé et **stocké avec son détail critère par critère**,
-  pour que tout rejet soit explicable et toute statistique reconstructible.
-- Catalogue complet des figures visé (§7), ajouté par lots.
+- **Aucun apprentissage automatique.** Non reproductible, non explicable, surapprentissage
+  garanti sur des données de marché.
+- Le score (§10) est stocké **avec son détail critère par critère** : sans lui, aucun rejet
+  n'est explicable et aucune statistique n'est reconstructible.
 
-### Module C — Journal prospectif public
+### Module C — Registre prospectif public
 
 *À la fois la preuve du produit et son principal outil d'acquisition.*
 
-- Chaque détection est écrite dans un journal public : horodatage, paire, unité de temps,
-  figure, méthode, niveaux, score et son détail, source de prix, version de la stratégie,
-  statut annoncée / écartée avec motif.
-- **Chaînage par arbre de Merkle**, et **ancrage horaire chez trois tiers indépendants** (§15).
+- Chaque détection est écrite dans un registre public : horodatage, paire, unité de temps,
+  figure, méthode, niveaux, score détaillé, source de prix, version de stratégie, statut
+  annoncée ou écartée avec son motif.
+- **Arbre de Merkle par cycle horaire, chaîne des racines, ancrage chez trois tiers** (§17).
 - L'issue est calculée automatiquement, sans intervention humaine.
 - **Accessible gratuitement, sans compte.** C'est ce qui remplace la publicité interdite.
-- Le backtest est affiché **à côté** du journal prospectif, jamais à sa place : l'écart entre
+- Le backtest est affiché **à côté** du registre prospectif, jamais à sa place : l'écart entre
   les deux est lui-même une information de qualité.
 
 ### Module D — Base de résultats interrogeable
 
-Le cœur vendable. Filtres : paire, unité de temps, figure, méthode, tranche de score, heure,
-régime de marché, période, statut annoncée/écartée.
+Filtres : paire, unité de temps, figure, méthode, tranche de score, heure, régime de marché,
+période, statut annoncée ou écartée.
 
 > Épaule-tête-épaule inversée, H4, entrée sur retour — 1 240 occurrences depuis 2015.
-> Objectif atteint : 46 %. Invalidation : 41 %. Sans issue : 13 %.
+> Objectif atteint 46 % · invalidation 41 % · sans issue 13 %.
 > **Espérance nette : +0,08 R.** Intervalle de confiance à 95 % : [+0,01 ; +0,15].
+> Groupe témoin sur la même figure : −0,21 R.
 
-### Module E — Journal de trading de l'utilisateur
+### Module E — Journal de l'utilisateur
 
-- Import par rapport MT4/MT5 ou fichier CSV. **Aucune connexion au courtier n'est nécessaire.**
+- Import d'un rapport MT4/MT5 ou d'un fichier CSV. **Aucune connexion au compte de courtage** :
+  ni identifiants, ni jeton, ni lecture d'API.
 - Statistiques personnelles : espérance, série de pertes maximale, résultats par paire, par
   heure, par jour.
-- **L'écart comportemental** — la fonction qui justifie l'abonnement :
+- **L'écart comportemental**, fonction qui justifie l'abonnement :
 
 > Vous avez pris 34 trades en range. La base donne 48 % net sur cette configuration.
 > Vous êtes à 31 %. Écart principal : vous entrez en moyenne 2 bougies trop tôt.
 
 Analyse rétrospective sur les données de l'utilisateur : aucune exposition réglementaire.
 
-### Module F — Mode contrainte (*prop firm*)
+### Module F — Mode contrainte
 
-Rejoue la base sous contrainte de perte maximale journalière et globale.
+Rejoue la base sous contrainte de perte maximale journalière et globale. Répond à la seule
+question du segment principal : *« cette approche survit-elle à une limite de perte de 5 % par
+jour ? »*
 
-Répond à la seule question de ce public : *« cette approche survit-elle à une limite de perte de
-5 % par jour ? »* Une stratégie à espérance positive peut échouer dans 90 % des cas sous
-contrainte de drawdown — **aucun outil existant ne le dit.**
+Une stratégie à espérance positive peut échouer dans neuf cas sur dix sous contrainte de perte
+maximale. **Aucun outil existant ne le dit.**
 
-Entrées : objectif de gain, perte journalière maximale, perte totale maximale, durée, risque par
-trade. Sortie : **probabilité de réussite de la contrainte**, jamais un rendement.
+Sortie : **probabilité de réussite de la contrainte**, jamais un rendement.
 
 ### Module G — Notifications
 
-*Pourquoi ça compte : une annonce qui arrive six heures trop tard ne vaut rien. C'est un module
-à part entière, pas un détail d'implémentation.*
+*Une annonce qui arrive six heures trop tard ne vaut rien. C'est un module à part entière.*
 
-| Canal | Priorité |
+| Canal | Version |
 |---|---|
-| Courriel | v1 |
-| Notification navigateur (web push) | v1 |
-| Telegram | v2 — canal dominant du public visé |
-| Webhook | v2 — pour les utilisateurs outillés |
+| Courriel, notification navigateur | 1 |
+| Telegram, webhook | 2 |
 
-- **Exigence de latence : annonce envoyée en moins de 60 secondes après la clôture de la bougie
-  déclenchante.** Au-delà, l'annonce est envoyée **marquée comme retardée**, et le retard est
-  enregistré dans le journal public.
-- Filtres utilisateur : paires, unités de temps, figures, score minimum.
-- **Aucun filtre fondé sur le capital ou le profil de risque** (§19).
-- Toute annonce envoyée est identique pour tous les abonnés au même filtre — jamais
-  individualisée.
+- **Latence exigée : moins de 60 secondes après la clôture de la bougie déclenchante.** Au-delà,
+  l'annonce part **marquée comme retardée**, et le retard est inscrit au registre public.
+- Filtres : paires, unités de temps, figures, score minimum.
+- **Aucun filtre fondé sur le capital ou le profil de risque** (§22). Toute annonce est
+  identique pour tous les abonnés au même filtre.
 
 ### Module H — Contenu pédagogique
 
-- Une fiche par figure : définition, construction, méthodes de trading, erreurs classiques,
-  **et les statistiques mesurées de cette figure**, mises à jour automatiquement.
-- Une fiche par critère du score, expliquant ce qu'il mesure et sa contribution mesurée.
-- Glossaire intégré, accessible depuis n'importe quel terme de l'interface.
+Une fiche par figure : définition, construction, méthodes de trading, erreurs classiques, **et
+les statistiques mesurées de cette figure, mises à jour automatiquement**. Une fiche par critère
+du score. Glossaire accessible depuis n'importe quel terme de l'interface.
 
-Ce module est aussi le moteur d'acquisition naturelle (§22).
+Ce module est aussi le moteur d'acquisition naturelle (§25).
 
-### Module I — supprimé
-
-*Les commentaires horodatés envisagés en version 1 de ce document sont retirés,
-en application du principe ci-dessous.*
-
----
-
-## 5 bis. Principe : aucun contenu produit par un utilisateur
+## 6. Aucun contenu produit par un utilisateur
 
 > **Personne n'écrit, ne saisit ni ne publie de figure, de trade ou de commentaire dans
 > l'application. Tout ce qui est affiché est produit par le moteur.**
 
-Ce qui est donc exclu, définitivement :
-
-| Exclu | Pourquoi |
+| Exclu définitivement | Pourquoi |
 |---|---|
 | Chat, forum, commentaires | Machine à opinions, aimant à escroqueries, modération impossible, conseil personnalisé public |
-| Figures annotées ou soumises par des utilisateurs | Détruirait la reproductibilité : deux personnes ne dessineraient pas la même figure |
+| Figures annotées ou soumises par des utilisateurs | Détruirait la reproductibilité : deux personnes ne dessinent pas la même figure |
 | Signaux ou pronostics publiés par des tiers | Ferait de la plateforme un distributeur de recommandations de tiers |
 | Notation ou vote sur les détections | Une opinion agrégée n'est pas une mesure |
 
-### Ce qui n'est pas concerné : l'import du journal personnel
+### L'exception qui n'en est pas une : le journal personnel
 
-L'import d'un relevé de courtier (module E) **n'est pas** un contenu produit par un
-utilisateur, au sens de ce principe :
-
-| Contenu d'utilisateur | Import de journal personnel |
+| Contenu d'utilisateur | Import du journal (module E) |
 |---|---|
 | Publié, visible par d'autres | **Strictement privé**, visible du seul déposant |
 | Influence ce que les autres voient | N'influence **aucun** chiffre public |
-| Alimente la base de mesure | Alimente uniquement l'analyse de son propre auteur |
 | Rédigé, donc opinion | Exporté d'un relevé, donc fait |
 
-C'est une donnée que l'utilisateur confie pour obtenir son propre miroir, pas une contribution
-au produit. **Le supprimer supprimerait le module qui fait payer** (§25.2). La distinction est
-maintenue.
+L'utilisateur ne contribue pas au produit : il confie une donnée pour obtenir **son propre
+miroir**. Le principe est respecté.
 
-### Bénéfice de ce principe
+### Bénéfice
 
 Une seule source, donc une seule vérité. Aucune modération, aucune obligation d'hébergeur,
-aucune exposition aux publications de tiers, et un argument simple :
+aucune exposition aux publications de tiers. Et un argument simple :
 
 > Rien de ce que vous lisez ici n'a été écrit par quelqu'un qui avait un intérêt à ce que vous
 > le lisiez.
 
----
+**La communauté d'échange existe, mais à l'extérieur** : un espace Discord ou Telegram
+clairement séparé du produit, modéré par un bénévole. Coût de développement nul, aucune
+exposition sur la plateforme.
 
-## 6. Parcours et écrans
-
-*Pourquoi ça compte : sans liste d'écrans, un cahier des charges n'est pas constructible.*
+## 7. Écrans et parcours
 
 | # | Écran | Accès | Contenu |
 |---|---|---|---|
-| 1 | **Journal en direct** | Public, sans compte | Flux des détections annoncées, statut, issue. La page d'accueil |
-| 2 | Détail d'une détection | Public | Graphique, niveaux, méthode appliquée, score détaillé critère par critère, issue |
-| 3 | **Détections écartées** | Public | Le groupe témoin, avec motif de rejet et statistique associée |
-| 4 | Fiche figure | Public | Pédagogie + statistiques à jour. **Cible du référencement naturel (§22)** |
-| 5 | Preuve et intégrité | Public | Explication de la chaîne d'empreintes, ancrages publics, procédure de vérification par un tiers |
+| 1 | **Registre en direct** | Public | Flux des détections annoncées, statut, issue. C'est la page d'accueil |
+| 2 | Détail d'une détection | Public | Graphique, niveaux, méthode appliquée, score détaillé, issue |
+| 3 | **Détections écartées** | Public | Le groupe témoin, motif de rejet et statistique associée |
+| 4 | Fiche figure | Public | Pédagogie et statistiques à jour. **Cible du référencement naturel** |
+| 5 | Preuve et intégrité | Public | Chaîne d'empreintes, ancrages, procédure de vérification, incidents |
 | 6 | Explorateur de statistiques | Abonné | Base interrogeable, tous filtres, export |
 | 7 | Mes alertes | Abonné | Filtres de notification |
-| 8 | Mon journal | Abonné | Import, statistiques personnelles |
+| 8 | Mon journal | Abonné | Import et statistiques personnelles |
 | 9 | **Écart comportemental** | Abonné | La comparaison journal × base |
-| 10 | Mode contrainte | Abonné supérieur | Simulateur prop firm |
-| 11 | Compte et abonnement | Abonné | Facturation Stripe |
-| 12 | Mentions légales, CGU, avertissement de risque | Public | §19 |
+| 10 | Mode contrainte | Abonné supérieur | Simulateur |
+| 11 | Compte, abonnement, administration de groupe | Abonné | Facturation, sièges |
+| 12 | Mentions légales, CGU, avertissement de risque | Public | §22 |
 
-**Interface, ergonomie, design et temps réel : voir `SPEC-DESIGN.md`.**
+**Parcours d'entrée type :** un visiteur arrive par une fiche figure depuis un moteur de
+recherche → il voit une statistique réelle → il ouvre le registre en direct → il constate que
+les échecs sont publiés aussi → il crée un compte pour les alertes → il importe son journal →
+il découvre son écart comportemental → il s'abonne.
 
-**Parcours d'entrée type :** un visiteur arrive par une fiche figure via un moteur de recherche →
-il voit une statistique réelle → il clique sur le journal en direct → il constate que les échecs
-sont publiés aussi → il crée un compte pour les alertes → il importe son journal → il découvre
-son écart comportemental → il s'abonne.
+**Tout est gratuit jusqu'à l'écart comportemental.** Le mur payant est placé là parce que c'est
+la seule fonction dont la valeur est personnelle et immédiate.
 
-**Chaque étape de ce parcours est gratuite jusqu'à l'écart comportemental.** C'est là qu'est
-placé le mur payant, parce que c'est la seule fonction dont la valeur est personnelle et immédiate.
+**Interface, ergonomie, système visuel et périmètre du temps réel : `SPEC-DESIGN.md`.**
 
 ---
 ---
 
-# PARTIE II — MÉTHODE
+# PARTIE II — LA MÉTHODE
 
-## 7. Catalogue des figures et unité de mesure
+## 8. Les six principes de mesure
 
-### On détecte tout, on ne publie pas tout
+*Le produit **est** ses chiffres. Ces six principes ne sont pas des bonnes pratiques : ce sont
+les conditions sans lesquelles le produit n'a aucune valeur.*
 
-**Détection : catalogue complet.** La littérature documente plus de 60 figures (Bulkowski).
-Les détecter toutes coûte peu une fois l'interface du module B en place, et la couverture est un
-argument commercial réel.
+### 8.1 Publier avant de savoir
 
-**Publication : sous condition.** C'est là que se joue toute la crédibilité.
+Une détection est écrite, horodatée et ancrée **avant** que son issue soit connue. Un backtest
+se refait en une nuit ; deux ans de registre prospectif ne se fabriquent pas rétroactivement.
+C'est le seul actif dont la valeur augmente mécaniquement avec le temps.
 
-> *Le danger n'est pas le temps de développement, c'est le **test multiple**. 60 figures × 3
-> unités de temps × 3 méthodes = plus de 500 combinaisons testées. Au seuil habituel de 5 %,
-> on attend mécaniquement **une vingtaine de résultats « significatifs » dus au seul hasard**.
-> Un classement « les figures qui marchent le mieux » établi sans correction ne classe pas des
-> figures : il classe du bruit. C'est le mécanisme qui a produit toutes les fausses stratégies
-> de l'histoire du trading.*
+### 8.2 Conserver ce qu'on écarte
 
-### Seuils de publication
+**Sans groupe témoin, on ne peut pas prouver que le filtrage sert à quelque chose.**
+« Les configurations annoncées donnent +0,19 R » n'a aucun sens sans point de comparaison.
+Et filtrer puis mesurer sur le résultat filtré ne mesure pas le marché : cela mesure
+l'optimisme du filtre. C'est le mécanisme exact qui fabrique les faux avantages.
+
+C'est aussi le meilleur argument commercial du produit, et il n'existe qu'à cette condition :
+
+> Annoncées : **+0,19 R** (n = 1 840) · Écartées : **−0,21 R** (n = 14 600).
+> Voilà pourquoi nous les écartons.
+
+### 8.3 Ne jamais publier un chiffre seul
+
+Un produit qui vend « cette figure gagne » s'effondre si l'espérance mesurée est nulle. Un
+produit qui vend « cette figure fait **0,14 R de mieux** que celle-là » garde toute sa valeur
+**même si les deux espérances sont négatives**.
+
+Deux raisons, la seconde étant technique :
+
+1. L'information relative reste actionnable pour qui tradera de toute façon.
+2. **Les comparaisons sont bien plus robustes** : les biais communs aux deux termes — source de
+   prix, modèle de frais, choix d'horizon — s'annulent dans une différence, alors qu'ils
+   faussent entièrement une valeur absolue.
+
+**Conséquence d'interface : tout chiffre publié est accompagné de son terme de comparaison.**
+
+### 8.4 Mesurer en R, net de tout
+
+Un taux de réussite de **70 % avec un objectif à 0,3 R perd de l'argent**. Un taux de **40 % à
+2 R en gagne**. L'espérance nette en R est l'indicateur mis en avant partout ; le taux de
+réussite est affiché en second, jamais en titre. Les trois issues — objectif, invalidation,
+sans issue — sont toujours montrées ensemble : n'afficher que gagnants et perdants ment par
+omission.
+
+### 8.5 Tout doit être recalculable par un tiers
+
+Sérialisation canonique, versions de stratégie figées, aucune constante en dur, recalcul complet
+nocturne comparé aux empreintes stockées. **Un historique qui bouge silencieusement détruit
+tout.** Une divergence bloque la compilation et impose une nouvelle version.
+
+### 8.6 Se protéger de soi-même
+
+Toute stratégie est **déclarée et publiée avant d'être observée**. Interdiction absolue de
+publier le résultat d'une stratégie testée en privé puis retenue parce qu'elle donnait un bon
+chiffre. C'est la protection contre le test multiple — et contre la tentation.
+
+## 9. Catalogue et unité de mesure
+
+### 9.1 Détecter tout, publier sous condition
+
+**Détection : catalogue complet.** La littérature documente plus de 60 figures. Les détecter
+toutes coûte peu une fois l'interface du module B en place, et la couverture est un argument
+commercial réel.
+
+**Publication : sous condition d'occurrences.** C'est là que se joue toute la crédibilité.
+
+> Le danger n'est pas le temps de développement, c'est le **test multiple**. 60 figures × 3
+> unités de temps × 3 méthodes dépassent 500 combinaisons. Au seuil habituel de 5 %, on attend
+> mécaniquement **une vingtaine de résultats « significatifs » dus au seul hasard**. Un
+> classement des figures établi sans correction ne classe pas des figures : il classe du bruit.
 
 | Occurrences | Précision (IC 95 %) | Affichage |
 |---|---|---|
-| < 100 | pire que ± 10 points | **« Données insuffisantes — 37 occurrences observées, 100 nécessaires »** |
-| 100 - 399 | ± 5 à 10 points | Résultat **provisoire**, intervalle affiché |
+| < 100 | pire que ± 10 points | **« Données insuffisantes — 37 occurrences, 100 nécessaires »** |
+| 100 à 399 | ± 5 à 10 points | Résultat **provisoire**, intervalle affiché |
 | ≥ 400 | ± 5 points | Résultat **établi** |
 | ≥ 2 400 | ± 2 points | Permet d'affirmer un avantage de 2 points |
 
-Classement des figures avec **correction de tests multiples** (Benjamini-Hochberg),
-jamais le taux de réussite brut.
+Classement des figures avec **correction de tests multiples** (Benjamini-Hochberg), jamais le
+taux brut. Afficher « données insuffisantes » n'est pas une faiblesse : c'est la fonctionnalité
+que personne n'offre, et la preuve visible que les autres chiffres sont sérieux.
 
-Afficher « données insuffisantes » n'est pas un aveu de faiblesse : c'est la fonctionnalité que
-personne n'offre, et la preuve visible que les autres chiffres sont sérieux.
+### 9.2 Gagner en puissance : plus de paires, jamais moins d'exigence
 
-### Pour gagner en puissance : ajouter des paires, jamais assouplir les seuils
+Passer de 7 paires majeures à environ **28 paires** — mineures et croisées — multiplie les
+occurrences par 4, **sans une ligne de code supplémentaire** : même moteur, même source, même
+format. C'est la seule extension autorisée quand une figure reste sous le seuil.
 
-Passer de 7 paires majeures à environ 28 paires (mineures et croisées) multiplie les occurrences
-par 4, **sans une ligne de code supplémentaire** : même moteur, même source, même format.
-C'est la seule extension autorisée quand une figure reste sous le seuil.
+### 9.3 L'unité mesurée est **figure × méthode**
 
-### L'unité statistique est **figure × méthode**, jamais la figure seule
-
-| Méthode (exemple : épaule-tête-épaule) | Entrée |
+| Méthode, exemple de l'épaule-tête-épaule | Entrée |
 |---|---|
 | A | Cassure de l'encolure |
 | B | Retour sur l'encolure après cassure |
 | C | Cassure confirmée par la clôture suivante |
 | D | Cassure avec sortie partielle à 1 R et suivi du reste |
 
-Ces méthodes donnent des résultats différents. Les confondre invalide tout.
-La méthode D montre que **les modes de sortie** (sortie partielle, stop suiveur) sont des
-méthodes à part entière, mesurées séparément — et non des variantes informelles.
+Ces méthodes donnent des résultats différents ; les confondre invalide tout. La méthode D montre
+que **les modes de sortie sont des méthodes à part entière**, mesurées séparément.
 
-**Règle d'architecture essentielle : la méthode affichée à l'utilisateur (« voici comment se
-trade ce type de figure ») et la règle qui décide gagnant/perdant sont le même objet en base.**
-Une définition unique, deux usages : pédagogie et mesure. Sans cette unité, le contenu explique
-une chose et les statistiques en mesurent une autre — défaut de tout le contenu pédagogique
-existant et de tous les backtests publiés.
+> **Règle d'architecture : la méthode affichée à l'utilisateur — « voici comment se trade ce
+> type de figure » — et la règle qui décide gagnant ou perdant sont le même objet en base.**
 
-Sortie la plus vendable du produit : *« sur l'épaule-tête-épaule, l'entrée sur retour a une
-espérance nette supérieure à l'entrée sur cassure »* — question débattue depuis trente ans,
-jamais chiffrée sur données prospectives.
+Une définition, deux usages : pédagogie et mesure. Sans cette unité, le contenu explique une
+chose et les statistiques en mesurent une autre — c'est le défaut de tout le contenu
+pédagogique existant et de tous les backtests publiés.
 
----
+Cela produit aussi la sortie la plus vendable : *« sur l'épaule-tête-épaule, l'entrée sur retour
+a une espérance nette supérieure à l'entrée sur cassure »* — question débattue depuis trente
+ans, jamais chiffrée sur données prospectives.
 
-## 8. Détection, annonce et conservation sont trois choses distinctes
+## 10. Détection, annonce, conservation : trois choses distinctes
 
 *Point le plus important du document. S'y tromper vide le produit de sa valeur.*
 
@@ -465,27 +445,12 @@ jamais chiffrée sur données prospectives.
 | **Détection** | **Toutes** les figures, même celles ne remplissant aucun critère |
 | **Conservation** | **Toutes**, définitivement, avec leur score et le détail de leur évaluation |
 | **Annonce** | **Uniquement** celles franchissant les filtres durs et le seuil de score |
-| **Statistiques mises en avant** | Celles des configurations **annoncées** |
-| **Statistiques de contrôle** | Celles des configurations **écartées** — conservées et publiées à part |
+| Statistiques mises en avant | Celles des configurations **annoncées** |
+| Statistiques de contrôle | Celles des configurations **écartées**, publiées à part |
 
-### Pourquoi les configurations écartées doivent être gardées
-
-1. **Sans elles, on ne peut pas prouver que le filtre sert à quelque chose.** « Les
-   configurations annoncées donnent +0,19 R » n'a aucun sens sans point de comparaison :
-   +0,19 R **par rapport à quoi ?**
-2. **C'est le meilleur argument commercial du produit**, et il n'existe que si on garde le
-   groupe témoin :
-
-   > Configurations annoncées : **+0,19 R** (n = 1 840).
-   > Configurations écartées : **−0,21 R** (n = 14 600).
-   > Voilà pourquoi nous les écartons.
-
-3. **Filtrer puis mesurer sur le résultat filtré ne mesure pas le marché, ça mesure l'optimisme
-   du filtre.** C'est le mécanisme exact qui fabrique les faux avantages.
-4. **Les critères évolueront.** Sans historique complet, impossible de réévaluer le passé —
-   donc impossible de savoir si un ajustement améliore ou dégrade.
-
-**Règle : rien n'est jamais supprimé. Ce qui est écarté est marqué comme écarté, avec son motif.**
+**Rien n'est jamais supprimé.** Ce qui est écarté est marqué comme écarté, avec son motif.
+Une erreur se corrige par une **détection d'annulation ajoutée à la suite**, jamais par une
+suppression : le registre est un livre comptable, pas un document révisable.
 
 ### Ce que voit l'utilisateur
 
@@ -493,23 +458,20 @@ Il reçoit **uniquement les configurations annoncées**. Mais il peut ouvrir une
 écartée et lire le motif :
 
 > Épaule-tête-épaule détectée — **non annoncée**. Score 4/13.
-> Manquant : tendance journalière opposée (−2), objectif à 2,3 ATR jugé irréaliste sur
-> l'horizon (−2), aucune zone de support à proximité.
+> Manquant : tendance journalière opposée (−2), objectif à 2,3 ATR jugé irréaliste (−2),
+> aucune zone de support à proximité.
 > *Sur les 3 210 configurations écartées pour tendance opposée, l'espérance nette est de −0,26 R.*
 
 Fonction pédagogique unique sur le marché, et démonstration permanente que le filtrage a une
 valeur mesurée.
 
----
+## 11. Le score de confluence
 
-## 9. Le score de confluence
+### 11.1 Pourquoi un score, et non une liste de conditions
 
-### 9.1 Pourquoi un score, et pas une liste de conditions
-
-Exiger que **tous** les critères soient remplis ne produit presque aucune configuration.
-Onze critères remplis chacun 70 % du temps donnent 0,70¹¹ ≈ **2 % de survie** : sur dix ans et
-sept paires, une poignée d'annonces par an — trop peu pour trader, trop peu pour prouver quoi
-que ce soit.
+Exiger que **tous** les critères soient remplis ne produit presque aucune configuration : onze
+critères remplis chacun 70 % du temps donnent 0,70¹¹ ≈ **2 % de survie**. Sur dix ans et sept
+paires, une poignée d'annonces par an — trop peu pour trader, trop peu pour prouver.
 
 **Structure retenue : trois filtres durs, puis un seuil de score.**
 
@@ -519,33 +481,34 @@ que ce soit.
 | Annonce économique à fort impact dans l'horizon du trade |
 | Objectif irréaliste : `\|objectif − entrée\| > 1,5 × ATR × √horizon` |
 
-Puis **score ≥ 7 sur 13** pour l'annonce — seuil initial, **à recalibrer sur les données une
-fois 400 occurrences accumulées**, jamais fixé définitivement à l'avance. Le seuil est versionné :
-le modifier crée une nouvelle version de stratégie (§15), et l'ancien historique reste intact.
+Puis **score ≥ 70 % du maximum atteignable** pour l'annonce — seuil initial, **recalibré sur les
+données une fois 400 occurrences accumulées**, jamais fixé définitivement à l'avance. Le seuil
+est versionné : le modifier crée une nouvelle version de stratégie, et l'historique reste intact.
 
-### 9.2 Les critères
+### 11.2 Les critères
 
 | # | Critère | Points | Calcul |
 |---|---|---|---|
-| 1 | **Tendance supérieure alignée** | +2 aligné D1 / +1 aligné H4 / **−2 à contre-tendance D1** | Pente MM200 + structure de sommets et creux |
-| 2 | **Zone support/résistance** | +2 | À moins de 0,25 ATR d'un niveau touché ≥ 3 fois |
-| 3 | **Niveau rond** | +1 | Prix en 00 ou 50. Effet documenté : les ordres stop se concentrent sur ces niveaux (Osler, 2003) |
-| 4 | **Niveaux de référence** | +1 | Plus haut/bas de la veille ou de la semaine, ouverture journalière |
+| 1 | **Tendance supérieure alignée** | +2 D1 · +1 H4 · **opposée → filtre dur** | Pente EMA200 rapportée à l'ATR, plus structure de sommets et creux |
+| 2 | **Zone support/résistance** | +2 | À moins de 0,25 ATR d'un niveau touché au moins 3 fois |
+| 3 | **Niveau rond** | +1 | Prix en 00 ou 50. Effet documenté : les ordres stop s'y concentrent (Osler, 2003) |
+| 4 | **Niveaux de référence** | +1 | Plus haut ou bas de la veille ou de la semaine, ouverture du jour |
 | 5 | **Divergence de momentum** | +1 | RSI divergent au sommet ou creux de la figure |
-| 6 | **Objectif atteignable** | +1 / **filtre dur si irréaliste** | `D = \|objectif − entrée\| / (ATR × √horizon)`. `D ≤ 0,75` → +1 ; `D > 1,50` → rejet. *Le déplacement d'un actif sur N bougies évolue en √N, non en N* |
-| 7 | **Séance horaire** | +1 chevauchement Londres–New York / **−1 séance asiatique ou heure de roulement** | Heure locale des places, changement d'heure pris en compte |
-| 8 | **Calendrier économique** | **−2** | Annonce à fort impact prévue dans l'horizon |
-| 9 | **Extension du mouvement** | **−1** | Prix à plus de 2 ATR de la MM20 : mouvement déjà mûr |
+| 6 | **Objectif atteignable** | +1 · **filtre dur si irréaliste** | `D = \|objectif − entrée\| / (ATR × √horizon)` ; `D ≤ 0,75` → +1 |
+| 7 | **Séance** | +1 chevauchement Londres–New York · **−1** séance asiatique ou heure de roulement | Heure locale des places, changement d'heure pris en compte |
+| 8 | **Calendrier économique** | filtre dur | Annonce à fort impact dans l'horizon |
+| 9 | **Extension du mouvement** | **−1** | Prix à plus de 2 ATR de l'EMA20 : mouvement déjà mûr |
 | 10 | **Qualité géométrique** | 0 à +2 | Symétrie, durée, nombre de touches, propreté des bornes |
 | 11 | **Régime de marché** | +1 si cohérent | Continuation en tendance, retournement en range |
 
-L'application publie l'espérance nette **par tranche de score** :
+L'espérance nette est publiée **par tranche de score** :
 
 > Score 0-3 : −0,21 R · Score 4-6 : −0,04 R · Score 7+ : **+0,19 R** (n = 1 840)
 
-Si le score ne sépare pas les résultats, **on le publie aussi**.
+**Si le score ne sépare pas les résultats, on le publie aussi.** C'est une information de
+premier ordre : elle dirait que la confluence est une croyance confortable sans effet mesurable.
 
-### 9.3 Redondance : une famille d'information, un seul représentant
+### 11.3 Redondance : une famille d'information, un seul représentant
 
 *C'est le point où un score mal conçu compte plusieurs fois la même information et fabrique une
 fausse certitude.*
@@ -557,130 +520,81 @@ fausse certitude.*
 | RSI et MACD mesurent tous deux le momentum | Deux votes fortement corrélés |
 | Largeur des bandes de Bollinger et ATR | Deux mesures de la même volatilité |
 
-| Famille | Représentant retenu | Rôle |
+| Famille | Représentant | Rôle |
 |---|---|---|
-| **Structure de prix** | Sommets et creux, cassures, bornes | **Autorité maximale** |
-| **Tendance supérieure** | Pente MM200 + structure journalière | Fort |
-| **Localisation** | S/R, niveaux ronds, références | Fort |
+| **Structure de prix** | Sommets, creux, cassures, bornes | **Autorité maximale** |
+| **Tendance supérieure** | Pente EMA200 et structure journalière | Fort |
+| **Localisation** | Support/résistance, niveaux ronds, références | Fort |
 | **Momentum** | **RSI seul.** MACD écarté | Faible |
-| **Volatilité** | **ATR seul.** Bollinger écarté | **Jamais directionnel** — faisabilité et dimensionnement uniquement |
+| **Volatilité** | **ATR seul.** Bollinger écarté | **Jamais directionnel** — faisabilité et dimensionnement |
 | **Volume, VWAP** | **Écartés** | Aucun |
 
-**Volume et VWAP : écartés.** Il n'existe pas de volume réel sur le change au comptant, marché
-de gré à gré. Ce qu'affichent les plateformes est un **volume de ticks**, propre à chaque
-courtier. L'utiliser rendrait les résultats non reproductibles par un tiers — ce qui contredit
-frontalement le principe fondateur du produit. Affichables en information secondaire, jamais
-dans le score.
+**Volume et VWAP sont écartés.** Il n'existe pas de volume réel sur le change au comptant,
+marché de gré à gré. Ce qu'affichent les plateformes est un **volume de ticks**, propre à chaque
+courtier : l'utiliser rendrait les résultats non reproductibles par un tiers, ce qui contredit
+frontalement le principe fondateur du produit.
 
-### 9.4 Hiérarchie d'autorité en cas de désaccord réel
+### 11.4 Hiérarchie en cas de désaccord réel
 
-> **1. Structure de prix → 2. Tendance de l'unité de temps supérieure → 3. Zones →
-> 4. Momentum → 5. Volatilité**
+> **Structure de prix → Tendance de l'unité supérieure → Zones → Momentum → Volatilité**
 
-**Un indicateur ne prime jamais sur la structure.** Les indicateurs sont dérivés du prix ;
-le prix n'est pas dérivé des indicateurs. Un RSI en surachat contre une structure haussière
-intacte retire des points — il ne renverse rien.
+**Un indicateur ne prime jamais sur la structure.** Les indicateurs sont dérivés du prix ; le
+prix n'est pas dérivé des indicateurs. Un RSI en surachat contre une structure haussière intacte
+retire des points — il ne renverse rien.
 
-### 9.5 On enregistre les contradictions, on ne les arbitre pas
+### 11.5 On enregistre les contradictions, on ne les arbitre pas
 
 **Interdit : écrire une règle faite à la main pour trancher une contradiction.** C'est ainsi
 qu'on injecte une opinion invérifiable au cœur du système.
 
-1. Les éléments contradictoires s'annulent naturellement dans le score. Une configuration
-   contradictoire tombe à un score bas et n'est pas annoncée — sans règle spéciale.
-2. La contradiction est **étiquetée** comme un état nommé et conservée
-   (ex. *figure haussière + tendance journalière baissière + RSI en surachat*).
-3. Au bout de 400 occurrences, **les données tranchent**.
+Les éléments contradictoires s'annulent naturellement dans le score : la configuration tombe bas
+et n'est pas annoncée, sans règle spéciale. La contradiction est **étiquetée** comme un état
+nommé et conservée. Au bout de 400 occurrences, **les données tranchent**.
 
-### 9.6 Asymétrie : une contradiction retire plus qu'une confirmation n'ajoute
+### 11.6 Asymétrie : une contradiction retire plus qu'une confirmation n'ajoute
 
 Une figure haussière contient **déjà** l'information « haussier ». Un indicateur qui confirme
-répète ce que la figure dit. Un élément qui contredit apporte une information **absente** de la
-figure : c'est là qu'est la surprise, donc la valeur.
+répète ce que la figure dit ; un élément qui contredit apporte une information **absente** de la
+figure — c'est là qu'est la surprise, donc la valeur.
 
-| Type | Amplitude |
-|---|---|
-| Contradiction | **−2**, ou filtre dur |
-| Confirmation | +1 à +2 |
+Contradictions : **−2 ou filtre dur**. Confirmations : +1 à +2. Un score symétrique
+surévaluerait les configurations les plus évidentes, donc les plus déjà intégrées dans le prix.
 
-Un score symétrique surévaluerait les configurations les plus évidentes — donc les plus déjà
-intégrées dans le prix.
+### 11.7 Neutraliser les critères contenus dans la définition d'une figure
 
-### 9.7 Neutraliser les critères contenus dans la définition de la figure
-
-| Figure | Critère automatiquement satisfait | Problème |
+| Figure | Critère satisfait d'office | Problème |
 |---|---|---|
 | Drapeau, fanion | « Aligné avec la tendance » | La figure n'existe que dans une tendance : +2 gratuits |
 | Double creux, ETE inversée | « Sur un support » | Le creux **est** le support |
 | Cassure de range | « Niveau de référence » | La borne **est** le niveau |
 
 **Sans correction, les figures de continuation obtiendraient mécaniquement de meilleurs scores
-que les figures de retournement — pour une raison purement comptable.** Le classement
-« quelles figures marchent le mieux », sortie principale du produit, serait faux.
+que les figures de retournement, pour une raison purement comptable.** Le classement des
+figures — sortie principale du produit — serait faux.
 
-**Règle : chaque figure déclare les critères que sa construction satisfait d'office. Ils sont
+**Règle : chaque figure déclare les critères que sa construction satisfait d'office ; ils sont
 neutralisés, et le score s'exprime en pourcentage du maximum atteignable par cette figure**,
 jamais en points bruts, afin que deux figures restent comparables.
 
-### 9.8 Admission d'un nouvel indicateur
+### 11.8 Admission d'un indicateur
 
-**Aucun indicateur n'entre dans le score sans que sa contribution marginale ait été mesurée**
-sur un échantillon réservé, non utilisé pour le réglage. S'il n'améliore pas la séparation
-d'espérance entre tranches de score, il est retiré.
+**Aucun indicateur n'entre dans le score sans que sa contribution marginale ait été mesurée** sur
+un échantillon réservé. S'il n'améliore pas la séparation d'espérance entre tranches de score, il
+est retiré.
 
-Les pondérations initiales sont fixées à la main et **transparentes**. Elles ne seront
-recalibrées **qu'une seule fois**, sur données suffisantes, par une méthode documentée et sur
-échantillon réservé, puis figées dans une nouvelle version. Un score recalibré en continu sur
-ses propres résultats est surajusté : excellent en historique, sans valeur en réel.
+Les pondérations initiales sont fixées à la main et transparentes. Elles ne seront recalibrées
+**qu'une seule fois**, par une méthode documentée, sur échantillon réservé, puis figées dans une
+nouvelle version. Un score recalibré en continu sur ses propres résultats est surajusté :
+excellent en historique, sans valeur en réel.
 
-### 9.9 Exemple complet de calcul
-
-**Double creux, EUR/USD, H4 — annoncée**
-
-| Critère | Évaluation | Points |
-|---|---|---|
-| Qualité géométrique | 2 touches nettes, symétrie correcte | +2 |
-| Tendance journalière | Haussière, alignée | +2 |
-| Zone support | *Neutralisé — contenu dans la définition* | — |
-| Niveau rond | Creux sur 1,0800 | +1 |
-| Divergence de momentum | RSI divergent au second creux | +1 |
-| Faisabilité de l'objectif | D = 0,62 | +1 |
-| Séance | Cassure pendant le chevauchement Londres–New York | +1 |
-| Calendrier économique | Aucune annonce à fort impact | 0 |
-| Extension | Prix à 0,8 ATR de la MM20 | 0 |
-| Régime | Retournement en régime de range : cohérent | +1 |
-| **Total** | | **9 / 11 atteignables = 82 %** |
-
-→ **Annoncée.** Confluence élevée : ratio minimum 1,5 R.
-
-**Même figure, contexte différent :** tendance journalière opposée + objectif à 2,4 ATR →
-**deux filtres durs → écartée**, motif affiché avec la statistique du groupe témoin.
-
-### 9.10 La confluence renforce-t-elle vraiment ? C'est mesurable
-
-L'hypothèse « un indicateur qui va dans le sens de la figure renforce le trade » est
-**universellement admise et rarement vérifiée**. Trois résultats possibles, **les trois
-publiables** :
-
-1. La confirmation améliore l'espérance → le score est validé, argument commercial majeur.
-2. Elle ne change rien → la confluence serait une croyance sans effet mesurable.
-3. Elle la dégrade → les configurations les plus évidentes sont les plus déjà intégrées dans le
-   prix. Contre-intuitif, et le plus vendable des trois.
-
-Aucun outil existant ne permet de répondre sur données prospectives. C'est la contribution la
-plus originale du produit.
-
----
-
-## 10. Ratio, risque et dimensionnement
-
-### 10.1 Règles retenues
+## 12. Ratio, risque, dimensionnement
 
 | Contexte | Ratio minimum | Risque par trade |
 |---|---|---|
-| Score de confluence **élevé** | **1,5 R** | 1 % (2 % en variante, §10.2) |
+| Score de confluence **élevé** | **1,5 R** | 1 % |
 | Score **normal** | **2 R** | 1 % |
-| **Mode contrainte prop firm** | selon score | **0,5 %** |
+| **Mode contrainte** | selon score | **0,5 %** |
+| Variante affichable, avec sa perte simulée | — | 2 % |
 
 | Ratio | Taux de réussite requis pour l'équilibre |
 |---|---|
@@ -688,12 +602,12 @@ plus originale du produit.
 | 2 R | **33,3 %** |
 | 3 R | 25,0 % |
 
-**Effet mécanique à assumer :** exiger 2 R fait baisser le taux de réussite affiché, car
-beaucoup de figures n'ont pas 2 R d'espace avant l'obstacle structurel suivant. Le filtre de
-ratio est lui-même un choix de stratégie, avec un coût mesurable — l'application le mesure,
-elle ne le suppose pas.
+**Effet mécanique à assumer :** exiger 2 R fait baisser le taux de réussite affiché, car beaucoup
+de figures n'ont pas 2 R d'espace avant l'obstacle structurel suivant. Le filtre de ratio est
+lui-même un choix de stratégie, avec un coût mesurable — l'application le mesure, elle ne le
+suppose pas.
 
-### 10.2 Pourquoi 2 % de risque est écarté comme règle par défaut
+### 12.1 Pourquoi 2 % de risque n'est pas la règle par défaut
 
 *Calcul, pas opinion.* À 40 % de réussite, la plus longue série de pertes attendue sur 200
 trades est d'environ **10 pertes consécutives**. Résultat normal, pas accident.
@@ -704,198 +618,160 @@ trades est d'environ **10 pertes consécutives**. Résultat normal, pas accident
 | 1 % | − 9,6 % |
 | 0,5 % | − 4,9 % |
 
-Les sociétés de financement imposent typiquement **10 % de perte maximale totale et 5 % par
-jour**. À 2 %, le compte saute avant la fin d'une série normale. À 1 %, il la frôle.
+Les sociétés de financement imposent typiquement 10 % de perte maximale totale et 5 % par jour.
+**À 2 %, le compte saute avant la fin d'une série normale.** À 1 %, il la frôle.
 
-Le 2 % reste **affichable en variante**, avec la perte simulée correspondante affichée à côté.
-
-### 10.3 Limite juridique absolue sur le dimensionnement
+### 12.2 Limite juridique sur le dimensionnement
 
 | Autorisé | Interdit |
 |---|---|
 | « Cette configuration se traite habituellement avec un risque de 1 % du capital » | « Vous avez 5 000 € : risquez 50 €, soit 0,11 lot » |
-| Calculatrice exécutée **dans le navigateur**, valeur jamais transmise ni stockée | Capital enregistré dans le compte utilisateur |
+| Calculatrice exécutée **dans le navigateur**, valeur jamais transmise ni stockée | Capital enregistré dans le compte |
 | Statistiques identiques pour tous | Configurations filtrées ou classées selon le capital |
 
-**Ligne rouge : dès que le capital de l'utilisateur influence *ce qui lui est montré*,
-l'application devient une activité réglementée (§19).**
+> **Ligne rouge : dès que le capital de l'utilisateur influence *ce qui lui est montré*,
+> l'application devient une activité réglementée.**
 
----
-
-## 11. Règles de mesure du résultat
-
-*Sans définition écrite et immuable, le pourcentage publié ne vaut rien et devient manipulable —
-et il le sera, le jour où l'abonnement en dépendra.*
+## 13. Règles de mesure du résultat
 
 | Élément | Règle |
 |---|---|
 | Entrée | Au prix défini par la méthode déclarée. Jamais un prix intra-bougie arbitraire |
 | Invalidation | Niveau structurel de la figure |
-| **Objectif — double mesure** | **(a)** projection mesurée de la figure **et (b)** objectif fixe à 1,5 R / 2 R, calculés et publiés séparément |
-| Horizon | Par défaut 20 bougies. Ni objectif ni invalidation atteints → **sans issue**, comptabilisé à part |
-| Départage | **Résolution en données M1** pour savoir lequel de l'objectif ou de l'invalidation a été touché en premier dans une bougie |
-| Frais déduits | Spread horaire réel **+ slippage sur invalidation + swap de portage** |
-| Indicateur principal | **Espérance en R, nette de frais** |
+| **Objectif — double mesure** | **(a)** projection de la figure **et (b)** objectif fixe à 1,5 R et 2 R, calculés et publiés séparément |
+| Horizon | 20 bougies par défaut. Ni objectif ni invalidation atteints → **sans issue**, comptabilisé à part |
+| Départage | **Résolution en données M1.** Si les deux sont touchés dans la même bougie M1 : **compté comme invalidation**, toujours |
+| Frais déduits | Spread horaire réel **+ glissement sur invalidation + portage** |
+| Indicateur principal | **Espérance en R, nette** |
 
-La double mesure de l'objectif répond à « quelle stratégie marche le mieux » : elle dit si la
-projection de la figure bat le ratio fixe, ou l'inverse.
+La règle conservatrice sur les bougies ambiguës est non négociable : choisir l'inverse, ou tirer
+au sort, gonflerait les taux de réussite d'une manière invérifiable. C'est le mécanisme qui rend
+flatteurs la quasi-totalité des backtests amateurs. **La fréquence de ce cas est enregistrée et
+publiée** : c'est la mesure de l'incertitude résiduelle du système.
 
-**Le swap de portage est l'oubli le plus fréquent.** Sur une figure journalière tenue 20 jours,
-les intérêts peuvent dépasser plusieurs fois le coût du spread. Tout résultat qui l'ignore est
-faux sur les unités de temps longues.
+**Le portage est l'oubli le plus fréquent.** Sur une figure journalière tenue 20 jours, il peut
+dépasser plusieurs fois le coût du spread. Tout résultat qui l'ignore est faux sur les unités de
+temps longues.
 
-### Décision d'affichage
-
-Un taux de réussite de **70 % avec un objectif à 0,3 R perd de l'argent**. Un taux de **40 % à
-2 R en gagne**. **L'espérance nette en R est mise en avant partout.** Le taux de réussite est
-affiché en second, jamais en titre. Les trois issues (objectif, invalidation, sans issue) sont
-toujours affichées ensemble : n'afficher que gagnants/perdants ment par omission.
-
----
-
-## 12. Trois protections à afficher, que les autres outils omettent
+### Trois protections à afficher, que les autres outils omettent
 
 1. **Série de pertes maximale attendue.** À 40 % de réussite, environ 10 pertes consécutives sur
-   200 trades sont normales. Les utilisateurs abandonnent pendant ces séries en croyant que la
-   méthode est cassée. L'afficher **avant** est la fonction de rétention la plus efficace du
-   produit.
-2. **Corrélation entre paires.** EUR/USD et GBP/USD évoluent ensemble à ~0,85. Deux positions de
-   2 % dans le même sens ne font pas 4 % de risque mais **environ 3,8 % concentrés sur un seul
-   pari**. L'application signale les détections corrélées simultanées.
-3. **Écart entre résultat brut et net**, toujours côte à côte. C'est ce qui montre à
-   l'utilisateur ce que les frais lui coûtent réellement.
+   200 trades sont normales. Les utilisateurs abandonnent pendant ces séries en croyant la
+   méthode cassée. L'afficher **avant** est la fonction de rétention la plus efficace du produit.
+2. **Corrélation entre paires.** EUR/USD et GBP/USD évoluent ensemble à environ 0,85. Deux
+   positions de 2 % dans le même sens ne font pas 4 % de risque mais **environ 3,8 % concentrés
+   sur un seul pari**. Les détections corrélées simultanées sont signalées.
+3. **Écart brut / net**, toujours côte à côte : c'est ce qui montre à l'utilisateur ce que les
+   frais lui coûtent réellement.
 
-## 12 bis. Coût de friction par unité de temps — et où se trouve réellement l'avantage
+## 14. Coût de friction et unités de temps
 
-*Section décisive : elle détermine ce qu'on annonce, et elle explique pourquoi le produit peut
-valoir quelque chose sur un marché sans avantage exploitable.*
+*Section décisive : elle détermine ce qu'on annonce.*
 
-### 12 bis.1 Le coût, exprimé dans la seule unité qui compte : le R
+Un coût en pips ne dit rien. Rapporté à la distance d'invalidation, il donne **le seuil que
+l'avantage brut doit franchir pour rapporter quoi que ce soit**.
 
-Un coût en pips ne dit rien. Rapporté à la distance d'invalidation, il dit tout : c'est
-**le seuil que l'avantage brut doit dépasser pour que le trade rapporte quelque chose**.
+Ordres de grandeur EUR/USD, à confirmer sur données réelles : spread aller-retour et glissement
+≈ 1,4 pip, distance d'invalidation ≈ 1 ATR, horizon 20 bougies.
 
-Hypothèses (ordres de grandeur EUR/USD, à confirmer sur données réelles) : spread aller-retour
-et glissement ≈ 1,4 pip ; distance d'invalidation ≈ 1 ATR ; horizon 20 bougies.
-
-| Unité de temps | ATR typique | Coût de spread | Portage sur l'horizon | **Coût total** |
+| Unité | ATR typique | Coût de spread | Portage sur l'horizon | **Coût total** |
 |---|---|---|---|---|
 | **H1** | ~12 pips | 0,117 R | ~20 h, négligeable | **~0,12 R** |
-| **H4** | ~35 pips | 0,040 R | ~3,3 jours, 1 à 3 pips | **0,07 à 0,13 R** |
-| **D1** | ~75 pips | 0,019 R | **~28 jours calendaires, 6 à 20 pips** | **0,10 à 0,29 R** |
+| **H4** | ~35 pips | 0,040 R | ~3,3 jours | **0,07 à 0,13 R** |
+| **D1** | ~75 pips | 0,019 R | **~28 jours, 6 à 20 pips** | **0,10 à 0,29 R** |
 
-### 12 bis.2 Le résultat contre-intuitif : le journalier n'est pas le meilleur
+### Le résultat contre-intuitif
 
-Le raisonnement habituel — « plus l'unité de temps est longue, moins les frais pèsent » — est
-**faux dès qu'on intègre le portage**. Le spread se dilue quand l'amplitude augmente, mais le
-swap s'accumule avec la durée de détention. Les deux effets vont en sens inverse.
+Le raisonnement habituel — « plus l'unité est longue, moins les frais pèsent » — est **faux dès
+qu'on intègre le portage**. Le spread se dilue quand l'amplitude augmente, mais le portage
+s'accumule avec la durée : les deux effets vont en sens inverse.
 
-> **Conclusion : le H4 est très probablement le meilleur compromis.**
-> Assez d'amplitude pour diluer le spread, assez court pour limiter le portage.
-> Le journalier n'est préférable que sur les paires dont le portage est favorable ou neutre —
-> ce qui dépend du sens de la position, et change avec les taux directeurs.
+> **Le H4 est très probablement le meilleur compromis.** Le journalier n'est préférable que sur
+> les paires dont le portage est favorable ou neutre — ce qui dépend du sens de la position et
+> change avec les taux directeurs.
 
-**C'est une hypothèse à mesurer, pas une certitude.** Elle est ici pour être vérifiée par le
-produit lui-même, et elle constitue à elle seule un résultat publiable que personne n'a chiffré.
+C'est **une hypothèse à mesurer**, et elle constitue à elle seule un résultat publiable que
+personne n'a chiffré.
 
-### 12 bis.3 Politique retenue pour le H1
+### Politique du H1
 
 | Usage | Décision |
 |---|---|
 | **Détection et mesure** | **Conservé.** Le H1 fournit 4 fois plus d'occurrences que le H4 et 24 fois plus que le journalier : c'est là qu'est la puissance statistique |
-| **Annonce** | **Désactivé par défaut**, activable par l'utilisateur avec l'avertissement de coût affiché |
-| Affichage | Coût de friction indiqué en R sur chaque statistique H1, à côté du résultat |
+| **Annonce** | **Désactivée par défaut**, activable avec l'avertissement de coût affiché |
+| Affichage | Coût de friction indiqué en R sur chaque statistique H1 |
 
-> **On apprend en H1, on trade en H4.**
-> Le H1 sert à découvrir quels critères et quelles figures comptent, parce que l'échantillon y
-> est grand. Le H4 sert à annoncer, parce que la friction y est supportable. Les deux usages
-> sont légitimes et ne demandent pas le même seuil d'exigence.
+> **On apprend en H1, on annonce en H4.**
 
-### 12 bis.4 Comment un avantage nul sur les majeures est contré — cinq leviers, classés
+### Où chercher l'avantage — cinq leviers, par ordre de fiabilité
 
-**Levier 1 — Réduire le coût, seul avantage certain.**
-Ce n'est pas un avantage de marché, c'est de l'arithmétique. Passer du H1 au H4 économise
-~0,08 R **par trade, de façon certaine**. Éviter la fenêtre de roulement, éviter les annonces
-macro, éviter les paires à portage défavorable sur les horizons longs : tout cela est acquis,
-pas probabiliste.
+**1. Réduire le coût — seul avantage certain.** Ce n'est pas un pari, c'est de l'arithmétique.
+Passer du H1 au H4 économise ~0,08 R par trade, de façon acquise. Éviter la fenêtre de
+roulement, les annonces macro, les portages défavorables : tout cela est gagné d'avance.
 
-> **Le gain le plus important accessible n'est pas de trouver une meilleure figure,
-> c'est de cesser de payer pour une moins bonne.** Et c'est exactement ce que le produit
-> mesure sans effort supplémentaire.
+> **Le gain le plus important accessible n'est pas de trouver une meilleure figure, c'est de
+> cesser de payer pour une moins bonne.** Et c'est ce que le produit mesure sans effort.
 
-**Levier 2 — Chercher l'avantage dans les critères, pas dans les figures.**
-La littérature ne documente aucun avantage persistant pour les figures chartistes sur les
-majeures. Elle documente en revanche des effets de microstructure réels, parce qu'ils
-proviennent de flux véritables et non d'une erreur de prix arbitrable :
+**2. Chercher l'avantage dans les critères, pas dans les figures.** La littérature ne documente
+aucun avantage persistant pour les figures chartistes sur les majeures. Elle documente en
+revanche des effets de microstructure réels, parce qu'ils proviennent de flux véritables et non
+d'une erreur de prix arbitrable : concentration des ordres stop sur les niveaux ronds (critère 3),
+saisonnalité intrajournalière et flux de fixing (critère 7), persistance de tendance (critère 1).
 
-| Effet documenté | Critère du score correspondant |
-|---|---|
-| Concentration des ordres stop sur les niveaux ronds (Osler, 2003) | n° 3 |
-| Saisonnalité intrajournalière : ouverture de Londres, chevauchement Londres–New York | n° 7 |
-| Effets de fixing et de flux de couverture d'entreprise | n° 7 |
-| Persistance de tendance à l'échelle des devises | n° 1 |
+**Hypothèse de travail, publiée comme telle : si un avantage apparaît, il viendra du contexte,
+pas de la forme des figures.** Prédiction testable, et le produit est l'instrument qui permet de
+la trancher. Si elle se vérifie, elle renverse la hiérarchie habituelle de l'analyse technique.
 
-**Hypothèse de travail, à publier comme telle : si un avantage apparaît, il viendra des
-critères de contexte, pas de la forme des figures.** C'est une prédiction testable, et le
-produit est exactement l'instrument qui permet de la trancher. Si elle se vérifie, elle
-renverse la hiérarchie habituelle de l'analyse technique — et c'est un résultat que personne
-n'a publié sur données prospectives.
+**3. Étendre la mesure au crypto une fois le moteur éprouvé.** Marché nettement moins arbitré,
+plus retail, ouvert en continu, données gratuites, **et le même code sans une ligne à écrire**.
+Couverture la moins chère contre l'hypothèse « aucun avantage nulle part sur le change ». Le
+forex reste le produit ; le crypto est une extension de mesure.
 
-**Levier 3 — Étendre la mesure au crypto, une fois le moteur éprouvé.**
-Marché nettement moins arbitré, plus retail, ouvert en continu, données gratuites, **et le
-même code sans une ligne à écrire**. C'est la couverture la moins chère contre l'hypothèse
-« aucun avantage nulle part sur le change ». Le forex reste le produit ; le crypto est une
-extension de mesure, à ouvrir après le lot 12.
+**4. L'avantage comportemental, qui n'exige aucune inefficience de marché.** Faire passer un
+trader de −0,30 R à −0,05 R en corrigeant son dimensionnement et ses sorties prématurées est une
+amélioration considérable et vérifiable, obtenue sans que le marché ait à coopérer. C'est le
+seul avantage que le produit peut garantir.
 
-**Levier 4 — L'avantage comportemental, qui n'exige aucune inefficience de marché.**
-Faire passer un trader de −0,30 R à −0,05 R en corrigeant son dimensionnement et ses sorties
-prématurées est une amélioration **considérable et vérifiable**, obtenue sans que le marché
-ait à être inefficient. C'est le seul avantage que le produit peut garantir, et c'est pourquoi
-l'analyse comportementale est le produit payant (§25.2).
-
-**Levier 5 — Ce qu'il ne faut surtout pas faire.**
+**5. Les quatre impasses, interdites.**
 
 | Tentation | Pourquoi c'est une impasse |
 |---|---|
-| Ajouter de l'apprentissage automatique | Surapprentissage garanti, résultats non reproductibles |
-| Empiler des indicateurs | Redondance : on compte plusieurs fois la même information (§9.3) |
+| Apprentissage automatique | Surapprentissage garanti, résultats non reproductibles |
+| Empiler des indicateurs | Redondance : la même information comptée plusieurs fois |
 | Abaisser les seuils d'occurrences | Fabrique des avantages qui n'existent pas |
-| Étendre le catalogue en espérant qu'une figure marche | C'est la définition même du test multiple (§7) |
+| Étendre le catalogue en espérant qu'une figure marche | C'est la définition du test multiple |
 
-Ces quatre chemins produisent tous le même résultat : un système magnifique en historique,
-sans valeur en réel. **Ils sont interdits, et l'interdiction est le produit.**
+Ces quatre chemins produisent le même résultat : un système magnifique en historique, sans
+valeur en réel. **L'interdiction est le produit.**
 
 ---
 ---
 
-# PARTIE III — TECHNIQUE
+# PARTIE III — LA TECHNIQUE
 
-## 13. Données
+## 15. Données
 
 | Besoin | Source | Coût |
 |---|---|---|
-| Historique M1 et tick | Dukascopy (tick, gratuit) ou HistData (M1, gratuit) | 0 € |
-| Flux courant | API forex (Polygon, TraderMade, OANDA) | ~30-50 $/mois (estimation) |
-| Calendrier économique | API de calendrier économique | 0-30 $/mois (estimation) |
+| Historique M1 et tick | Dukascopy ou HistData | 0 € |
+| Flux courant | API forex (Polygon, TraderMade, OANDA) | ~30-50 $/mois |
+| Calendrier économique | API dédiée | 0-30 $/mois |
 
-**Piège spécifique au forex : il n'existe pas de prix consolidé.** Le change est de gré à gré,
+**Piège majeur : il n'existe pas de prix consolidé sur le change.** Le marché est de gré à gré,
 chaque courtier a son flux. Les chandeliers de l'utilisateur ne seront jamais strictement
-identiques aux tiens.
+identiques aux nôtres.
 
-→ **Obligation : publier la source de prix retenue, et ne jamais en changer sans l'annoncer et
+→ **Obligation : publier la source de prix retenue, et n'en jamais changer sans l'annoncer et
 sans reconstruire l'historique sous une nouvelle version.**
 
-**Politique de révision.** Les fournisseurs corrigent parfois des données passées. Règle : une
-bougie déjà utilisée pour une détection publiée **n'est jamais modifiée**. Une correction reçue
-est enregistrée à part et signalée sur les détections concernées, jamais appliquée
-rétroactivement.
+**Révisions.** Les fournisseurs corrigent parfois des données passées. Une bougie ayant servi à
+une détection publiée **n'est jamais modifiée** : la correction est enregistrée à part et
+signalée, jamais appliquée rétroactivement.
 
 **Complétude.** Toute bougie manquante est détectée et journalisée. Une détection calculée sur
-une période incomplète est marquée comme telle et **exclue des statistiques**, mais conservée.
+une période incomplète est marquée et **exclue des statistiques**, mais conservée.
 
----
-
-## 14. Architecture et modèle de données
+## 16. Architecture
 
 Pile choisie pour un développeur seul assisté par IA : peu de pièces, un seul langage, tout
 reproductible.
@@ -903,164 +779,168 @@ reproductible.
 | Couche | Choix | Motif |
 |---|---|---|
 | Traitement et API | Python (Polars, FastAPI) | Un seul langage, une seule surface de débogage |
-| Base de données | PostgreSQL + TimescaleDB | **Une seule base.** Ni Kafka, ni Redis, ni microservices |
+| Base, lots 1-2 | **SQLite** | Aucune installation. 1,1 million de bougies, c'est peu |
+| Base, à partir du lot 3 | PostgreSQL + TimescaleDB | Service public et multi-utilisateur. SQL standard, migration mécanique |
 | Graphiques | TradingView Lightweight Charts | Gratuit, libre, conçu pour cet usage. **Ne jamais coder son propre moteur graphique** |
 | Interface | SvelteKit ou Next.js | Indifférent. Ne pas y passer de temps en v1 |
-| Hébergement | Un VPS (15-40 €/mois), Docker Compose, Caddy | Kubernetes serait une erreur à ce stade |
-| Paiement | Stripe + Stripe Tax | Voir §20 et §25, lot 0 |
-| Courriel transactionnel | Service tiers (Postmark, Resend) | La délivrabilité des alertes est critique |
+| Hébergement | Un VPS, 15-40 €/mois, Docker Compose, Caddy | Kubernetes serait une erreur à ce stade |
+| Paiement | Stripe + Stripe Tax | Voir §23 et §28, lot 0 |
+| Courriel | Service tiers (Postmark, Resend) | La délivrabilité des alertes est critique |
 
-### Modèle de données
+### Tables principales
 
 | Table | Rôle |
 |---|---|
 | `instrument` | Paires, valeur du pip, horaires de séance |
 | `bougie` | M1 et agrégats, spread estimé, indicateur de complétude |
-| `version_strategie` | Version figée d'une figure × méthode : code, empreinte, paramètres, seuils, dates d'activation et de retrait |
-| `detection` | Horodatage, niveaux, score et **détail critère par critère**, statut annoncée/écartée + motif, version, empreinte précédente, empreinte propre |
-| `issue` | Atteint / invalidé / sans issue, excursions maximales favorable et défavorable, résultat brut et net, détail des frais |
-| `ancrage` | Racine de Merkle et tête de chaîne publiées à l'extérieur à chaque cycle horaire, avec les trois preuves (§15) |
+| `version_strategie` | Version figée d'une figure × méthode : code, empreinte, paramètres, seuils, dates |
+| `detection` | Horodatage, niveaux, score et **détail critère par critère**, statut et motif, version, empreintes |
+| `issue` | Atteint / invalidé / sans issue, excursions extrêmes, résultat brut et net, détail des frais |
+| `ancrage` | Racine de Merkle et tête de chaîne, avec les trois preuves externes |
+| `organisation`, `siege` | Comptes de groupe et administration déléguée |
 | `trade_utilisateur` | Journal importé, éventuellement rapproché d'une détection |
 | `notification` | Envois, canal, horodatage, latence mesurée |
 
----
+Schéma au niveau colonne : `SPEC-LOT2.md` §7.
 
-## 15. Fiabilité, intégrité et preuve
+## 17. Intégrité et preuve
 
-*Le produit **est** ses chiffres. Une seule erreur méthodologique invalide l'ensemble et détruit
-le seul avantage concurrentiel.*
+### 17.1 Le chaînage seul ne prouve rien
 
-### 15.1 Faille corrigée : le chaînage seul ne prouve rien
+Une chaîne d'empreintes détenue par celui qui la produit peut être entièrement recalculée après
+coup. **Ce qui vaut preuve, c'est l'ancrage chez un tiers.** D'où la question qui décide de tout :
 
-**Une chaîne d'empreintes détenue par celui qui la produit ne prouve rien** : il peut recalculer
-toute la chaîne après coup. Le chaînage seul, tel que spécifié en version 1 de ce document,
-était insuffisant.
+> **Combien de temps une détection existe-t-elle sans être ancrée ?**
+> Pendant cette fenêtre, elle peut disparaître sans laisser de trace.
 
-**Correction obligatoire — ancrage externe à chaque cycle de traitement, soit toutes les
-heures.** La règle de dimensionnement est établie dans `SPEC-LOT3.md` §2 : *la fenêtre
-d'ancrage doit être strictement inférieure au délai minimal de résolution d'une détection*,
-faute de quoi une détection pourrait naître, se résoudre et disparaître avant d'avoir été
-engagée publiquement. Un ancrage quotidien laissait une fenêtre de 24 heures : insuffisant.
+**Règle de dimensionnement : la fenêtre d'ancrage doit être strictement inférieure au délai
+minimal de résolution d'une détection.** Si aucune détection ne peut se résoudre avant d'avoir
+été ancrée, la suppression opportuniste devient impossible.
 
-Chaque cycle publie sa racine de Merkle et sa tête de chaîne sur **trois supports
-indépendants** : dépôt public versionné avec commit signé, horodatage RFC 3161 auprès d'une
-autorité tierce, et ancrage OpenTimestamps. Les cycles vides sont ancrés comme les autres.
+**Décision : ancrage à chaque cycle de traitement, soit toutes les heures.**
 
-À partir de là, réécrire l'histoire supposerait de réécrire aussi des enregistrements tiers
-horodatés. **C'est ce qui transforme une affirmation en preuve** — et c'est le fondement de tout
-l'argumentaire du produit. La procédure de vérification est publiée (écran 5, §6) pour que
-n'importe qui puisse la refaire.
+### 17.2 Structure et supports
 
-### 15.2 Les sept règles non négociables
+Arbre de Merkle par cycle, chaîne des racines. Un arbre permet de prouver l'inclusion d'**une
+seule** détection avec une poignée d'empreintes, au lieu d'exiger toute la base.
 
-1. **Point-in-time strict.** La fonction de détection ne reçoit qu'une tranche en lecture seule
-   des bougies jusqu'à `t`. Un test automatisé injecte des données futures et vérifie que le
-   résultat ne change pas. **Test le plus important du projet.**
-2. **Test de déterminisme en intégration continue.** Chaque nuit : recalcul complet de
-   l'historique, comparaison des empreintes. Toute divergence fait échouer la compilation et
-   impose une nouvelle version de stratégie. *Coût : une journée. Sans ça, l'historique se
-   réécrit silencieusement à chaque correction de bug.*
-3. **Ancrage externe horaire sur trois supports indépendants** (§15.1). Aucune suppression n'est possible : une erreur se corrige par une détection d'annulation ajoutée à la suite.
-4. **Versionnement des stratégies.** Une stratégie modifiée est une stratégie **nouvelle**.
-   L'ancienne conserve son historique. On ne supprime jamais, on remplace.
-5. **Résolution intra-bougie en M1** obligatoire. C'est l'erreur qui gonfle artificiellement
-   tous les taux de réussite amateurs.
-6. **Frais réels** : spread horaire modélisé depuis les données tick, slippage, swap.
-   Jamais de constante.
-7. **Pré-enregistrement.** Toute nouvelle stratégie est déclarée et publiée **avant** d'être
-   observée. Interdiction de publier le résultat d'une stratégie testée en privé puis retenue
-   parce qu'elle donnait un bon chiffre. Protection contre le test multiple — et contre soi-même.
+| Support | Ce qu'il apporte | Coût |
+|---|---|---|
+| Dépôt public versionné, commit signé | Lisible par tous, historique hébergé par un tiers | 0 € |
+| Horodatage RFC 3161 | Jeton signé par une autorité indépendante, opposable | ~0 € |
+| OpenTimestamps | Preuve d'antériorité ne dépendant d'aucune organisation | ≈ 0 € |
 
----
+**Les cycles vides sont ancrés comme les autres** : un cycle manquant serait indistinguable d'un
+cycle supprimé. **Un cycle non ancré laisse un trou visible définitivement**, jamais comblé
+rétroactivement — un ancrage produit après coup prouverait le contraire de ce qu'il prétend.
 
-## 16. Sécurité, sauvegarde et supervision
+### 17.3 Le vérificateur public
 
-*Pourquoi ça compte : le journal prospectif est l'unique actif de l'entreprise. Le perdre, ou
-le laisser se trouer sans s'en apercevoir, détruit la valeur accumulée — et elle n'est pas
-reconstituable.*
+Un programme autonome, publié et documenté, qui ne dépend d'aucun service de l'éditeur autre que
+le jeu de données public. Il recalcule les empreintes, les racines, la continuité de la chaîne,
+l'antériorité des ancrages — **et les issues elles-mêmes depuis les données de marché**. Il
+vérifie donc le contenu, pas seulement l'intégrité.
 
-### Sauvegarde
+Une page publique invite explicitement à contester, avec engagement écrit de publier toute
+divergence confirmée. Sur un marché saturé de résultats fabriqués, c'est l'argument le plus
+difficile à ignorer, et il coûte une page de documentation.
 
-- Sauvegarde quotidienne chiffrée, **hors du serveur de production**, chez un autre fournisseur.
-- **Test de restauration mensuel effectif.** Une sauvegarde jamais restaurée n'est pas une
-  sauvegarde.
-- Conservation : quotidienne 30 jours, mensuelle 12 mois, annuelle sans limite.
-- L'ancrage externe (§15.1) constitue une seconde ligne : même en cas de perte totale, les
-  empreintes publiées permettent de prouver ce qui avait été publié.
+Détail complet : `SPEC-LOT3.md`.
 
-### Supervision — ce qui doit déclencher une alerte immédiate
+## 18. Sécurité, sauvegarde, supervision
 
-| Événement | Pourquoi c'est grave |
+*Le registre prospectif est l'unique actif de l'entreprise. Le perdre, ou le laisser se trouer
+sans s'en apercevoir, détruit une valeur non reconstituable.*
+
+**Sauvegarde** — quotidienne, chiffrée, hors du serveur de production, chez un autre
+fournisseur. **Test de restauration mensuel effectif** : une sauvegarde jamais restaurée n'est
+pas une sauvegarde. Conservation : 30 jours, 12 mois, puis annuelle sans limite.
+
+**Alertes immédiates** — flux interrompu ou bougie manquante · traitement échoué ou en retard ·
+latence de notification supérieure à 60 s · ancrage non publié · échec du test de déterminisme.
+
+**Page publique d'intégrité** — complétude des données, ancrages publiés, incidents passés.
+Publier ses propres pannes est cohérent avec le positionnement, et personne ne le fait.
+
+**Sécurité** — authentification déléguée, second facteur proposé, secrets hors du dépôt,
+dépendances analysées, accès administrateur nominatif et journalisé, journal utilisateur chiffré
+au repos.
+
+## 19. Tests et qualité
+
+| Test | Contenu |
 |---|---|
-| Flux de données interrompu ou bougie manquante | Détections manquantes → journal incomplet → crédibilité perdue |
-| Traitement par lots échoué ou en retard | Idem |
-| Latence de notification > 60 s | Promesse produit non tenue (§5, module G) |
-| Ancrage horaire non publié | La preuve du cycle est absente, et le trou restera visible définitivement |
-| Échec du test de déterminisme | L'historique a peut-être bougé |
+| **Point-in-time** | Injection de données futures, y compris aberrantes : le résultat doit être identique. **Test le plus important du projet** |
+| **Contre-épreuve** | Un calcul volontairement fautif doit faire échouer le harnais. Un test qui ne peut pas échouer ne prouve rien |
+| **Déterminisme** | Recalcul complet nocturne, comparaison des empreintes. Divergence → compilation en échec |
+| **Jeu de référence annoté** | 60 fenêtres étiquetées à la main : le détecteur doit retrouver les valides et n'en inventer aucune |
+| **Résolution** | Cas construits où objectif et invalidation tombent dans la même bougie |
+| **Frais** | Un trade calculé à la main. Écart toléré : zéro |
+| **Changement d'heure** | Les critères de séance restent corrects de part et d'autre des quatre bascules annuelles |
+| **Complétude** | Une période trouée produit des détections marquées et exclues |
+| **Non-régression** | Toute correction ajoute le cas qui l'a révélée |
 
-**Page publique d'intégrité** (écran 5) : taux de complétude des données, ancrages publiés,
-incidents passés. Publier ses propres pannes est cohérent avec le positionnement — et
-personne ne le fait.
+Environnements séparés, migrations versionnées, déploiement automatisé et réversible.
 
-### Sécurité
+## 20. Performance et coûts
 
-- Authentification déléguée, mots de passe jamais stockés en clair, second facteur proposé.
-- Secrets hors du dépôt, chiffrés.
-- Dépendances mises à jour, analyse automatique des vulnérabilités.
-- Accès administrateur nominatif et journalisé.
-- Données du journal utilisateur chiffrées au repos.
+- Volume : 7 paires × 3 unités × 20 ans ≈ **1,1 million de bougies**. Cela tient en mémoire vive ;
+  une passe complète se compte en secondes.
+- **Le calcul est identique pour tous les utilisateurs** : précalcul à chaque clôture, service
+  depuis le cache. **Coût marginal par abonné proche de zéro.**
+- **Traitement par lots. Jamais de flux tick en temps réel** pour la mesure.
 
----
+**Coût d'infrastructure avant le premier client : moins de 150 €/mois.** Ce n'est pas là qu'est
+le risque.
 
-## 17. Tests et qualité
+## 21. Interface et temps réel
 
-| Type de test | Contenu |
+Système visuel, ergonomie, langage et accessibilité : **`SPEC-DESIGN.md`**, dont ces trois règles
+structurantes :
+
+- **Le luxe ici, c'est la retenue.** L'esthétique « terminal de trading néon » est celle des
+  vendeurs de signaux : l'adopter reviendrait à se déguiser en ce qu'on dénonce.
+- **Un seul chiffre par écran**, en grand, toujours accompagné de son terme de comparaison et de
+  sa taille d'échantillon.
+- **Encodage bleu / orange**, jamais rouge / vert : environ 8 % des hommes ont une déficience de
+  perception du rouge et du vert, ce qui serait un défaut fonctionnel dans un produit dont toute
+  la valeur tient à la lecture de résultats.
+
+### Périmètre du temps réel
+
+| En direct | Par lots, à la clôture |
 |---|---|
-| **Point-in-time** | Injection de données futures : le résultat doit être identique |
-| **Déterminisme** | Recalcul complet nocturne, comparaison des empreintes |
-| **Jeu de référence annoté** | 100 configurations étiquetées à la main par figure : le détecteur doit les retrouver, et ne pas en inventer |
-| **Résolution** | Cas construits où objectif et invalidation sont touchés dans la même bougie : le départage M1 doit trancher correctement |
-| **Frais** | Un trade de contrôle dont le résultat net est calculé à la main |
-| **Changement d'heure** | Les critères de séance restent corrects de part et d'autre des bascules |
-| **Complétude** | Une période à données trouées produit des détections marquées et exclues des statistiques |
-| **Non-régression** | Toute correction de bug ajoute le cas qui l'a révélée |
+| Prix affichés sur les graphiques | **Détection** |
+| Distance du prix aux niveaux d'une détection ouverte | **Score** |
+| Compte à rebours avant clôture | **Résolution** |
+| Aperçu provisoire, **affiché en gris, non enregistré** | |
+| Envoi de l'annonce : **moins de 60 s** | |
 
-Environnements séparés développement / production, migrations de base versionnées,
-déploiement automatisé et réversible.
+> **Les prix sont en direct, la mesure ne l'est pas. C'est ce qui rend la mesure vérifiable.**
 
----
-
-## 18. Performance et coûts
-
-- Volume : 7 paires × 3 unités de temps × 20 ans ≈ **1,1 million de bougies**. Cela tient en
-  mémoire vive. Une passe complète de détection se compte en secondes ou minutes.
-- **Le calcul est identique pour tous les utilisateurs** : précalcul à chaque clôture de bougie,
-  service depuis le cache. **Coût marginal par abonné proche de zéro.**
-- **Traitement par lots, jamais de flux tick en temps réel.** C'est le seul moyen de créer un
-  problème de performance, et il n'apporte rien : les figures en H1, H4 et journalier ne bougent
-  pas à la seconde.
-
-**Coût d'infrastructure total avant le premier client : moins de 150 €/mois** (hébergement,
-données, courriel, sauvegarde). Ce n'est pas là qu'est le risque.
+Une détection recalculée à chaque tick donnerait un résultat différent à chaque tick : elle
+serait non reproductible, ce qui détruirait le déterminisme, donc la chaîne d'empreintes, donc
+la preuve. Le flux de prix ne touche **jamais** la base de détections : deux systèmes séparés,
+et cette séparation est une exigence d'architecture.
 
 ---
 ---
 
-# PARTIE IV — EXPLOITATION
+# PARTIE IV — L'EXPLOITATION
 
-## 19. Cadre juridique et interdits
+## 22. Cadre juridique
 
 *Une seule de ces lignes franchie transforme un logiciel en activité réglementée.*
 
 | Sujet | Position |
 |---|---|
-| **Agrément conseiller en investissement financier (CIF)** | **Non requis**, à une condition stricte : aucune personnalisation. L'application ne doit jamais connaître le capital, le portefeuille ni le profil de risque de l'utilisateur pour produire une analyse (MiFID II, règl. délégué UE 2017/565, art. 9) |
-| **Formulation** | Toujours « voici comment ce type de figure se trade habituellement », jamais « prenez ce trade ». Réserve honnête : c'est une précaution **supplémentaire**, pas le rempart principal. Le rempart, c'est l'absence de personnalisation |
-| **Règlement MAR (UE 596/2014, art. 20)** | Champ incertain sur le forex de détail : le change au comptant n'est pas un instrument financier au sens de MiFID II annexe I section C. **On applique la discipline quand même** : auteur identifié, date, méthodologie publiée, historique complet accessible, avertissement |
-| **Loi Sapin 2 — art. L.222-16-1 code de la consommation** | **Interdit la publicité électronique** pour les contrats financiers hautement spéculatifs auprès du public en France. Loi influenceurs (n° 2023-451) : même interdiction. Google Ads et Meta : restreint ou interdit |
-| **RGPD** | Le journal utilisateur contient des données financières personnelles : hébergement UE, registre des traitements, contrats de sous-traitance, export et suppression sur demande, durée de conservation définie |
+| **Agrément de conseiller en investissement financier** | **Non requis**, à une condition stricte : aucune personnalisation. L'application ne connaît jamais le capital, le portefeuille ni le profil de risque de l'utilisateur pour produire une analyse (MiFID II, règl. délégué UE 2017/565, art. 9) |
+| **Formulation** | Toujours « voici comment ce type de figure se trade habituellement », jamais « prenez ce trade ». Réserve honnête : c'est une précaution **supplémentaire**, pas le rempart principal. Le rempart est l'absence de personnalisation |
+| **Règlement MAR** (UE 596/2014, art. 20) | Champ incertain sur le change de détail : le change au comptant n'est pas un instrument financier au sens de MiFID II annexe I section C. **La discipline s'applique quand même** : auteur identifié, date, méthodologie publiée, historique accessible, avertissement |
+| **Loi Sapin 2** — art. L.222-16-1 code de la consommation | **Interdit la publicité électronique** pour les contrats financiers hautement spéculatifs auprès du public en France. Loi influenceurs (n° 2023-451) : même interdiction. Google et Meta : restreint ou interdit |
+| **RGPD** | Le journal utilisateur contient des données financières personnelles : hébergement UE, registre des traitements, contrats de sous-traitance, export et suppression sur demande |
 
-### Les cinq interdits absolus dans le produit
+### Les cinq interdits absolus
 
 1. Ne jamais demander le capital ou le profil de risque pour produire une analyse.
 2. Ne jamais écrire « achetez », « vendez », « prenez ce trade », « recommandé pour vous ».
@@ -1068,406 +948,272 @@ données, courriel, sauvegarde). Ce n'est pas là qu'est le risque.
 4. Ne jamais promettre un rendement, ni afficher un gain en euros.
 5. Ne jamais supprimer ou corriger une détection publiée.
 
-### Documents obligatoires avant mise en ligne
+**Documents obligatoires avant mise en ligne :** mentions légales, CGU, CGV, politique de
+confidentialité et de cookies, **avertissement de risque visible sur chaque page affichant une
+statistique**. Le tout validé par un avocat spécialisé.
 
-Mentions légales · CGU · CGV · politique de confidentialité · politique de cookies ·
-**avertissement de risque visible sur chaque page affichant une statistique**.
+**Conséquence opérationnelle majeure : l'acquisition payante est fermée.** Le canal est
+organique (§25), et la page publique du registre en est l'outil principal — pas une
+fonctionnalité annexe.
 
-**Le tout à faire valider par un avocat spécialisé avant toute mise en ligne payante.**
-
-### Conséquence opérationnelle majeure
-
-**L'acquisition payante est fermée.** Le canal doit être organique (§22). La page publique du
-journal prospectif est l'outil d'acquisition principal — pas une fonctionnalité annexe.
-
----
-
-## 20. Juridictions, structure et fiscalité
-
-*Pourquoi ça compte : un abonnement vendu dans le monde entier déclenche des obligations
-fiscales dès le premier client étranger. C'est l'oubli le plus courant des projets logiciels.*
-
-### Juridictions
+## 23. Juridictions, structure, fiscalité
 
 | Zone | Position de départ |
 |---|---|
 | France et UE | Marché principal |
-| **États-Unis** | **Exclus au lancement.** L'encadrement du conseil sur le change y est strict (CFTC / NFA) et les exemptions applicables demandent un avis juridique. Exclusion par les CGU tant que cet avis n'est pas obtenu |
-| Autres pays | Ouverts par défaut, sauf pays sous sanctions |
+| **États-Unis** | **Exclus au lancement.** L'encadrement du conseil sur le change y est strict (CFTC, NFA) et les exemptions applicables demandent un avis juridique |
+| Autres | Ouverts, sauf pays sous sanctions |
 
-Le blocage se fait par les CGU et par une déclaration de résidence à l'inscription.
+Blocage par les CGU et déclaration de résidence à l'inscription.
 
-### Structure
+**Structure :** micro-entreprise au démarrage, passage en société à examiner selon le chiffre
+d'affaires et la responsabilité.
 
-Micro-entreprise au démarrage. Passage en société à examiner dès que le chiffre d'affaires ou
-la responsabilité le justifient. Question à trancher avec un comptable (§28).
+**TVA — point technique à ne pas rater.** La vente d'un service numérique à un particulier de
+l'UE est taxée **au taux du pays du client**. Au-delà de 10 000 € de ventes transfrontalières
+annuelles, déclaration via le **guichet unique (OSS)**. **Solution retenue : Stripe Tax dès le
+premier abonnement**, ~0,5 % du volume — sans commune mesure avec le coût d'une régularisation.
 
-### TVA — point technique à ne pas rater
+## 24. Modèle économique
 
-La vente d'un **service numérique à un particulier dans l'UE** est taxée **au taux du pays du
-client**, et non au taux français. Au-delà de 10 000 € de ventes transfrontalières annuelles,
-cela impose une déclaration via le **guichet unique (OSS)**.
+### Accès individuel
 
-**Solution retenue : activer Stripe Tax dès le premier abonnement.** Le calcul et la collecte
-sont automatisés pour un coût de l'ordre de 0,5 % du volume — sans commune mesure avec le coût
-d'une régularisation.
+| Niveau | Contenu |
+|---|---|
+| **Public, sans compte** | Registre en direct, groupe témoin, fiches figures, statistiques agrégées — **outil d'acquisition, pas version bridée** |
+| **Analyse** | Base interrogeable, tous filtres, alertes, journal personnel, écart comportemental |
+| **Contrainte** | Mode contrainte, export, API |
 
-**À confirmer avec un comptable** avant la première facture (§28).
+### Accès groupe
 
----
+Par siège, dégressif, minimum 10 sièges. Options : rapport mensuel d'intelligence du risque,
+accès API. Médias, chercheurs et régulateurs : **gratuit, avec citation**.
 
-## 21. Modèle économique
+Le siège de groupe est moins cher que l'abonnement individuel, et c'est voulu : le client
+apporte le volume, gère son administration, ne génère aucun support.
 
-### Grille particuliers
+**Niveaux de prix : §31, point 4.**
 
-| Niveau | Contenu | Prix |
-|---|---|---|
-| **Public, sans compte** | Journal prospectif en direct, groupe témoin, fiches figures, statistiques agrégées | **0 €** — outil d'acquisition, pas version bridée |
-| **Analyse** | Base interrogeable complète, tous filtres, alertes, journal personnel, écart comportemental | **25 €/mois** |
-| **Contrainte** | Mode prop firm, export, accès API | **49 €/mois** |
+### Contrainte de marché à connaître
 
-*Repères : TradingView 15-60 $, Tradezella 29-49 $, Edgewonk ~14 $/mois. Positionnement
-délibérément au-dessus de la médiane : avec une distribution organique le volume restera
-faible, et un prix bas ne se rattrape pas par le nombre. L'écart entre 19 € et 25 € ne change
-quasiment rien à la conversion de quelqu'un qui s'apprête à payer 300 $ pour une tentative
-d'examen.*
-
-**Contrainte de marché à connaître :** la détection de figures a un prix de marché proche de
-zéro — Autochartist est distribué **gratuitement** par de nombreux courtiers. Ce qui se vend,
-c'est l'analyse comportementale et le mode contrainte, pas la détection.
-
-### Grille groupe
-
-Par siège, dégressif, avec un minimum de 10 sièges.
-
-| Sièges | Prix par siège | Exemple |
-|---|---|---|
-| 10 à 49 | 15 €/mois | 20 sièges = 300 €/mois |
-| 50 à 199 | 12 €/mois | 100 sièges = 1 200 €/mois |
-| 200 et plus | 9 €/mois | 500 sièges = 4 500 €/mois |
-
-| Option | Contenu | Prix |
-|---|---|---|
-| **Intelligence du risque** | Rapport mensuel : quelles configurations et quels comportements font sauter les comptes, sous contrainte de perte | +500 à 1 500 €/mois |
-| **API** | Accès programmatique à la base | +199 à 499 €/mois |
-| **Média, recherche, régulateur** | Jeu de données ouvert et accès en lecture | **Gratuit, avec citation** |
-
-Le siège de groupe est moins cher que l'abonnement individuel : c'est normal et voulu — le
-client apporte le volume, prend en charge son administration et ne génère aucun support.
+**La détection de figures a un prix de marché proche de zéro** : Autochartist est distribué
+gratuitement par de nombreux courtiers. Ce qui se vend, c'est l'analyse comportementale et le
+mode contrainte, pas la détection.
 
 ### Pare-feu contractuel — clause non négociable
 
 *Vendre à un courtier crée un conflit d'intérêts évident : celui qui facture les coûts de
-transaction paie celui qui les mesure.*
+transaction paierait celui qui les mesure.*
 
-Trois règles inscrites dans chaque contrat professionnel et **publiées** :
-
-1. **Aucune rémunération liée au volume négocié, ni aucun apport d'affaires rémunéré.**
-   Le tarif est forfaitaire ou par utilisateur, jamais indexé sur l'activité générée.
+1. **Aucune rémunération liée au volume négocié, aucun apport d'affaires rémunéré.**
 2. **Aucun client ne peut faire modifier, retirer ou adoucir un chiffre publié.**
-   Le professionnel achète l'accès aux mêmes nombres que tout le monde, jamais à d'autres.
-3. **La liste des clients professionnels est publique.** Un lecteur doit pouvoir juger
-   lui-même des conflits possibles.
+3. **La liste des clients professionnels est publique.**
 
-Un client qui refuse ces clauses est un client qu'on refuse. **Le premier contrat signé au
-prix de la crédibilité coûterait plus qu'il ne rapporte** : l'indépendance est l'actif, pas
-une contrainte qui pèse sur lui.
+Un client qui refuse ces clauses est un client qu'on refuse. **Le premier contrat signé au prix
+de la crédibilité coûterait plus qu'il ne rapporte** : l'indépendance est l'actif.
 
-Essai de 14 jours sur les niveaux payants. Remise annuelle à examiner une fois la rétention
-mesurée (§28).
+### Projection, hypothèses pessimistes
 
-### Projection — hypothèses pessimistes assumées
-
-Le nombre d'abonnés ne dépend pas de l'acquisition seule :
-
-> **Abonnés à l'équilibre = nouveaux abonnés par mois ÷ taux d'attrition mensuel.**
+> **Abonnés à l'équilibre = nouveaux abonnés par mois ÷ attrition mensuelle.**
 > À 12 % d'attrition, 10 nouveaux par mois plafonnent à 83 abonnés, définitivement.
 
 | | Mois 12 | Mois 24 | Mois 36 |
 |---|---|---|---|
-| Visiteurs par mois (organique seul) | 800 | 2 500 | 6 000 |
+| Visiteurs par mois, organique seul | 800 | 2 500 | 6 000 |
 | Conversion visiteur → payant | 0,10 % | 0,10 % | 0,12 % |
-| Nouveaux abonnés par mois | ~1 | ~2,5 | ~7 |
 | Attrition mensuelle | 13 % | 12 % | 11 % |
 | **Abonnés à l'équilibre** | ~8 | ~21 | ~65 |
-| **Revenu particuliers, net** | ~230 € | ~600 € | ~1 700 € |
-| **Un contrat professionnel** | — | +1 000 € | +2 000 € |
-| **Total, scénario pessimiste** | ~230 € | **~1 600 €** | **~3 700 €** |
+| Revenu individuel, net | ~230 € | ~600 € | ~1 700 € |
+| Un accès groupe | — | +1 000 € | +2 000 € |
+| **Total** | ~230 € | **~1 600 €** | **~3 700 €** |
 
-Scénario réaliste médian, pour comparaison : ~90 abonnés au mois 24, ~300 au mois 36.
+**Conclusion : la voie individuelle seule n'atteint pas 2 500 €/mois avant le mois 26 à 30, et
+jamais en scénario pessimiste. Le premier accès groupe change cela à lui seul.** D'où sa
+position au lot 13, dès que le registre totalise six mois.
 
-**Deux prélèvements souvent oubliés :** Stripe (~1,5 % + 0,25 €) et la TVA au taux du pays du
-client au-delà de 10 000 € de ventes transfrontalières (§20). Un prix affiché de 25 € devient
-alors ~20,4 € encaissés : il faut **~123 abonnés** pour 2 500 €, pas 100.
+## 25. Acquisition
 
-**Conclusion à retenir : la voie particuliers seule n'atteint pas 2 500 €/mois avant le mois
-26 à 30, et jamais en scénario pessimiste. Le premier contrat professionnel change cela à lui
-seul.** C'est ce qui justifie de le chercher dès que le journal prospectif totalise six mois.
+*La publicité payante étant interdite, l'acquisition est une contrainte de conception, pas une
+activité qui viendra après.*
 
-Le niveau gratuit n'est pas une concession commerciale : la publicité étant fermée (§19), c'est
-la seule mécanique d'acquisition dont dispose le produit, et elle se renforce avec le temps.
+### Moteur principal : le référencement programmatique
 
----
+La base **génère elle-même** des milliers de pages de contenu unique, chiffré, constamment mis à
+jour :
 
-## 22. Acquisition et croissance
+> *Double creux EUR/USD en H4 : 1 240 cas mesurés, 46 % d'objectifs atteints, espérance nette
+> +0,08 R — contre −0,21 R pour le groupe témoin.*
 
-*Pourquoi ça compte : la publicité payante étant interdite, l'acquisition est une contrainte de
-conception, pas une activité qui viendra après.*
-
-### Le moteur principal : le référencement naturel programmatique
-
-La base de données **génère elle-même** des milliers de pages de contenu unique, chiffré et
-constamment mis à jour :
-
-> *« Double creux EUR/USD en H4 : 1 240 cas mesurés, 46 % d'objectifs atteints,
-> espérance nette +0,08 R »*
-
-- 60 figures × 28 paires × 3 unités de temps = **plus de 5 000 pages** possibles, chacune
-  répondant à une requête que des gens tapent réellement.
-- Contenu impossible à copier : il provient de la base propriétaire.
-- Coût marginal nul, et la qualité s'améliore automatiquement à mesure que les occurrences
-  s'accumulent.
-
-**C'est le meilleur atout de croissance du produit, et il découle directement de son
-architecture.** À traiter comme une fonctionnalité de premier plan, pas comme du marketing.
+60 figures × 28 paires × 3 unités de temps = **plus de 5 000 pages**, chacune répondant à une
+requête réellement tapée, impossibles à copier puisqu'elles proviennent de la base. Coût marginal
+nul, qualité croissante avec les occurrences. **C'est le meilleur atout de croissance du produit,
+et il découle directement de son architecture.**
 
 ### Canaux complémentaires
 
 | Canal | Rôle |
 |---|---|
-| Journal prospectif public | Preuve permanente, motif de retour régulier |
-| Vidéo (résultats mensuels commentés, échecs compris) | Le format le plus crédible pour ce public |
-| Communautés (forums, Reddit, Discord de traders) | Contribution par les chiffres, jamais par la promotion |
-| **Espace communautaire propre, hébergé à l'extérieur** (Discord ou Telegram) | Satisfait le besoin d'échange sans exposer la plateforme (§5, module I) |
-| Sociétés de financement | Partenariats de contenu — leur intérêt est que leurs candidats réussissent |
+| Registre public | Preuve permanente, motif de retour régulier |
+| **Ouverture des données de plus de 90 jours** | Devenir la source que les autres citent. Chaque citation est un lien et une preuve qu'il n'y a rien à cacher |
+| **Vérificateur publié, invitation à contester** | L'argument le plus difficile à ignorer sur un marché saturé de résultats fabriqués |
+| **Outils gratuits** : calculatrice de position, valeur du pip, horloge des séances, matrice de corrélation | Aucun avantage de marché nécessaire, fort volume de recherche |
+| Rapport public mensuel, **date et format fixes, publié même quand les chiffres sont mauvais** | Le rituel qui construit la réputation |
+| Vidéo, communautés | Contribution par les chiffres, jamais par la promotion |
+| Espace communautaire hébergé **hors du produit** | Satisfait le besoin d'échange sans exposer la plateforme |
 
 ### Revenus interdits
 
 **Aucune rémunération d'apport d'affaires versée par un courtier, jamais.** C'est le revenu le
-plus facile à obtenir sur ce marché, et le seul qui détruirait instantanément le positionnement :
-un produit qui mesure les coûts de transaction ne peut pas être payé par ceux qui les facturent.
-Refus inscrit dans les conditions d'utilisation et publié.
+plus facile de ce marché, et le seul qui détruirait instantanément le positionnement.
 
-### Ouverture des données anciennes
+## 26. Métriques
 
-Les détections **résolues depuis plus de 90 jours** sont publiées en jeu de données ouvert,
-téléchargeable et réutilisable avec citation.
-
-*Pourquoi c'est un gain net :* la valeur commerciale est dans le flux courant et dans l'analyse,
-pas dans des lignes vieilles de trois mois. En les ouvrant, on devient **la source que les autres
-citent** — chercheurs, formateurs, vidéastes, journalistes. Chaque citation est un lien, une
-autorité, et une preuve supplémentaire qu'il n'y a rien à cacher. Aucun concurrent de ce marché
-ne peut se le permettre.
-
-### Outils gratuits à fort volume de recherche
-
-Calculatrice de position, valeur du pip, horloge des séances, matrice de corrélation, calendrier
-économique. Aucun avantage de marché n'est nécessaire pour les construire, ils répondent à des
-requêtes très recherchées, et ils alimentent le référencement du reste du site.
-
-### Publication mensuelle des résultats
-
-Un rapport public mensuel, **à date fixe et format fixe**, publié même quand les chiffres sont
-mauvais : espérance du mois, écarts par rapport à l'historique, incidents techniques.
-C'est le rituel qui construit la réputation, et c'est exactement ce qu'aucun concurrent ne peut
-imiter.
-
-### L'invitation à la vérification
-
-Le script de vérification de la chaîne d'empreintes et des ancrages est **publié et documenté**.
-N'importe qui est invité à recalculer l'historique et à contester un chiffre.
-Sur un marché saturé de résultats fabriqués, c'est l'argument le plus difficile à ignorer —
-et il ne coûte qu'une page de documentation.
-
----
-
-## 23. Métriques et pilotage
-
-| Métrique | Cible initiale |
+| Métrique | Cible |
 |---|---|
-| Visiteurs uniques mensuels | Croissance mensuelle continue |
 | Taux de création de compte | > 3 % des visiteurs |
-| **Taux d'import du journal** (activation) | **> 40 % des comptes créés** — meilleur prédicteur d'abonnement |
+| **Taux d'import du journal** (activation) | **> 40 % des comptes** — meilleur prédicteur d'abonnement |
 | Conversion essai → abonnement | > 25 % |
 | **Rétention à 3 mois** | **> 60 %** — la métrique qui décide de la viabilité |
 | Attrition mensuelle | < 8 % |
-| Revenu mensuel récurrent | Suivi hebdomadaire |
 | Latence médiane des notifications | < 60 s |
 | Complétude des données | > 99,9 % |
 
-**Métrique de vérité produit, à publier :** espérance nette des configurations annoncées,
-comparée au groupe témoin. Si l'écart disparaît, le produit doit changer de discours (§27).
+**Métrique de vérité produit, publiée :** espérance nette des configurations annoncées, comparée
+au groupe témoin. Si l'écart disparaît, le produit change de discours (§30).
+
+## 27. Support
+
+Asynchrone, par écrit, français et anglais, 48 h ouvrées. Base de connaissances alimentée par
+les questions reçues. Les groupes s'administrent seuls : aucun support de premier niveau sur les
+sièges.
+
+**Aucune réponse individuelle ne doit jamais contenir de conseil personnalisé.** C'est le canal
+par lequel l'interdit du §22 est le plus facile à franchir par inadvertance : réponses types
+préparées pour les questions du type « dois-je prendre ce trade ? ».
 
 ---
-
-## 24. Support
-
-- **Asynchrone par écrit**, en français et en anglais. Délai annoncé : 48 h ouvrées.
-- Base de connaissances alimentée par les questions reçues.
-- **Aucune réponse individuelle ne doit jamais contenir de conseil personnalisé** : c'est le
-  canal par lequel l'interdit du §19 est le plus facile à franchir par inadvertance.
-  Réponses types préparées pour les questions du type « dois-je prendre ce trade ? ».
-
----
 ---
 
-# PARTIE V — EXÉCUTION
+# PARTIE V — L'EXÉCUTION
 
-## 25. Ordre de construction
+## 28. Ordre de construction
 
 *L'ordre compte plus que le contenu : chaque lot doit produire quelque chose de vérifiable.*
 
 | Lot | Contenu | Critère d'acceptation |
 |---|---|---|
-| **0** | Compte Stripe (activité décrite comme **logiciel d'analyse statistique**) validé. Consultation juridique de cadrage | **Avant d'écrire du code** : un refus bloquerait toute monétisation après des mois de travail |
-| **1** | Ingestion, stockage, **harnais de déterminisme et test point-in-time** | Le test d'injection de données futures échoue si on triche. Recalcul complet reproductible à l'identique |
-| **2** | **Une seule stratégie : le range**, de bout en bout, résolution M1 et frais complets. **Backtest honnête walk-forward avec correction de tests multiples** | 500 détections résolues, résultat net calculé, reproductible deux fois à l'identique. **Ce lot est un point de décision** (§25.1) |
-| **3** | Journal prospectif + Merkle + **ancrage externe horaire, trois supports** + page publique gratuite + **vérificateur public publié** | En ligne et accumulant des détections **pendant** que le reste se développe. Un tiers doit pouvoir vérifier la chaîne sans aide |
-| **4** | Score de confluence + filtres durs + **conservation du groupe témoin** | Une détection écartée est conservée avec motif et score détaillé |
-| **5** | **Import du journal utilisateur + écart comportemental** | Un rapport MT5 réel s'importe et produit un écart chiffré. **Remonté du lot 9 : voir §25.2** |
-| **6** | Abonnement Stripe + Stripe Tax + documents légaux | Un paiement de bout en bout, TVA correcte, CGU en ligne |
-| **7** | Notifications (courriel, web push) + supervision de la latence | Annonce envoyée en moins de 60 s, latence journalisée |
-| **8** | Interface stratégie + premier lot de figures (10 à 15) | Ajouter une figure ne demande aucune modification du moteur |
-| **9** | Base interrogeable + seuils de publication + correction de tests multiples + **affichage systématique des comparaisons** | Une figure sous 100 occurrences affiche « données insuffisantes ». Aucun chiffre affiché sans terme de comparaison |
-| **10** | Fiches figures + **référencement programmatique** + **outils gratuits** (calculatrice de position, corrélations, séances) | Les pages se génèrent depuis la base et se mettent à jour seules |
-| **11** | Mode contrainte prop firm | Réponse en probabilité de réussite de la contrainte, pas en rendement |
-| **12** | **Ouverture des données de plus de 90 jours + premiers contacts sociétés de financement** | Jeu de données téléchargeable. **Remonté de la fin : voir §25.3** |
-| **13** | Catalogue complet, extension à 28 paires | Occurrences multipliées, seuils franchis |
-| **15** | API et licence de la base (B2B contractualisé) | — |
+| **0** | Compte Stripe validé, activité décrite comme **logiciel d'analyse statistique**. Consultation juridique de cadrage | **Avant d'écrire du code.** Un refus bloquerait toute monétisation après des mois de travail |
+| **1** | Ingestion, stockage, agrégation, indicateurs, pivots, **harnais de déterminisme et test point-in-time** | Le test d'injection de données futures échoue si on triche. Recalcul reproductible à l'identique. **✅ livré** |
+| **2** | **Une stratégie : le range**, de bout en bout, résolution M1 et frais complets. **Backtest walk-forward avec correction de tests multiples** | 500 détections résolues, reproductibles deux fois à l'identique. **Point de décision, §28.1** |
+| **3** | Registre + Merkle + **ancrage horaire sur trois supports** + page publique + **vérificateur publié** | Un tiers vérifie la chaîne sans aide. Doit démarrer **le plus tôt possible** : c'est l'actif qui prend de la valeur avec le temps |
+| **4** | Score de confluence, filtres durs, **conservation du groupe témoin** | Une détection écartée est conservée avec motif et score détaillé |
+| **5** | **Import du journal et écart comportemental** | Un rapport MT5 réel produit un écart chiffré |
+| **6** | Abonnement Stripe, Stripe Tax, documents légaux | Un paiement de bout en bout, TVA correcte |
+| **7** | Notifications, supervision de la latence | Annonce en moins de 60 s, latence journalisée |
+| **8** | Interface stratégie, premier lot de 10 à 15 figures | Ajouter une figure ne modifie pas le moteur |
+| **9** | Base interrogeable, seuils, correction de tests multiples, **comparaisons systématiques** | Aucun chiffre affiché sans terme de comparaison |
+| **10** | Fiches figures, **référencement programmatique**, outils gratuits | Les pages se génèrent et se mettent à jour seules |
+| **11** | Mode contrainte | Réponse en probabilité de réussite, pas en rendement |
+| **12** | **Ouverture des données de plus de 90 jours** | Jeu téléchargeable, republié mensuellement |
+| **13** | **Comptes groupe** et premiers contacts professionnels | Un administrateur crée et retire ses membres sans notre intervention |
+| **14** | Catalogue complet, extension à 28 paires | Occurrences multipliées, seuils franchis |
+| **15** | API contractualisée, extension crypto | — |
 
-### 25.1 Le lot 2 est un point de décision, pas une étape
+### 28.1 Le lot 2 est un point de décision
 
-Le backtest honnête du lot 2 donne, **en quelques semaines au lieu de six mois**, une première
-indication sur l'existence d'un avantage. Il ne prouve rien pour un client — mais il informe la
-décision de positionnement :
+Le backtest honnête donne, **en quelques semaines au lieu de six mois**, une première indication
+sur l'existence d'un avantage. Il ne prouve rien pour un client, mais il oriente le positionnement.
 
-| Résultat du lot 2 | Conséquence |
+| Résultat | Conséquence |
 |---|---|
 | Espérance nette clairement positive après correction | Le discours « quelles configurations gagnent » est tenable |
-| Espérance proche de zéro | **Basculer immédiatement sur le discours comparatif** (§2) et sur l'analyse comportementale. Ne pas attendre six mois pour l'apprendre |
-| Espérance nettement négative | Le produit devient *l'outil qui chiffre ce que l'analyse technique coûte* — position unique et vendable, mais qui change les fiches produit et l'argumentaire |
+| Espérance proche de zéro | **Basculer immédiatement** sur le discours comparatif (§8.3) et le comportemental |
+| Espérance nettement négative | Le produit devient *l'outil qui chiffre ce que l'analyse technique coûte* — position unique et vendable |
 
-Coût de cette information : quelques semaines. Valeur : elle oriente tout le reste.
+### 28.2 Pourquoi commencer par le range
 
-### 25.2 Pourquoi l'analyse comportementale remonte au lot 5
-
-Décision structurante, motivée par trois faiblesses du plan initial :
-
-1. **Elle ne dépend pas de l'existence d'un avantage de marché.** Dire à quelqu'un qu'il entre
-   deux bougies trop tôt garde toute sa valeur même si aucune figure n'est rentable.
-   C'est la seule fonction robuste au risque principal du projet.
-2. **Sa valeur est personnelle et immédiate**, donc c'est la fonction qui convertit en
-   abonnement. La base de figures attire ; le miroir comportemental fait payer.
-3. **Elle compose avec le nombre d'utilisateurs, pas avec le calendrier.** Le journal prospectif
-   met deux ans à devenir un fossé ; la base comportementale grandit dès le premier import.
-
-**Position retenue : la base de figures est le moteur d'acquisition, l'analyse comportementale
-est le produit payant.** Aucun concurrent ne peut la reproduire, car un journal de trading sans
-base de référence ne peut comparer à rien.
-
-### 25.3 Pourquoi le B2B remonte au lot 12
-
-Le référencement met 12 à 24 mois à composer et la publicité est interdite : la distribution est
-le vrai goulot du projet, pas le produit.
-
-Une société de financement compte des dizaines de milliers de candidats. **Un seul partenariat
-apporte en un mois ce que le référencement met deux ans à construire.** Et ce public achète
-sur preuve, pas sur promesse — ce qui transforme la principale faiblesse commerciale du produit
-en avantage. Les premiers contacts n'exigent qu'un journal prospectif de six mois et le mode
-contrainte : ils sont possibles bien avant la fin du développement.
-
-### Pourquoi commencer par le range
-
-Le range se définit **objectivement** (bornes, nombre de touches, durée), il est **fréquent** —
-donc il donne une puissance statistique exploitable en quelques mois au lieu de plusieurs années
-— et les paires majeures passent la majorité de leur temps en range. L'épaule-tête-épaule est
+Il se définit **objectivement** — bornes, nombre de touches, durée —, il est **fréquent**, donc
+il donne une puissance statistique exploitable en quelques mois au lieu de plusieurs années, et
+les paires majeures passent la majorité de leur temps en range. L'épaule-tête-épaule est
 subjective et rare : c'est le pire premier cas possible.
 
----
-
-## 26. Risques et parades
+## 29. Risques et parades
 
 | # | Risque | Parade |
 |---|---|---|
-| 1 | **Publier un chiffre non reproductible.** Un utilisateur recalculera. Un seul écart inexpliqué détruit l'unique argument du produit | §15, sans exception |
-| 2 | **Embellir les résultats** le jour où l'abonnement en dépend | §27 : règle écrite **maintenant**, avant tout revenu |
-| 3 | **Refus du processeur de paiement** (le forex est classé activité à risque) | Lot 0, avant le code |
-| 4 | **Perte de la base** | §16 : sauvegardes hors site, restauration testée, ancrage externe |
-| 5 | **Trous de données non détectés** | §16 : supervision de complétude, marquage et exclusion des périodes incomplètes |
-| 6 | **Élargir avant d'avoir prouvé** | Seuils du §7 |
-| 7 | **Le H1 est un piège.** Spread aller-retour ~1,2-2 pips contre une amplitude horaire typique de 10-15 pips : le coût consomme **~15 % du mouvement en H1, contre ~2 % en journalier** | Garder le H1 mais afficher le net à côté du brut. L'écart est une information que les utilisateurs ignorent |
-| 8 | **Attente d'un avantage important sur les majeures** | Marché le plus liquide du monde : 7 500 Md$/jour (BIS 2022). Avantage attendu proche de zéro. **Le produit doit avoir de la valeur même quand les chiffres sont mauvais** (§27) |
-| 9 | **Dépendance à une source de données unique** | Prévoir une seconde source, et documenter que tout changement crée une nouvelle version |
-| 10 | **Exposition juridique hors UE** | §20 : exclusion des États-Unis au lancement |
-| 11 | **Contenus d'utilisateurs** : recommandations de tiers, promotion de courtiers, escroqueries, conseil personnalisé public | §5 bis : **aucun contenu produit par un utilisateur**, sans exception. La communauté d'échange vit hors du produit |
+| 1 | **Publier un chiffre non reproductible.** Un seul écart inexpliqué détruit l'unique argument du produit | §8, §17, §19, sans exception |
+| 2 | **Embellir les résultats** le jour où l'abonnement en dépend | §30 : règle écrite **avant** tout revenu |
+| 3 | **Refus du processeur de paiement** — le change est classé activité à risque | Lot 0, avant le code |
+| 4 | **Perte de la base** | §18 : sauvegardes hors site, restauration testée, ancrage externe |
+| 5 | **Trous de données non détectés** | §18 : supervision, marquage et exclusion des périodes incomplètes |
+| 6 | **Élargir avant d'avoir prouvé** | Seuils du §9.1 |
+| 7 | **Coût de friction sous-estimé** | §14 : coûts exprimés en R, H1 hors annonce par défaut |
+| 8 | **Avantage attendu proche de zéro sur les majeures** | §8.3 et §14 : le produit garde sa valeur sans avantage de marché |
+| 9 | **Dépendance à une source de données unique** | Seconde source prévue ; tout changement crée une version |
+| 10 | **Exposition juridique hors UE** | §23 : États-Unis exclus au lancement |
+| 11 | **Contenus de tiers** | §6 : aucun contenu produit par un utilisateur, sans exception |
+| 12 | **Conflit d'intérêts avec un courtier** | §24 : pare-feu contractuel publié |
 
----
+## 30. Règle d'honnêteté — à signer avant le premier euro encaissé
 
-## 27. Règle d'honnêteté — à signer avant le premier euro encaissé
-
-Le journal prospectif dira la vérité au bout de 3 à 6 mois. Deux issues :
+Le registre prospectif dira la vérité au bout de trois à six mois.
 
 - **Espérance nette positive et stable** → le produit a une valeur démontrable que personne
   d'autre ne fournit.
-- **Espérance nette nulle ou négative** → **on publie le chiffre tel quel.** Le produit bascule
-  sur ce qu'il est réellement : *l'outil qui montre, chiffres à l'appui, ce que l'analyse
-  technique ne fait pas.* C'est un produit vendable, et une position unique sur ce marché.
+- **Espérance nulle ou négative** → **on publie le chiffre tel quel.** Le produit bascule sur ce
+  qu'il est réellement : *l'outil qui montre, chiffres à l'appui, ce que l'analyse technique ne
+  fait pas.* C'est un produit vendable, et une position unique sur ce marché.
 
 **Décision prise par écrit maintenant, avant tout revenu : dans le second cas, le chiffre est
 publié sans retouche.** Seule protection contre la tentation de le trafiquer quand l'abonnement
 en dépendra.
 
----
+## 31. Points ouverts
 
-## 28. Ce qui reste à décider
-
-*Regroupé ici, et nulle part ailleurs. Aucun de ces points ne bloque le lot 1.*
+*Regroupés ici, et nulle part ailleurs. Aucun ne bloque le lot 2.*
 
 | # | Question | Qui tranche | Quand |
 |---|---|---|---|
-| 1 | Validation juridique complète du positionnement et des CGU | Avocat spécialisé | Avant le lot 8 |
+| 1 | Validation juridique du positionnement et des CGU | Avocat spécialisé | Avant le lot 6 |
 | 2 | Statut des États-Unis : exclusion définitive ou ouverture encadrée | Avocat | Année 1 |
 | 3 | Structure juridique et régime de TVA | Comptable | Avant la première facture |
-| 4 | Source de prix de référence définitive | Décision technique, après essai de deux fournisseurs | Lot 1 |
-| 5 | Seuil de score pour l'annonce | **Les données**, après 400 occurrences | Après le lot 6 |
-| 6 | Prix définitifs et remise annuelle | Après mesure de la rétention | Après le lot 9 |
-| 7 | Priorité Telegram par rapport au webhook | Demande des utilisateurs | Après le lot 7 |
-| 8 | Ouverture à d'autres classes d'actifs | À n'envisager qu'une fois le forex prouvé | Année 2 |
+| 4 | **Niveaux de prix** individuels et par siège | Le propriétaire, après mesure de la rétention | Avant le lot 6 |
+| 5 | Source de prix de référence définitive | Décision technique, après essai de deux fournisseurs | Lot 2 |
+| 6 | **Seuil de score pour l'annonce** | **Les données**, après 400 occurrences. Le fixer d'avance serait la première entorse au principe fondateur | Après le lot 9 |
+| 7 | Priorité Telegram par rapport au webhook | La demande des utilisateurs | Après le lot 7 |
+| 8 | Extension crypto | À n'envisager qu'une fois le forex prouvé | Après le lot 14 |
 
----
-
-## 29. Glossaire
+## 32. Glossaire
 
 | Terme | Définition |
 |---|---|
 | **R** | Unité de risque. 1 R = distance entre l'entrée et l'invalidation. Un gain de 2 R rapporte deux fois ce qu'on risquait |
 | **Espérance en R** | Gain moyen par trade en R. Seul indicateur qui dit si une approche gagne de l'argent |
 | **Spread** | Écart entre prix d'achat et de vente. Coût payé à chaque opération |
-| **Slippage** | Écart entre le prix attendu et le prix réellement obtenu |
-| **Swap de portage** | Intérêts payés ou reçus pour conserver une position d'un jour sur l'autre |
+| **Glissement** | Écart entre le prix attendu et le prix réellement obtenu |
+| **Portage (swap)** | Intérêts payés ou reçus pour conserver une position d'un jour sur l'autre |
 | **Pip** | Plus petite variation usuelle d'une paire. 0,0001, sauf paires en yen : 0,01 |
-| **M1 / H1 / H4 / D1** | Bougies de 1 minute / 1 heure / 4 heures / 1 jour |
+| **M1 / H1 / H4 / D1** | Bougies de 1 minute, 1 heure, 4 heures, 1 jour |
 | **ATR** | Amplitude moyenne récente. Sert à fixer des seuils qui s'adaptent à la volatilité |
-| **Pivot / ZigZag** | Repérage automatique des sommets et creux significatifs |
+| **Pivot, ZigZag** | Repérage automatique des sommets et creux significatifs |
 | **Confluence** | Convergence de plusieurs éléments favorables. Doit être chiffrée pour être exploitable |
 | **Corrélation** | Degré auquel deux paires bougent ensemble. Deux positions corrélées sont un seul pari |
 | **Série de pertes** | Nombre de pertes consécutives. Des séries longues sont normales et prévisibles |
 | **Régime de marché** | État dominant : tendance ou range. Conditionne quelles figures fonctionnent |
-| **Volume de ticks** | Nombre de changements de prix. Remplace sur le forex le volume réel qui n'existe pas — et diffère d'un courtier à l'autre |
+| **Volume de ticks** | Nombre de changements de prix. Remplace sur le change le volume réel, qui n'existe pas — et diffère d'un courtier à l'autre |
 | **Point-in-time** | Principe garantissant qu'un calcul n'utilise que l'information disponible à l'instant simulé |
 | **Look-ahead bias** | Utilisation d'une information future. Rend tout backtest faussement excellent |
 | **Test multiple** | Essayer beaucoup d'hypothèses fait apparaître des résultats « significatifs » par pur hasard |
 | **Intervalle de confiance** | Fourchette dans laquelle se situe probablement la vraie valeur. Se resserre quand les occurrences augmentent |
 | **Drawdown** | Perte maximale subie depuis un sommet de capital |
-| **Groupe témoin** | Ensemble des configurations écartées, conservées pour mesurer ce que vaut le filtrage |
-| **Ancrage externe** | Publication chez un tiers horodateur d'une empreinte, rendant toute réécriture ultérieure détectable |
-| **Prop firm** | Société qui finance un trader après un examen payant, sous contrainte stricte de perte maximale |
+| **Groupe témoin** | Configurations écartées, conservées pour mesurer ce que vaut le filtrage |
+| **Ancrage externe** | Publication chez un tiers horodateur d'une empreinte, rendant toute réécriture détectable |
+| **Arbre de Merkle** | Structure permettant de prouver qu'un élément appartient à un ensemble sans fournir l'ensemble |
+| **Société de financement (prop firm)** | Société qui finance un trader après un examen payant, sous contrainte stricte de perte maximale |
 | **Prospectif** | Publié **avant** de connaître le résultat. Seul mode qui prouve quelque chose |
-| **OSS (guichet unique)** | Régime européen de déclaration de la TVA sur les services numériques vendus à des particuliers d'autres pays de l'UE |
+| **OSS, guichet unique** | Régime européen de déclaration de la TVA sur les services numériques vendus à des particuliers d'autres pays de l'UE |
 
----
-
-## 30. Sources et références
+## 33. Sources
 
 - Bulkowski, *Encyclopedia of Chart Patterns* — catalogue de référence des figures
 - Lo, Mamaysky & Wang (2000), *Foundations of Technical Analysis*, Journal of Finance

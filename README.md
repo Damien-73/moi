@@ -21,7 +21,7 @@ utilisateur sur son propre comportement.
 
 | Document | Rôle | Lignes |
 |---|---|---|
-| **`CAHIER-DES-CHARGES.md`** | Référence unique : produit, méthode, technique, exploitation, exécution. **À lire en premier** | ~1 270 |
+| **`CAHIER-DES-CHARGES.md`** | Référence unique et autoportante : produit, méthode, technique, exploitation, exécution. **À lire en premier** | 1 230 |
 | `SPEC-LOT2.md` | Détection du range et calcul du score, au niveau formule | 587 |
 | `SPEC-LOT3.md` | Journal prospectif, arbre de Merkle, ancrage externe, vérificateur public | 224 |
 | `SPEC-LOT5.md` | Import du journal utilisateur et écart comportemental | 228 |
@@ -58,8 +58,9 @@ formules, le cahier des charges fait foi sur les principes.
 
 | État | Éléments |
 |---|---|
-| **Spécifié, constructible** | Lots 0 à 5, lot 11, système d'interface |
-| **Spécifié au niveau principe seulement** | Lots 6 à 10, 12 et 13 : notifications, abonnement, catalogue étendu, référencement programmatique, comptes groupe, API |
+| **Livré, testé** | Lot 1 — code dans `app/`, 25 tests verts |
+| **Spécifié, constructible** | Lots 0, 2 à 5, lot 11, système d'interface |
+| **Spécifié au niveau principe seulement** | Lots 6 à 10 et 12 à 15 : notifications, abonnement, catalogue étendu, référencement programmatique, comptes groupe, API |
 | **Hors compétence, à faire valider** | Validation juridique des CGU et du positionnement (avocat), structure et TVA (comptable) — `CAHIER-DES-CHARGES.md` §28 |
 | **Non décidé, et ce n'est pas un oubli** | Le seuil d'annonce du score : il sera fixé **par les données**, après 400 occurrences, jamais à l'avance |
 
