@@ -12,12 +12,18 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 - **Rien n'a encore été tenté.** Blocage déclaré : peur de se tromper et de perdre du temps.
 - Aucune piste privilégiée à ce stade : « toutes celles qui permettent d'en vivre partout ».
 
+## Stratégie retenue
+- Conserve le poste de directeur de chalet et développe l'activité **en parallèle**.
+- Démissionne seulement une fois l'activité viable (seuil chiffré à définir).
+
+## Niveau
+- **Novice** (pas de compétence technique/entrepreneuriale constituée à ce jour).
+- Temps hebdomadaire disponible : déclaré important (à quantifier, et à corriger en haute saison).
+
 ## Attentes vis-à-vis de Claude
 - Franchise totale, contradiction assumée, recherche systématique de la meilleure option.
 
 ## À compléter
 - Réserve financière et revenu mensuel minimum à couvrir.
-- Niveau technique réel (dev, outils, langages).
-- Temps hebdomadaire disponible hors travail.
 - Langues parlées, diplômes/certifications.
 - Compétences monnayables identifiées (gestion d'équipe, exploitation, budget, sécurité, recrutement — à valider).
