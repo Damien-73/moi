@@ -257,33 +257,141 @@ sur cassure »* — une question débattue depuis trente ans, jamais chiffrée s
 
 ---
 
-## 7. Règles de mesure — à figer avant la première ligne de code
+## 7. Règles de trade, gestion du risque et score de confluence
 
-*Pourquoi ça compte : sans définition écrite et immuable, le pourcentage publié ne vaut rien
-et devient manipulable — et il le sera, le jour où l'abonnement en dépendra.*
+*Pourquoi ça compte : sans définitions écrites et immuables, les pourcentages publiés ne valent
+rien et deviennent manipulables — et ils le seront, le jour où l'abonnement en dépendra.*
+
+### 7.1 Ratio et risque — règles retenues
+
+| Contexte | Ratio minimum | Risque par trade |
+|---|---|---|
+| Score de confluence **élevé** | **1,5 R** | 2 % du capital |
+| Score de confluence **normal** | **2 R** | 1 % du capital |
+
+La logique est saine : plus les éléments convergent, plus le taux de réussite attendu est élevé,
+donc on peut accepter un gain relatif plus faible. Ce qu'il faut savoir avant de la publier :
+
+| Ratio | Taux de réussite requis pour être à l'équilibre |
+|---|---|
+| 1,5 R | **40,0 %** |
+| 2 R | **33,3 %** |
+| 3 R | 25,0 % |
+
+**Effet mécanique à assumer :** exiger 2 R fait baisser le taux de réussite affiché, parce que
+beaucoup de figures n'ont pas 2 R d'espace disponible avant l'obstacle structurel suivant.
+Le filtre de ratio est donc lui-même un choix de stratégie, avec un coût mesurable —
+l'application doit le mesurer, pas le supposer.
+
+### 7.2 Contradiction à corriger : le risque de 2 % est incompatible avec le segment principal
+
+*Calcul, pas opinion.* À un taux de réussite de 40 %, la plus longue série de pertes attendue
+sur 200 trades est d'environ **10 pertes consécutives**. C'est un résultat normal, pas un accident.
+
+| Risque par trade | Perte après 10 pertes consécutives |
+|---|---|
+| 2 % | **− 18,3 %** |
+| 1 % | − 9,6 % |
+| 0,5 % | − 4,9 % |
+
+Les sociétés de financement imposent typiquement **10 % de perte maximale totale et 5 % par jour**.
+À 2 % de risque, le compte saute avant la fin d'une série normale. À 1 %, il la frôle.
+
+**Décision : 1 % en régime normal, 0,5 % en mode contrainte (§5, module F), 2 % jamais présenté
+comme une règle par défaut.** Le 2 % reste affichable comme variante, avec la perte simulée
+correspondante affichée à côté.
+
+### 7.3 Limite juridique absolue sur le dimensionnement
+
+Exprimer le risque **en pourcentage du capital** est du contenu générique : autorisé.
+Calculer une taille de position à partir du capital réel de l'utilisateur est une
+**recommandation personnalisée** : interdit sans agrément (§3).
+
+| Autorisé | Interdit |
+|---|---|
+| « Cette configuration se traite habituellement avec un risque de 1 % du capital » | « Vous avez 5 000 € : risquez 50 €, soit 0,11 lot » |
+| Calculatrice de position **exécutée dans le navigateur**, valeur jamais transmise ni stockée | Capital enregistré dans le compte utilisateur |
+| Statistiques identiques pour tous | Configurations filtrées ou classées selon le capital de l'utilisateur |
+
+**La ligne rouge : dès que le capital de l'utilisateur influence *ce qui lui est montré*,
+l'application devient une activité réglementée.**
+
+### 7.4 Le score de confluence — la pièce qui manquait
+
+« Beaucoup d'indices positifs » doit devenir **un nombre**, sinon la règle est inapplicable,
+non reproductible, et fait rentrer la subjectivité par la fenêtre — ce qui détruit
+tout l'édifice statistique.
+
+**Score déterministe, versionné, calculé point-in-time :**
+
+| # | Critère | Points | Calculable ainsi |
+|---|---|---|---|
+| 1 | **Tendance supérieure alignée** | +2 aligné D1 / +1 aligné H4 / **−2 à contre-tendance D1** | Pente de la moyenne mobile 200 + structure de sommets et creux |
+| 2 | **Zone support/résistance** | +2 | À moins de 0,25 ATR d'un niveau touché ≥ 3 fois |
+| 3 | **Niveau rond** | +1 | Prix en 00 ou 50. Effet documenté : les ordres stop se concentrent sur ces niveaux (Osler, 2003, *Journal of Finance*) |
+| 4 | **Niveaux de référence** | +1 | Plus haut/bas de la veille ou de la semaine, ouverture journalière |
+| 5 | **Divergence de momentum** | +1 | RSI divergent au sommet ou creux de la figure |
+| 6 | **Objectif atteignable** | +1 / **−2 si irréaliste** | Objectif ≤ 1,5 × ATR cumulé sur l'horizon. *Filtre très sous-utilisé : un objectif à 3 ATR en 20 bougies est statistiquement improbable, quelle que soit la figure* |
+| 7 | **Séance horaire** | +1 chevauchement Londres–New York (~12h-16h UTC) / **−1 séance asiatique ou heure de roulement (~21h-23h UTC)** | Horodatage de la bougie d'entrée |
+| 8 | **Calendrier économique** | **−2** | Annonce à fort impact (taux, emploi américain, inflation) prévue dans l'horizon du trade |
+| 9 | **Extension du mouvement** | **−1** | Prix à plus de 2 ATR de la moyenne mobile 20 : le mouvement est déjà mûr |
+| 10 | **Qualité géométrique de la figure** | 0 à +2 | Symétrie, durée, nombre de touches, propreté des bornes |
+| 11 | **Régime de marché** | +1 si cohérent | Figure de continuation en régime de tendance, figure de retournement en régime de range |
+
+**Seuil « confluence élevée » : à déterminer par les données, jamais décidé à l'avance.**
+L'application publie l'espérance nette par tranche de score :
+
+> Score 0-3 : −0,21 R · Score 4-6 : −0,04 R · Score 7+ : **+0,19 R** (n = 1 840)
+
+Si le score ne sépare pas les résultats, on le publie aussi. C'est une information de premier
+ordre que personne ne fournit, et c'est ce qui valide — ou invalide — la notion même de confluence.
+
+### 7.5 Ce que l'application n'utilisera **pas**, et pourquoi
+
+**Le volume.** Il n'existe pas de volume réel sur le change au comptant : le marché est de gré à
+gré. Ce que les plateformes affichent est un **volume de ticks**, propre à chaque courtier.
+L'utiliser rendrait les résultats non reproductibles par un tiers — ce qui contredit
+frontalement le principe fondateur du produit (§10, règle 2).
+Affichable en information secondaire, **jamais dans le score**.
+
+### 7.6 Règles de mesure du résultat
 
 | Élément | Règle |
 |---|---|
-| Entrée | Selon la méthode déclarée, au prix défini par la méthode. Jamais un prix intra-bougie arbitraire |
+| Entrée | Au prix défini par la méthode déclarée. Jamais un prix intra-bougie arbitraire |
 | Invalidation | Niveau structurel de la figure (ex. sommet de la tête pour une épaule-tête-épaule) |
-| Objectif | Projection mesurée de la figure |
-| Horizon | Défini par méthode (par défaut 20 bougies). Ni objectif ni invalidation atteints → **sans issue**, comptabilisé à part |
+| **Objectif — double mesure** | **(a)** projection mesurée de la figure **et (b)** objectif fixe à 1,5 R / 2 R. Les deux sont calculés et publiés séparément |
+| Horizon | Par défaut 20 bougies. Ni objectif ni invalidation atteints → **sans issue**, comptabilisé à part |
 | Départage | **Résolution en données M1** pour savoir lequel de l'objectif ou de l'invalidation a été touché en premier à l'intérieur d'une bougie |
-| Frais | Spread horaire réel déduit à l'entrée et à la sortie. Le résultat publié est **net** |
+| Frais déduits | Spread horaire réel **+ slippage sur invalidation + swap de portage** |
 | Indicateur principal | **Espérance en R, nette de frais** |
 
-### Décision d'affichage qui sépare un outil sérieux d'un produit marketing
+La double mesure de l'objectif répond directement à la question « quelle stratégie marche le
+mieux » : elle dit si la projection de la figure bat le ratio fixe, ou l'inverse.
 
-Un taux de réussite de **70 % avec un objectif à 0,3 R perd de l'argent**.
-Un taux de **40 % avec un objectif à 2 R en gagne**.
+**Le swap de portage est l'oubli le plus fréquent.** Sur une figure journalière tenue 20 jours,
+les intérêts de portage peuvent dépasser plusieurs fois le coût du spread. Tout résultat qui
+l'ignore est faux sur les unités de temps longues.
 
-**L'espérance nette en R est l'indicateur mis en avant partout.** Le taux de réussite est
-affiché en second, parce que c'est ce que les gens cherchent — mais jamais en titre.
+### 7.7 Trois protections à afficher, que les autres outils omettent
 
-Les trois issues (objectif, invalidation, sans issue) sont toujours affichées ensemble.
-Une application qui n'affiche que gagnants/perdants ment par omission.
+1. **Série de pertes maximale attendue.** À 40 % de réussite, environ 10 pertes consécutives
+   sur 200 trades sont normales. Les utilisateurs abandonnent pendant ces séries en croyant que
+   la méthode est cassée. L'afficher **avant** est la fonction de rétention la plus efficace
+   du produit.
+2. **Corrélation entre paires.** EUR/USD et GBP/USD évoluent ensemble à ~0,85. Deux positions
+   de 2 % dans le même sens ne font pas 4 % de risque mais **environ 3,8 % concentrés sur un seul
+   pari** — la règle de risque saute sans que l'utilisateur s'en aperçoive.
+   L'application doit signaler les détections corrélées simultanées.
+3. **Écart entre résultat brut et résultat net.** Toujours côte à côte. C'est ce qui montre
+   à l'utilisateur ce que les frais lui coûtent réellement — information que personne ne lui donne.
 
----
+### 7.8 Historique intégral
+
+**Toutes les figures détectées sont conservées définitivement**, y compris celles dont la
+statistique n'est pas publiable faute d'occurrences (§6), y compris celles issues de versions
+de stratégie retirées. Aucune suppression, aucune correction : uniquement des ajouts et des
+remplacements de version. L'historique complet est la matière première du produit.
 
 ## 8. Données
 
@@ -464,6 +572,12 @@ quand l'abonnement en dépendra.
 | **Intervalle de confiance** | Fourchette dans laquelle se situe probablement la vraie valeur. Se resserre quand les occurrences augmentent |
 | **Drawdown** | Perte maximale subie depuis un sommet de capital |
 | **Prop firm** | Société qui finance un trader après un examen payant, sous contrainte stricte de perte maximale |
+| **Confluence** | Convergence de plusieurs éléments favorables sur une même configuration. Doit être chiffrée pour être exploitable |
+| **Swap de portage** | Intérêts payés ou reçus pour conserver une position d'un jour sur l'autre |
+| **Corrélation** | Degré auquel deux paires bougent ensemble. Deux positions corrélées sont en réalité un seul pari |
+| **Série de pertes** | Nombre de pertes consécutives. Des séries longues sont normales et prévisibles |
+| **Régime de marché** | État dominant : tendance ou range. Conditionne quelles figures fonctionnent |
+| **Volume de ticks** | Nombre de changements de prix. Sur le forex, il remplace le volume réel qui n'existe pas — et il diffère d'un courtier à l'autre |
 | **Prospectif** | Publié **avant** de connaître le résultat. Contraire de rétrospectif, seul mode qui prouve quelque chose |
 
 ---
@@ -475,6 +589,7 @@ quand l'abonnement en dépendra.
 - Sullivan, Timmermann & White (1999) — correction du biais de sélection sur les règles techniques
 - Bajgrowicz & Scaillet (2012) — rentabilité des règles techniques après frais et test multiple
 - Bailey & López de Prado — *Deflated Sharpe Ratio*, correction du test multiple
+- Osler (2003), *Currency Orders and Exchange Rate Dynamics*, Journal of Finance — concentration des ordres sur les niveaux ronds
 - Enquête triennale BIS, avril 2022 — volumes du marché des changes
 - Règlement (UE) 596/2014 (MAR), art. 20 ; règlement délégué (UE) 2016/958
 - Directive MiFID II ; règlement délégué (UE) 2017/565, art. 9
