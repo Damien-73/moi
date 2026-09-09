@@ -538,6 +538,93 @@ recalibrées **qu'une seule fois**, sur données suffisantes, par une méthode d
 en continu sur ses propres résultats est un score surajusté : il aurait l'air excellent en
 historique et ne vaudrait rien en réel.
 
+### 7.11 Confirmation et infirmation ne pèsent pas pareil
+
+*Principe : une contradiction retire plus qu'une confirmation n'ajoute. L'asymétrie est
+volontaire et justifiée.*
+
+**Pourquoi.** Une figure haussière contient **déjà** l'information « haussier ». Un indicateur
+qui confirme ne fait donc que répéter ce que la figure dit — il apporte peu d'information
+nouvelle. En revanche, un élément qui contredit apporte une information **absente** de la figure :
+c'est là qu'est la surprise, donc la valeur.
+
+| Type d'élément | Amplitude retenue |
+|---|---|
+| Contradiction (contre-tendance, annonce macro, objectif irréaliste) | **−2**, ou filtre dur |
+| Confirmation (zone, niveau rond, divergence, séance) | +1 à +2 |
+
+Un score symétrique surévaluerait systématiquement les configurations « bien alignées »,
+qui sont précisément les plus évidentes — donc les plus déjà intégrées dans le prix.
+
+### 7.12 Neutraliser les critères déjà contenus dans la définition de la figure
+
+*Piège subtil, et il fausserait le classement des figures — c'est-à-dire la sortie principale
+du produit.*
+
+Certaines figures **contiennent déjà** un critère du score dans leur propre définition :
+
+| Figure | Critère automatiquement satisfait | Problème |
+|---|---|---|
+| Drapeau haussier, fanion | « Aligné avec la tendance » | La figure n'existe que dans une tendance : +2 gratuits |
+| Double creux, épaule-tête-épaule inversée | « Sur un support » | Le creux **est** le support : +2 gratuits |
+| Cassure de range | « Niveau de référence » | La borne du range **est** le niveau |
+
+**Sans correction, les figures de continuation obtiendraient mécaniquement de meilleurs scores
+que les figures de retournement — pour une raison purement comptable, sans aucun rapport avec
+leur efficacité réelle.** Le classement « quelles figures marchent le mieux » serait faux.
+
+**Règle : chaque figure déclare, dans sa définition, les critères que sa propre construction
+satisfait d'office. Ces critères sont neutralisés dans son score, et le score maximum atteignable
+est ajusté en conséquence.** Le score est ensuite exprimé en **pourcentage du maximum atteignable**
+par cette figure, jamais en points bruts, afin que deux figures restent comparables.
+
+### 7.13 Exemple complet de calcul
+
+**Double creux, EUR/USD, H4 — configuration annoncée**
+
+| Critère | Évaluation | Points |
+|---|---|---|
+| Qualité géométrique | 2 touches nettes, symétrie correcte | +2 |
+| Tendance journalière | Haussière, alignée | +2 |
+| Zone support/résistance | *Neutralisé — contenu dans la définition de la figure* | — |
+| Niveau rond | Creux sur 1,0800 | +1 |
+| Divergence de momentum | RSI divergent au second creux | +1 |
+| Faisabilité de l'objectif | 1,1 × ATR cumulé sur l'horizon | +1 |
+| Séance | Cassure à 13 h UTC, chevauchement Londres–New York | +1 |
+| Calendrier économique | Aucune annonce à fort impact | 0 |
+| Extension | Prix à 0,8 ATR de la MM20 | 0 |
+| Régime de marché | Figure de retournement en régime de range : cohérent | +1 |
+| **Total** | | **9 / 11 atteignables = 82 %** |
+
+→ **Annoncée.** Confluence élevée : ratio minimum 1,5 R.
+
+**Même figure, contexte différent — configuration écartée**
+
+| Critère | Évaluation | Points |
+|---|---|---|
+| Tendance journalière | **Baissière, opposée** | **Filtre dur → rejet** |
+| Faisabilité de l'objectif | 2,4 × ATR cumulé | **Filtre dur → rejet** |
+
+→ **Non annoncée.** Motif affiché à l'utilisateur, avec la statistique du groupe témoin :
+*« sur 3 210 configurations écartées pour tendance opposée, l'espérance nette est de −0,26 R. »*
+
+### 7.14 La confirmation renforce-t-elle vraiment ? C'est une question mesurable
+
+L'hypothèse « un indicateur qui va dans le sens de la figure renforce le trade » est
+**universellement admise et rarement vérifiée**. L'application est précisément l'outil qui
+permet de la trancher, par tranche de score et par critère pris isolément.
+
+Trois résultats sont possibles, et **les trois sont publiables** :
+
+1. La confirmation améliore l'espérance → le score est validé, c'est un argument commercial majeur.
+2. Elle ne change rien → information de premier ordre : la confluence serait une croyance
+   confortable sans effet mesurable.
+3. Elle la dégrade → les configurations les plus évidentes sont les plus déjà intégrées dans
+   le prix. Résultat contre-intuitif, et le plus vendable des trois.
+
+Aucun outil existant ne permet de répondre à cette question sur données prospectives.
+C'est la contribution la plus originale du produit.
+
 ## 8. Données
 
 | Besoin | Source | Coût |
