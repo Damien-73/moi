@@ -458,6 +458,86 @@ une fois 400 occurrences accumulées**, jamais fixé définitivement à l'avance
 Le seuil lui-même est versionné : le modifier crée une nouvelle version de stratégie (§10, règle 3),
 et l'ancien historique reste intact et consultable.
 
+### 7.10 Indicateurs contradictoires : redondance, hiérarchie et arbitrage
+
+*Pourquoi ça compte : c'est le point où un score de confluence mal conçu se met à compter
+plusieurs fois la même information et fabrique une fausse certitude.*
+
+#### La plupart des indicateurs ne se contredisent pas — ils se répètent
+
+Tous sont calculés à partir de la même série de prix. Exemples vérifiables :
+
+| Constat | Conséquence |
+|---|---|
+| **La bande centrale de Bollinger *est* la moyenne mobile 20** | Les compter tous les deux, c'est compter deux fois la même chose |
+| **MACD = moyenne exponentielle 12 − moyenne exponentielle 26** | Le MACD n'est qu'une autre lecture du croisement de moyennes mobiles |
+| RSI et MACD mesurent tous deux le momentum | Deux votes fortement corrélés pour une seule information |
+| Largeur des bandes de Bollinger et ATR | Deux mesures de la même volatilité |
+
+**Un score qui additionne des indicateurs redondants ne mesure pas la convergence :
+il amplifie un seul signal en le comptant quatre fois.** C'est le défaut de conception le plus
+répandu dans les outils de trading, et il produit une confiance artificielle.
+
+#### Règle : une famille d'information, un seul représentant
+
+| Famille | Ce qu'elle mesure | Représentant retenu | Rôle dans le score |
+|---|---|---|---|
+| **Structure de prix** | Le marché lui-même | Sommets et creux, cassures, bornes de range | **Autorité maximale** |
+| **Tendance supérieure** | Direction dominante | Pente MM200 + structure journalière | Fort |
+| **Localisation** | Où se situe le prix | Support/résistance, niveaux ronds, plus haut/bas de la veille, ouverture journalière | Fort |
+| **Momentum** | Vitesse, épuisement | **RSI seul.** MACD écarté : même famille | Faible |
+| **Volatilité** | Contexte | **ATR seul.** Bandes de Bollinger écartées : même information | **Jamais directionnel** — sert uniquement à la faisabilité de l'objectif et au dimensionnement |
+| **Volume, VWAP** | — | **Écartés** : voir ci-dessous | Aucun |
+
+**VWAP sur le forex : à écarter.** Le VWAP pondère le prix par le volume — or il n'existe pas de
+volume réel sur le change au comptant (§7.5). Le VWAP forex est donc calculé sur le volume de
+ticks du courtier : il diffère d'une plateforme à l'autre et n'est pas reproductible par un tiers.
+C'est un indicateur transposé des actions, où il a un sens, vers un marché où il n'en a pas.
+
+#### Hiérarchie d'autorité en cas de désaccord réel
+
+Quand deux familles disent l'inverse l'une de l'autre, l'ordre est fixe :
+
+> **1. Structure de prix → 2. Tendance de l'unité de temps supérieure → 3. Zones →
+> 4. Momentum → 5. Volatilité**
+
+**Un indicateur ne prime jamais sur la structure.** Les indicateurs sont dérivés du prix ;
+le prix n'est pas dérivé des indicateurs. Un RSI en surachat contre une structure haussière
+intacte n'annule pas la structure : il retire des points, il ne renverse rien.
+
+#### Ce qu'on fait d'une contradiction : on l'enregistre, on ne l'arbitre pas
+
+**Interdit : écrire une règle faite à la main pour trancher une contradiction.**
+C'est ainsi qu'on injecte une opinion invérifiable au cœur du système.
+
+Procédure retenue :
+
+1. Les éléments contradictoires s'annulent naturellement dans le score (points positifs
+   contre points négatifs). Une configuration contradictoire tombe donc à un score bas et
+   n'est pas annoncée — sans qu'aucune règle spéciale n'ait été écrite.
+2. La contradiction est **étiquetée** comme un état nommé et conservée
+   (ex. *figure haussière + tendance journalière baissière + RSI en surachat*).
+3. Au bout de 400 occurrences, **les données tranchent** : cette combinaison précise a une
+   espérance mesurée, publiable comme n'importe quelle autre.
+
+C'est la seule méthode compatible avec le principe fondateur du produit : on ne décide pas
+ce qui marche, on le mesure.
+
+#### Règle d'admission d'un nouvel indicateur
+
+**Aucun indicateur n'entre dans le score sans que sa contribution marginale ait été mesurée.**
+
+Test : comparer la séparation d'espérance entre tranches de score, avec et sans lui.
+S'il n'améliore pas la séparation, il n'apporte rien — il ajoute du bruit et de la fausse
+confiance, et il est retiré. Cette mesure s'effectue sur un échantillon réservé, non utilisé
+pour le réglage.
+
+Les pondérations initiales du §7.4 sont fixées à la main et **transparentes**. Elles ne seront
+recalibrées **qu'une seule fois**, sur données suffisantes, par une méthode documentée et sur
+échantillon réservé — puis figées dans une nouvelle version de stratégie. Un score recalibré
+en continu sur ses propres résultats est un score surajusté : il aurait l'air excellent en
+historique et ne vaudrait rien en réel.
+
 ## 8. Données
 
 | Besoin | Source | Coût |
