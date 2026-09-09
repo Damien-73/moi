@@ -386,12 +386,77 @@ l'ignore est faux sur les unités de temps longues.
 3. **Écart entre résultat brut et résultat net.** Toujours côte à côte. C'est ce qui montre
    à l'utilisateur ce que les frais lui coûtent réellement — information que personne ne lui donne.
 
-### 7.8 Historique intégral
+### 7.8 Détection, annonce et conservation sont **trois choses distinctes**
 
-**Toutes les figures détectées sont conservées définitivement**, y compris celles dont la
-statistique n'est pas publiable faute d'occurrences (§6), y compris celles issues de versions
-de stratégie retirées. Aucune suppression, aucune correction : uniquement des ajouts et des
-remplacements de version. L'historique complet est la matière première du produit.
+*C'est le point le plus important de tout le document. S'y tromper vide le produit de sa valeur.*
+
+| Étape | Périmètre |
+|---|---|
+| **Détection** | **Toutes** les figures, même celles ne remplissant aucun critère |
+| **Conservation** | **Toutes**, définitivement, avec leur score et le détail de leur évaluation |
+| **Annonce** | **Uniquement** celles franchissant les filtres et le seuil de score |
+| **Statistiques mises en avant** | Celles des configurations **annoncées** |
+| **Statistiques de contrôle** | Celles des configurations **écartées** — conservées et publiées à part |
+
+### Pourquoi les configurations écartées doivent être gardées
+
+Supprimer les configurations rejetées est l'erreur méthodologique qui invalide le produit
+entier. Quatre raisons, dans l'ordre d'importance :
+
+1. **Sans elles, on ne peut pas prouver que le filtre sert à quelque chose.** Dire « les
+   configurations annoncées donnent +0,19 R » n'a aucun sens sans point de comparaison.
+   +0,19 R **par rapport à quoi ?**
+2. **C'est le meilleur argument commercial du produit** — et il n'existe que si on garde
+   le groupe témoin :
+
+   > Configurations annoncées : **+0,19 R** (n = 1 840).
+   > Configurations écartées : **−0,21 R** (n = 14 600).
+   > Voilà pourquoi nous les écartons.
+
+   Cette phrase vaut plus que n'importe quel argumentaire. Personne ne peut la produire
+   sans avoir conservé ses rejets.
+3. **Filtrer puis mesurer sur le résultat filtré ne mesure pas le marché, ça mesure
+   l'optimisme du filtre.** C'est le mécanisme exact qui fabrique les faux avantages.
+4. **Les critères évolueront.** Le jour où un seuil est ajusté, sans historique complet il
+   est impossible de réévaluer le passé — donc impossible de savoir si l'ajustement améliore
+   ou dégrade.
+
+**Règle : rien n'est jamais supprimé. Ce qui est écarté est marqué comme écarté, avec son motif.**
+
+### Ce que voit l'utilisateur
+
+L'utilisateur reçoit **uniquement les configurations annoncées** — c'est bien l'intention
+retenue. Mais il peut ouvrir une configuration écartée et lire le motif du rejet :
+
+> Épaule-tête-épaule détectée — **non annoncée**.
+> Score 4/13. Manquant : tendance journalière opposée (−2), objectif à 2,3 ATR jugé
+> irréaliste sur l'horizon (−2), aucune zone de support à proximité.
+> *Sur les 3 210 configurations écartées pour tendance opposée, l'espérance nette
+> est de −0,26 R.*
+
+C'est à la fois une fonction pédagogique unique sur le marché et la démonstration permanente
+que le filtrage a une valeur mesurée.
+
+### 7.9 « Tous les critères réunis » est mathématiquement impossible — utiliser des filtres durs plus un seuil
+
+Exiger que **tous** les critères soient remplis simultanément ne produit presque aucune
+configuration. Onze critères remplis chacun 70 % du temps donnent 0,70¹¹ ≈ **2 % de survie** :
+sur dix ans et sept paires, cela ferait une poignée d'annonces par an — trop peu pour trader,
+trop peu pour prouver quoi que ce soit.
+
+**Structure retenue : trois filtres durs, puis un seuil de score.**
+
+| Filtres durs — rejet automatique |
+|---|
+| Configuration à contre-tendance journalière |
+| Annonce économique à fort impact dans l'horizon du trade |
+| Objectif irréaliste : au-delà de 1,5 × ATR cumulé sur l'horizon |
+
+Puis : **score ≥ 7 sur 13** pour l'annonce (seuil initial, **à recalibrer sur les données
+une fois 400 occurrences accumulées**, jamais fixé définitivement à l'avance).
+
+Le seuil lui-même est versionné : le modifier crée une nouvelle version de stratégie (§10, règle 3),
+et l'ancien historique reste intact et consultable.
 
 ## 8. Données
 
