@@ -141,15 +141,54 @@ Le positionnement n'est donc pas « le premier à détecter des figures », mais
 
 ## 4. Utilisateurs et segments
 
-| # | Segment | Ce qu'il cherche | Priorité |
-|---|---|---|---|
-| 1 | **Candidat en société de financement (*prop firm*)** | Savoir quelles configurations survivent à une limite de perte quotidienne. Paie déjà 100 à 600 $ par tentative, souvent plusieurs fois | **Segment principal.** Capacité à payer démontrée, besoin précis, dimension mondiale |
-| 2 | Trader particulier déçu par les vendeurs de signaux | Des chiffres vérifiables plutôt que des promesses | Segment d'entrée, atteignable en organique |
-| 3 | Société de financement, courtier, formateur | Statistiques agrégées : quelles configurations font sauter les comptes | Revenu B2B ultérieur, panier bien plus élevé |
+Le produit s'adresse à **tous les publics**, particuliers comme professionnels.
 
-**Cadrage :** 70 à 85 % des comptes de particuliers perdent de l'argent sur les CFD (mention
-réglementaire obligatoire des courtiers). Ce public paie peu et part vite. Le produit doit être
-conçu pour le segment 1, même si le segment 2 arrive en premier.
+### La règle qui rend le multi-public tenable
+
+> **Un seul moteur, une seule base, les mêmes chiffres.
+> Les segments diffèrent par la surface — interface, format de livraison, contrat —
+> jamais par le contenu.**
+
+Sans cette règle, chaque segment ajouterait un produit à construire et à maintenir, et les
+chiffres finiraient par diverger d'un public à l'autre — ce qui détruirait l'argument central.
+Avec elle, servir un professionnel coûte une interface d'accès, pas un second produit.
+
+### Les six segments
+
+| # | Segment | Ce qu'il achète | Prix | Priorité |
+|---|---|---|---|---|
+| 1 | **Candidat en société de financement** | Le mode contrainte : quelles configurations survivent à une limite de perte quotidienne. Paie déjà 100 à 600 $ par tentative | 49 €/mois | **Segment principal côté particuliers** |
+| 2 | **Trader particulier** déçu par les vendeurs de signaux | Des chiffres vérifiables, et le miroir de son propre comportement | 25 €/mois | Segment d'entrée, atteignable en organique |
+| 3 | **Société de financement** (l'entreprise) | **L'intelligence du risque** : quelles configurations et quels comportements font sauter les comptes. Elle tarife ses examens et ses reversements sur des modèles de risque | 500 à 2 000 €/mois | **Le plus fort levier de revenu du projet** |
+| 4 | **Courtier** | Flux de détections en marque blanche pour ses clients — le modèle économique d'Autochartist, déjà prouvé | 1 000 à 5 000 €/mois, ou 0,50 à 2 € par utilisateur actif | Fort, sous réserve du pare-feu du §21 |
+| 5 | **Formateur, école de trading** | Licence d'usage des statistiques dans ses supports, avec citation | 99 à 299 €/mois | Faible en revenu, fort en notoriété |
+| 6 | **Média, chercheur, régulateur** | Le jeu de données ouvert et les analyses | **Gratuit, avec citation** | Pure acquisition — chaque citation est un lien et une preuve |
+
+**Explicitement hors cible :** la gestion d'actifs institutionnelle. Elle ne fonde pas ses
+décisions sur l'analyse chartiste. Construire pour elle serait du travail perdu.
+
+### Ce qu'un contrat professionnel vaut, en abonnés particuliers
+
+**Un seul contrat à 2 000 €/mois équivaut à environ 80 abonnés particuliers — avec une
+attrition dix fois moindre et un seul interlocuteur à servir.** C'est la raison pour laquelle
+l'accès professionnel remonte au lot 12 : ce n'est pas un complément de fin de parcours, c'est
+le seul levier qui change l'ordre de grandeur du projet.
+
+**Cadrage sur les particuliers :** 70 à 85 % des comptes de détail perdent de l'argent sur les
+CFD (mention réglementaire obligatoire des courtiers). Ce public paie peu et part vite. Il
+reste indispensable — c'est lui qui alimente la base comportementale et la crédibilité
+publique — mais il ne portera pas le chiffre d'affaires seul.
+
+### Ce que le multi-public coûte à construire
+
+| Segment | Ce qu'il faut développer en plus | Quand |
+|---|---|---|
+| 3, 5, 6 | **Rien** au-delà de l'export et de l'API déjà prévus. Un rapport mensuel et un accès en lecture suffisent | Lot 12 |
+| 4 | Une surface en marque blanche : thème, sous-domaine, cloisonnement par client | **Uniquement après un contrat signé.** Jamais par anticipation |
+
+**Règle : aucun développement professionnel spéculatif.** Un rapport produit à la main pour un
+premier client vaut mieux qu'une plateforme construite pour des clients qui n'existent pas
+encore.
 
 **Portée mondiale :** le forex est identique partout, les données sont universelles, il n'y a
 aucun ancrage géographique. L'internationalisation se réduit à traduire l'interface — sous
@@ -981,16 +1020,82 @@ d'une régularisation.
 
 ## 21. Modèle économique
 
+### Grille particuliers
+
 | Niveau | Contenu | Prix |
 |---|---|---|
-| **Public, sans compte** | Journal prospectif en direct, groupe témoin, fiches figures, statistiques agrégées principales | **0 €** — outil d'acquisition, pas version bridée |
-| **Standard** | Base interrogeable complète, tous filtres, alertes, journal personnel, écart comportemental | **19 €/mois** |
-| **Contrainte** | Mode prop firm, export, accès API | **39 €/mois** |
+| **Public, sans compte** | Journal prospectif en direct, groupe témoin, fiches figures, statistiques agrégées | **0 €** — outil d'acquisition, pas version bridée |
+| **Analyse** | Base interrogeable complète, tous filtres, alertes, journal personnel, écart comportemental | **25 €/mois** |
+| **Contrainte** | Mode prop firm, export, accès API | **49 €/mois** |
+
+*Repères : TradingView 15-60 $, Tradezella 29-49 $, Edgewonk ~14 $/mois. Positionnement
+délibérément au-dessus de la médiane : avec une distribution organique le volume restera
+faible, et un prix bas ne se rattrape pas par le nombre. L'écart entre 19 € et 25 € ne change
+quasiment rien à la conversion de quelqu'un qui s'apprête à payer 300 $ pour une tentative
+d'examen.*
+
+**Contrainte de marché à connaître :** la détection de figures a un prix de marché proche de
+zéro — Autochartist est distribué **gratuitement** par de nombreux courtiers. Ce qui se vend,
+c'est l'analyse comportementale et le mode contrainte, pas la détection.
+
+### Grille professionnels
+
+| Offre | Contenu | Prix |
+|---|---|---|
+| **Intelligence du risque** | Rapport mensuel et accès en lecture : quelles configurations et quels comportements font sauter les comptes, sous contrainte de perte | 500 à 2 000 €/mois |
+| **Flux en marque blanche** | Détections diffusées aux clients d'un courtier, sous sa marque | 1 000 à 5 000 €/mois, ou 0,50 à 2 € par utilisateur actif |
+| **Licence pédagogique** | Usage des statistiques dans des supports de formation, avec citation | 99 à 299 €/mois |
+| **API brute** | Accès programmatique à la base | 199 à 499 €/mois |
+| **Média, recherche** | Jeu de données ouvert | Gratuit, avec citation |
+
+### Pare-feu contractuel — clause non négociable
+
+*Vendre à un courtier crée un conflit d'intérêts évident : celui qui facture les coûts de
+transaction paie celui qui les mesure.*
+
+Trois règles inscrites dans chaque contrat professionnel et **publiées** :
+
+1. **Aucune rémunération liée au volume négocié, ni aucun apport d'affaires rémunéré.**
+   Le tarif est forfaitaire ou par utilisateur, jamais indexé sur l'activité générée.
+2. **Aucun client ne peut faire modifier, retirer ou adoucir un chiffre publié.**
+   Le professionnel achète l'accès aux mêmes nombres que tout le monde, jamais à d'autres.
+3. **La liste des clients professionnels est publique.** Un lecteur doit pouvoir juger
+   lui-même des conflits possibles.
+
+Un client qui refuse ces clauses est un client qu'on refuse. **Le premier contrat signé au
+prix de la crédibilité coûterait plus qu'il ne rapporte** : l'indépendance est l'actif, pas
+une contrainte qui pèse sur lui.
 
 Essai de 14 jours sur les niveaux payants. Remise annuelle à examiner une fois la rétention
 mesurée (§28).
 
-Repère de volume : **165 abonnés à 19 €**, ou **100 abonnés à 29 €**, pour 2 500 €/mois brut.
+### Projection — hypothèses pessimistes assumées
+
+Le nombre d'abonnés ne dépend pas de l'acquisition seule :
+
+> **Abonnés à l'équilibre = nouveaux abonnés par mois ÷ taux d'attrition mensuel.**
+> À 12 % d'attrition, 10 nouveaux par mois plafonnent à 83 abonnés, définitivement.
+
+| | Mois 12 | Mois 24 | Mois 36 |
+|---|---|---|---|
+| Visiteurs par mois (organique seul) | 800 | 2 500 | 6 000 |
+| Conversion visiteur → payant | 0,10 % | 0,10 % | 0,12 % |
+| Nouveaux abonnés par mois | ~1 | ~2,5 | ~7 |
+| Attrition mensuelle | 13 % | 12 % | 11 % |
+| **Abonnés à l'équilibre** | ~8 | ~21 | ~65 |
+| **Revenu particuliers, net** | ~230 € | ~600 € | ~1 700 € |
+| **Un contrat professionnel** | — | +1 000 € | +2 000 € |
+| **Total, scénario pessimiste** | ~230 € | **~1 600 €** | **~3 700 €** |
+
+Scénario réaliste médian, pour comparaison : ~90 abonnés au mois 24, ~300 au mois 36.
+
+**Deux prélèvements souvent oubliés :** Stripe (~1,5 % + 0,25 €) et la TVA au taux du pays du
+client au-delà de 10 000 € de ventes transfrontalières (§20). Un prix affiché de 25 € devient
+alors ~20,4 € encaissés : il faut **~123 abonnés** pour 2 500 €, pas 100.
+
+**Conclusion à retenir : la voie particuliers seule n'atteint pas 2 500 €/mois avant le mois
+26 à 30, et jamais en scénario pessimiste. Le premier contrat professionnel change cela à lui
+seul.** C'est ce qui justifie de le chercher dès que le journal prospectif totalise six mois.
 
 Le niveau gratuit n'est pas une concession commerciale : la publicité étant fermée (§19), c'est
 la seule mécanique d'acquisition dont dispose le produit, et elle se renforce avec le temps.
