@@ -33,6 +33,13 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 - **Logement de fonction, aucune charge** → capacité d'épargne estimée 1 300-1 600 €/mois (à confirmer).
 - Risque associé : démissionner fait perdre **le salaire et le logement le même jour**.
 
+## Préférences de travail
+- **Anglais écrit** : opérationnel uniquement avec outils de traduction. Anglais oral : non.
+- **Refuse la vente directe**, la visio et les rendez-vous commerciaux.
+- Accepte un rôle de **conseil** si le client le demande de lui-même.
+- Veut du **travail asynchrone**, insensible au décalage horaire.
+- Marché naturel : **francophone**, relation client par écrit.
+
 ## À compléter
 - Dépenses réelles mensuelles (nourriture, chien, assurance, téléphone, transport).
 - Piste d'activité retenue.
