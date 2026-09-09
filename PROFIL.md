@@ -42,6 +42,13 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 - Utilisera **outils IA et automatisations** sans réticence.
 - Marché naturel : **francophone**, relation client par écrit.
 
+## Envie personnelle exprimée
+- Idée propre : une **boutique d'objets « gadgets » beaux, à effet wahou**, avec démonstration vidéo
+  filmée par lui-même (il tient à manipuler le produit).
+- Signal à retenir : il ne veut pas seulement un revenu, il veut **créer quelque chose à lui**,
+  avec une exigence esthétique et un goût pour la curation.
+- À traiter comme un objectif de fin de parcours, pas comme le point d'entrée.
+
 ## À compléter
 - Dépenses réelles mensuelles (nourriture, chien, assurance, téléphone, transport).
 - Piste d'activité retenue.
