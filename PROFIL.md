@@ -35,9 +35,11 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 
 ## Préférences de travail
 - **Anglais écrit** : opérationnel uniquement avec outils de traduction. Anglais oral : non.
-- **Refuse la vente directe**, la visio et les rendez-vous commerciaux.
+- **À l'aise pour parler aux gens.** Le refus porte uniquement sur la **visio de vente / prospection commerciale**.
+- Visio de suivi, cadrage, conseil ou livraison client : acceptée.
 - Accepte un rôle de **conseil** si le client le demande de lui-même.
-- Veut du **travail asynchrone**, insensible au décalage horaire.
+- Préfère un fonctionnement **majoritairement asynchrone** (décalage horaire à l'étranger).
+- Utilisera **outils IA et automatisations** sans réticence.
 - Marché naturel : **francophone**, relation client par écrit.
 
 ## À compléter
