@@ -29,8 +29,12 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 - Condition de départ posée : **15 000 à 20 000 € de côté**, pas en dessous.
 - Disponibilité : **~20 h/semaine** en cumulant les deux activités ; illimité une fois à plein temps sur la nouvelle.
 
+- Épargne actuelle : **3 000 €**.
+- **Logement de fonction, aucune charge** → capacité d'épargne estimée 1 300-1 600 €/mois (à confirmer).
+- Risque associé : démissionner fait perdre **le salaire et le logement le même jour**.
+
 ## À compléter
-- Épargne actuelle (point de départ vers les 15-20 k€).
-- Capacité d'épargne mensuelle sur le salaire actuel.
+- Dépenses réelles mensuelles (nourriture, chien, assurance, téléphone, transport).
+- Piste d'activité retenue.
 - Langues parlées, diplômes/certifications.
 - Compétences monnayables identifiées (gestion d'équipe, exploitation, budget, sécurité, recrutement — à valider).
