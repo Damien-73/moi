@@ -91,18 +91,87 @@ C'est ce que les concurrents ne font pas, et c'est gratuit à construire.
 5. **Détection déterministe.** Pivots par ZigZag à seuil ATR, puis règles géométriques.
    Aucun apprentissage automatique en v1 : non reproductible, non explicable, surapprentissage garanti.
 
-## 7. Périmètre v1
+## 7. Catalogue des figures et unité statistique
+
+### On détecte tout, on ne publie pas tout
+
+**Détection : catalogue complet.** La littérature chartiste documente plus de 60 figures
+(référence : Bulkowski, *Encyclopedia of Chart Patterns*). Les détecter toutes est peu coûteux
+une fois l'interface stratégie en place, et la couverture est un argument commercial réel.
+
+**Publication des statistiques : sous condition.** C'est là que se joue la crédibilité.
+
+Le danger n'est pas le temps de développement, c'est le **test multiple**. 60 figures × 3 unités
+de temps = 180 combinaisons testées. Au seuil de 5 %, **on attend mécaniquement une dizaine de
+résultats « significatifs » dus au seul hasard**. Un classement « les figures qui marchent le
+mieux » établi sans correction ne classe pas des figures : il classe du bruit. C'est exactement
+le mécanisme qui a produit toutes les fausses stratégies de l'histoire du trading.
+
+### Seuils de publication
+
+| Occurrences | Précision (IC 95 %) | Affichage |
+|---|---|---|
+| < 100 | pire que ± 10 pts | **« Données insuffisantes — 37 occurrences observées, 100 nécessaires »** |
+| 100 - 399 | ± 5 à 10 pts | Résultat marqué **provisoire**, intervalle de confiance affiché |
+| ≥ 400 | ± 5 pts | Résultat **établi** |
+| ≥ 2 400 | ± 2 pts | Permet d'affirmer un avantage de 2 points |
+
+Le classement des figures applique une **correction de tests multiples** (Benjamini-Hochberg),
+jamais le taux de réussite brut.
+
+Afficher « données insuffisantes » n'est pas un aveu de faiblesse : c'est la fonctionnalité que
+personne n'offre, et la preuve visible que les autres chiffres sont sérieux.
+
+### Le bon levier pour gagner en puissance : plus de paires, pas moins d'exigence
+
+Pour faire monter les occurrences, on n'assouplit pas les seuils — on **ajoute des paires**.
+Passer de 7 majeures à ~28 paires (mineures et croisées) multiplie les occurrences par environ 4,
+**sans une ligne de code supplémentaire** : même moteur, même source de données, même format.
+C'est la seule extension à faire quand une figure reste sous le seuil.
+
+### L'unité statistique est la figure × la méthode, pas la figure
+
+Une épaule-tête-épaule ne se trade pas d'une seule façon :
+
+| Méthode | Entrée |
+|---|---|
+| A | Cassure de l'encolure |
+| B | Retour sur l'encolure après cassure |
+| C | Cassure confirmée par la clôture de la bougie suivante |
+
+Ces trois méthodes ont des résultats différents. Les traiter comme une seule brouille tout.
+
+**Conséquence d'architecture, essentielle :** la méthode affichée à l'utilisateur (« voici
+comment se trade ce type de figure ») et la règle de résolution gagnant/perdant sont **le même
+objet en base**. Une définition unique, deux usages : pédagogie et mesure. Sans cette unité, le
+contenu explique une chose et les statistiques en mesurent une autre — c'est le défaut de tout
+le contenu pédagogique existant, et de tous les backtests publiés.
+
+C'est aussi ce qui produit la sortie la plus vendable du produit :
+*« Sur l'épaule-tête-épaule, l'entrée sur retour a une espérance nette supérieure à l'entrée sur
+cassure »* — une question que les traders se disputent depuis trente ans sans jamais l'avoir
+chiffrée sur données prospectives.
+
+### Périmètre v1
 
 | Élément | Valeur |
 |---|---|
-| Paires | EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD, NZD/USD |
-| Unités de temps | H4 et journalier |
-| Figures | Épaule-tête-épaule et inversée, double sommet et double creux, triangle symétrique, drapeau |
-| Tendance | ADX + structure de sommets et creux. Trois états : haussier, baissier, indéterminé |
-| Fréquence de calcul | Traitement par lots à chaque clôture de bougie H4. Pas de temps réel |
+| Paires | EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD, NZD/USD — extensible à ~28 |
+| Unités de temps | H1, H4, journalier |
+| Figures détectées | Catalogue complet, ajouté par lots via l'interface stratégie |
+| Figures **publiées** | Uniquement celles franchissant le seuil de 100 occurrences |
+| Tendance et range | ADX + structure de sommets et creux. États : haussier, baissier, range |
+| Fréquence de calcul | Traitement par lots à chaque clôture de bougie. Pas de temps réel |
 
-« Toutes les stratégies de trading » n'est pas une spécification. Six figures livrées et mesurées
-valent mieux que quarante annoncées.
+### Position juridique de la couche pédagogique
+
+Formuler « voici comment se trade ce type de figure » plutôt que « prenez ce trade » est la
+bonne approche : c'est du contenu éducatif générique et non une suggestion d'opération.
+
+Réserve honnête : afficher cette méthode **avec les niveaux concrets de cette paire à cet
+instant** reste, en pratique, très proche d'une recommandation, quelle que soit la formulation.
+Ce qui protège réellement reste l'**absence de personnalisation** (voir §2) — la formulation
+pédagogique est une précaution supplémentaire, pas le rempart principal.
 
 ## 8. Architecture et coûts
 
