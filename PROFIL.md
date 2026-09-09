@@ -23,12 +23,14 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 ## Attentes vis-à-vis de Claude
 - Franchise totale, contradiction assumée, recherche systématique de la meilleure option.
 
-## Objectif financier
-- **2 500 € nets/mois minimum**, avec perspective d'évolution.
+## Chiffres
+- Salaire actuel : **2 000 € nets/mois**.
+- Objectif : **2 500 € nets/mois minimum**, avec perspective d'évolution.
+- Condition de départ posée : **15 000 à 20 000 € de côté**, pas en dessous.
+- Disponibilité : **~20 h/semaine** en cumulant les deux activités ; illimité une fois à plein temps sur la nouvelle.
 
 ## À compléter
-- Épargne actuelle (en mois de survie sans revenu).
-- Salaire net actuel (montant à remplacer à terme).
-- Heures réellement disponibles par semaine (hors saison / en saison).
+- Épargne actuelle (point de départ vers les 15-20 k€).
+- Capacité d'épargne mensuelle sur le salaire actuel.
 - Langues parlées, diplômes/certifications.
 - Compétences monnayables identifiées (gestion d'équipe, exploitation, budget, sécurité, recrutement — à valider).
