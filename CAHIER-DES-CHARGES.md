@@ -335,6 +335,8 @@ aucune exposition sur la plateforme, et le besoin d'échange est satisfait.
 | 11 | Compte et abonnement | Abonné | Facturation Stripe |
 | 12 | Mentions légales, CGU, avertissement de risque | Public | §19 |
 
+**Interface, ergonomie, design et temps réel : voir `SPEC-DESIGN.md`.**
+
 **Parcours d'entrée type :** un visiteur arrive par une fiche figure via un moteur de recherche →
 il voit une statistique réelle → il clique sur le journal en direct → il constate que les échecs
 sont publiés aussi → il crée un compte pour les alertes → il importe son journal → il découvre
