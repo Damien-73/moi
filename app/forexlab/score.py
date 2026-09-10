@@ -14,7 +14,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from datetime import timedelta
-from zoneinfo import ZoneInfo
+from .fuseaux import ZoneInfo
 
 from . import niveaux
 from .parametres import RANGE_V1 as R

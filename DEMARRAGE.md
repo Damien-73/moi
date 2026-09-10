@@ -18,7 +18,9 @@ Tape :
 python3 --version
 ```
 
-**Si tu vois `Python 3.11` ou plus** → passe à l'étape 2.
+**Si tu vois `Python 3.9` ou plus** → passe à l'étape 2.
+**Entre 3.7 et 3.8** → ça marche aussi, mais tape d'abord :
+`pip3 install backports.zoneinfo`
 **Sinon** → va sur [python.org/downloads](https://www.python.org/downloads/),
 télécharge, installe. Sur Windows, **coche « Add Python to PATH »** pendant
 l'installation. Ferme le terminal, rouvre-le, retape la commande.

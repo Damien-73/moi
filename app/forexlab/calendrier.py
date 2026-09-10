@@ -7,7 +7,7 @@ pour que le changement d'heure soit absorbé automatiquement.
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
+from .fuseaux import ZoneInfo
 
 NY = ZoneInfo("America/New_York")
 UTC = timezone.utc

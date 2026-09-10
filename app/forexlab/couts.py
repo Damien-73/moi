@@ -6,7 +6,7 @@ Omettre le portage fausse le signe du résultat sur les unités de temps longues
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
+from .fuseaux import ZoneInfo
 
 from .parametres import COUTS_V1
 

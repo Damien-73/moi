@@ -28,6 +28,8 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 UTC = timezone.utc
 BASE = "https://datafeed.dukascopy.com/datafeed"
 ENTETE = {"User-Agent": "Mozilla/5.0"}
