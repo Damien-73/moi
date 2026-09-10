@@ -28,6 +28,7 @@ utilisateur sur son propre comportement.
 | `SPEC-LOT3.md` | Journal prospectif, arbre de Merkle, ancrage externe, vérificateur public | 224 |
 | `SPEC-LOT5.md` | Import du journal utilisateur et écart comportemental | 228 |
 | `SPEC-LOT11.md` | Mode contrainte pour les sociétés de financement | 201 |
+| `SPEC-EVOLUTION.md` | Comment le moteur apprend de ses échecs sans détruire sa reproductibilité | 245 |
 | `SPEC-DESIGN.md` | Interface, ergonomie, système visuel, périmètre du temps réel | 285 |
 | `SPEC-ECRANS.md` | Structure et contenu des douze écrans, avec maquettes | 300 |
 | `SPEC-FIGURES.md` | Définition géométrique du catalogue de figures (lots 8 et 14) | 230 |
@@ -41,7 +42,7 @@ formules, le cahier des charges fait foi sur les principes.
 
 ---
 
-## Les onze décisions qui structurent tout
+## Les douze décisions qui structurent tout
 
 | # | Décision | Pourquoi |
 |---|---|---|
@@ -56,6 +57,7 @@ formules, le cahier des charges fait foi sur les principes.
 | 9 | **Deux accès seulement — individuel et groupe** ; le groupe s'administre lui-même | Sert tous les publics sans ajouter de produit ni d'heure de support |
 | 10 | **Aucun contenu produit par un utilisateur** : ni figure, ni trade, ni commentaire publié | Une seule source, donc une seule vérité. Aucune modération, aucune exposition aux publications de tiers |
 | 11 | **Publier les mauvais chiffres tels quels**, règle écrite avant tout revenu | Seule protection contre la tentation de les trafiquer quand l'abonnement en dépendra |
+| 12 | **Le moteur évolue sur la mesure, presque jamais sur la règle** ; toute nouvelle version passe par un mode fantôme | Un moteur qui s'ajuste après chaque échec apprend le bruit |
 
 ---
 
