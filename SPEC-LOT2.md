@@ -136,12 +136,26 @@ chronologiquement. On considère les `PIVOTS_MIN` derniers pivots, notés `p₁�
 | # | Condition | Formule |
 |---|---|---|
 | C1 | **Alternance** | `p₁…p₄` alternent haut/bas ou bas/haut, sans répétition |
-| C2 | **Bornes** | `borne_haute` = moyenne des pivots hauts ; `borne_basse` = moyenne des pivots bas |
-| C3 | **Cohésion** | Chaque pivot est à moins de `TOLERANCE_BORNE × ATR_t` de sa borne |
-| C4 | **Hauteur** | `HAUTEUR_MIN × ATR_t ≤ (borne_haute − borne_basse) ≤ HAUTEUR_MAX × ATR_t` |
-| C5 | **Durée** | `DUREE_MIN ≤ (barreau(p₄) − barreau(p₁)) ≤ DUREE_MAX` |
-| C6 | **Confinement** | Sur `[barreau(p₁), t]`, au plus `DEBORDEMENT_MAX` des **clôtures** hors `[borne_basse, borne_haute]`. Les mèches sont autorisées |
-| C7 | **Absence de dérive** | Régression linéaire des clôtures sur la fenêtre : `|pente × longueur_fenêtre| ≤ PENTE_MAX × hauteur` |
+| C2 | **Bornes** | `borne_haute` = **maximum** des pivots hauts ; `borne_basse` = **minimum** des pivots bas |
+| C3 | **Hauteur** | `HAUTEUR_MIN × ATR_t ≤ (borne_haute − borne_basse) ≤ HAUTEUR_MAX × ATR_t` |
+| C4 | **Extension arrière** | `debut` recule tant que `borne_basse − tol ≤ clôture ≤ borne_haute + tol` |
+| C5 | **Durée** | `DUREE_MIN ≤ (t − debut) ≤ DUREE_MAX`, mesurée sur la **fenêtre étendue** |
+| C6 | **Confinement** | Sur `[debut, t]`, au plus `DEBORDEMENT_MAX` des **clôtures** hors des bornes élargies de `tol` |
+| C7 | **Absence de dérive** | Régression linéaire des clôtures : `\|pente × longueur\| ≤ PENTE_MAX × hauteur` |
+| C8 | **Touches** | Chaque borne touchée au moins **2 fois** à `TOUCHE_ZONE` près |
+
+> **Correction de conception, issue de la construction.** La première rédaction de ce document
+> définissait les bornes comme la **moyenne** des pivots, et exigeait que chacun soit à moins de
+> `0,25 ATR` de cette moyenne. Mesuré à l'exécution : **cette condition rejette 62 candidats sur
+> 67**, soit plus de 92 %. Elle ne décrivait pas un range.
+>
+> Un range n'est pas une zone où les sommets sont identiques — c'est une zone dont le prix ne
+> parvient pas à sortir. D'où les bornes prises aux **extrêmes**, l'extension arrière de la
+> fenêtre qui donne au range sa vraie durée, et la cohésion mesurée en **touches** plutôt qu'en
+> égalité des pivots.
+>
+> Cette correction n'a pas été obtenue en assouplissant un seuil jusqu'à obtenir des résultats,
+> mais en corrigeant une définition fausse. La distinction est le sujet même du §8.
 
 Le range est **constitué** au barreau `t_c = barreau_confirmation(p₄)`.
 
@@ -585,3 +599,51 @@ reproductible par un tiers.**
 | Sorties partielles, stop suiveur | Méthodes à part entière, à mesurer séparément en `range.v2` |
 | Temps réel infra-bougie | Traitement par lots uniquement |
 | Bornes de range recalculées | Un objet dont la définition change n'est pas mesurable |
+
+
+---
+
+## 12. Constats de construction
+
+*Ce que l'exécution a révélé, et qui n'était pas visible sur le papier.*
+
+### 12.1 Le seuil d'annonce de 0,70 est inatteignable
+
+Distribution des scores mesurée sur 232 détections :
+
+```
+     0%  ████████████████████ 38
+    10%  ██████████████████████████████████ 63
+    20%  ████████████████████████████████████████ 73
+    30%  ██████████████████ 33
+    40%  ██████████ 19
+    50%  ███ 6
+    ≥70%  aucune
+```
+
+**Aucune détection n'atteint 70 % du maximum atteignable.**
+
+La cause est structurelle et elle contredit une décision prise plus tôt dans ce même dossier.
+Le cahier des charges §11.1 démontre qu'exiger l'unanimité des critères est stérile — 0,70¹¹ ≈
+2 % de survie — puis fixe un seuil de 70 % qui, avec des critères individuellement rares
+(niveau rond, divergence, références, régime cohérent), **réintroduit exactement la
+quasi-unanimité qu'il venait d'écarter**.
+
+**Aucun seuil n'est ajusté ici.** L'ajuster pour faire apparaître des annonces serait
+précisément le geste interdit par le §8.6 : choisir un paramètre au vu de ses résultats.
+La conduite prescrite est celle du cahier des charges §31 point 6 — **le seuil est calibré
+sur les données réelles, après 400 occurrences**, et cette distribution est la première mesure
+qui y servira.
+
+**Réserve honnête :** ce constat porte sur des données synthétiques, où la tendance, les
+divergences et les niveaux ronds sont plus rares que sur un marché réel. L'ordre de grandeur
+du problème est établi ; son ampleur exacte ne le sera que sur données réelles.
+
+### 12.2 Un critère négatif doit afficher les points qu'il retire
+
+Le critère de séance pouvait retirer un point tout en affichant `0` dans le détail montré à
+l'utilisateur. L'explication donnée était donc fausse.
+
+**Règle : le détail du score affiche les points RÉELLEMENT appliqués, négatifs compris.**
+Un produit dont l'argument est l'explicabilité ne peut pas se permettre une explication
+approximative — c'est la même exigence que pour les chiffres publiés.
