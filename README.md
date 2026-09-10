@@ -24,6 +24,7 @@ utilisateur sur son propre comportement.
 | **`BRIEF.md`** | **À lire en premier par qui va construire** : la mission, les six interdits, l'ordre, ce que « terminé » veut dire, un exemple complet | 130 |
 | **`CAHIER-DES-CHARGES.md`** | Référence unique et autoportante : produit, méthode, technique, exploitation, exécution. **À lire en premier** | 1 230 |
 | `SPEC-LOT2.md` | Détection du range et calcul du score, au niveau formule | 587 |
+| `SPEC-DONNEES-REFERENCE.md` | Calendrier économique, portage, spread, authentification — les quatre dépendances externes | 190 |
 | `SPEC-LOT3.md` | Journal prospectif, arbre de Merkle, ancrage externe, vérificateur public | 224 |
 | `SPEC-LOT5.md` | Import du journal utilisateur et écart comportemental | 228 |
 | `SPEC-LOT11.md` | Mode contrainte pour les sociétés de financement | 201 |
