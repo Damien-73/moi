@@ -1,6 +1,14 @@
-# Cadre juridique — structure et blocages
+# Cadre juridique — structure
 
 Concerne toutes les pistes : conseil CRM, clipping, vente Amazon, boutique d'objets.
+
+## Créer la micro-entreprise — mode d'emploi
+
+- **Où** : `formalites.entreprises.gouv.fr` (guichet unique). Gratuit, 15 à 30 minutes.
+- **Demandé** : identité, adresse de domiciliation, activités exercées, laquelle est la principale.
+- **Plusieurs activités** : une principale + des secondaires, un seul SIREN.
+- **Ajout ultérieur** : déclaration de modification en ligne, gratuite.
+- **Seul point à régler avant** : l'adresse de domiciliation (voir plus bas), champ obligatoire.
 
 ## Une seule micro-entreprise couvre tout
 
@@ -29,18 +37,13 @@ formulaire, pas de comptabilité.
 **Ajout d'activité ultérieur** : déclaration de modification en ligne, gratuite, ~15 minutes.
 Rien à anticiper aujourd'hui — déclarer ce qui est réellement exercé, compléter au fil de l'eau.
 
-## Contrat de travail — pas de clause d'exclusivité
+## Contrat de travail — réglé
 
-Déclaré par Damien : le contrat autorise l'exercice d'une activité à côté. À confirmer par une
-relecture du texte si l'affirmation vient de la mémoire.
+Aucune clause d'exclusivité. **L'employeur a été consulté et autorise l'activité secondaire.**
+Ce point ne bloque plus aucune piste.
 
-Ce qui s'applique malgré l'absence de clause :
-
-- **Obligation de loyauté**, automatique. Pas de prospection sur le temps ou le matériel de
-  l'employeur, aucun client de son secteur.
-- **Statut de directeur** : la loyauté est appréciée plus strictement pour un cadre dirigeant.
-- **Clause d'information** : distincte de l'exclusivité, elle oblige seulement à prévenir
-  l'employeur. Souvent négligée — à vérifier lors de la relecture.
+Seule règle qui subsiste, automatique : l'obligation de loyauté — pas de prospection sur le temps
+ou le matériel de l'employeur, aucun client de son secteur.
 
 ## Domiciliation — contrainte propre au logement de fonction
 
@@ -67,6 +70,9 @@ Sans effet à court terme au vu des montants visés.
 Ces obligations ne concernent pas les prestations de services ni le clipping.
 
 ## Démission-reconversion — droits au chômage après démission
+
+> **Hors sujet immédiat.** Conservé ici comme référence uniquement. À ressortir vers le mois 9,
+> pas avant. Aucune action attendue aujourd'hui.
 
 Une démission n'ouvre normalement aucun droit. Le dispositif de **démission-reconversion** fait
 exception et couvre le cas présent.
