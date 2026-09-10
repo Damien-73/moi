@@ -216,6 +216,40 @@ Cette capacité est encore marquée « à confirmer » dans `PROFIL.md`.
 
 Dans les deux cas, la réponse n'est pas le clipping.
 
+### Position révisée : accepté sous plafond strict
+
+Objection retenue de Damien : le clipping n'est pas présenté comme un avenir ni comme une priorité,
+mais comme un pari secondaire à faible coût, lancé tôt parce que les retombées sont lentes,
+et révisable plus tard. Cette formulation est différente des précédentes et elle tient en partie.
+
+**Concessions :** 300 €/mois avait été admis comme atteignable, puis traité comme nul — incohérent.
+300 €/mois représente 15 % du salaire actuel.
+
+**Chiffre manquant, décisif :** 300-500 €/mois supposent ~30 clips/jour, donc le pipeline complet
+(40-60 h de construction). La version à 4 h/semaine produit 5-10 clips/jour, soit **~100-150 €/mois**,
+soit **~9 €/h** — proche du taux horaire actuel au chalet. La vraie question n'est donc pas
+« 300 € est-il négligeable » mais « 150 € valent-ils 4 h/semaine, avec option de monter plus tard ».
+
+**Ce qui a réellement un délai :** pas la construction du pipeline (2-3 semaines, faisable à tout
+moment), mais **l'apprentissage de ce qui performe** (hooks, formats, niches) — plusieurs mois
+d'itération. C'est donc l'itération qu'il faut démarrer tôt, pas la construction.
+
+**Cadre retenu :**
+
+1. **Outils d'auto-découpe existants**, pas de pipeline maison. ~2 h de mise en route.
+2. **Plafond dur : 4 h/semaine**, jamais prises sur les livrables du mois 1.
+3. 2-3 comptes, une niche, publication quotidienne, relevé de ce qui performe.
+4. **Porte de sortie au mois 3** : < 100 €/mois → arrêt. ≥ 200 €/mois à 4 h/semaine → conservé,
+   industrialisation envisagée.
+5. **Arrêt immédiat** si un livrable du mois 1 prend du retard.
+
+Le pipeline maison reste en Priorité 4 (mois 7-9), comme compétence n8n facturée à un client,
+jamais comme pari sur le CPM.
+
+**Donnée bloquante :** `PROFIL.md` indique ~20 h/semaine, intégralement consommées par
+`PLAN-MOIS-1.md`. Le cadre ci-dessus n'est neutre que si la disponibilité réelle atteint 28-30 h.
+À 20 h, les 4 h se prennent sur la formation. **Disponibilité hebdomadaire réelle à quantifier.**
+
 ## Séquence proposée
 
 | Mois | Objectif |

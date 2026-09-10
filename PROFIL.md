@@ -19,6 +19,9 @@ Dernière mise à jour : 2026-09-09. Statut : en construction (les `?` sont à c
 ## Niveau
 - **Novice** (pas de compétence technique/entrepreneuriale constituée à ce jour).
 - Temps hebdomadaire disponible : déclaré important (à quantifier, et à corriger en haute saison).
+- **Point bloquant ouvert** : 20 h/semaine déclarées, mais entièrement consommées par le plan mois 1.
+  Toute activité secondaire (ex. clipping plafonné à 4 h) suppose une disponibilité réelle de 28-30 h.
+  À mesurer avant d'ajouter quoi que ce soit au plan.
 
 ## Attentes vis-à-vis de Claude
 - Franchise totale, contradiction assumée, recherche systématique de la meilleure option.
