@@ -16,6 +16,11 @@ Aucun client à chercher ce mois-ci. Aucun revenu attendu. Une seule chose à pr
 - **Micro-entreprise** : à créer seulement au moment de la première facture, pas avant.
   Création en ligne, gratuite, 15 minutes.
 
+- **Dépenses réelles mensuelles** : relever le total des 3 derniers mois sur les relevés bancaires
+  (nourriture, chien, assurance, téléphone, transport, abonnements). 30 minutes. C'est ce chiffre
+  qui détermine si le capital ou le revenu récurrent est la contrainte bloquante du départ,
+  et il conditionne la date de démission.
+
 ## Choix de l'outil
 
 **Klaviyo.** C'est le standard du e-commerce, ses spécialistes sont les mieux payés du segment

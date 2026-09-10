@@ -176,6 +176,46 @@ marque francophone paie 500-1 000 €/mois pour l'automatisation de *son* propre
 construction technique, avec contrat et récurrence. C'est la Priorité 4 (mois 7-9), et la même
 conclusion que pour le dropshipping : être payé pour apprendre plutôt que payer pour apprendre.
 
+### Objection examinée : « en complément, ça fait toujours du capital en plus »
+
+Argument : 3-6 h/semaine pour 200-500 €/mois, en parallèle de la formation. Il n'y a pas de petites
+économies, et cet argent grossit le capital de départ.
+
+**Le capital n'est pas la contrainte bloquante.** Les deux seuils de démission ne tombent pas en
+même temps :
+
+| Seuil | Atteint |
+|---|---|
+| Réserve ≥ 15 000 € | **Mois 9** (3 000 € + ~1 400 €/mois) |
+| 3 mois consécutifs à 2 000 € **récurrents** | **Mois 12-14** |
+
+À la date où la démission est possible, la réserve atteint ~19 800 € pour un seuil de 15 000 € :
+**4 800 € de marge déjà inutilisée**. Le clipping (350 €/mois × 12 = 4 200 € brut ≈ 3 300 € net)
+porterait cette marge inutile à 8 100 €. **Il n'avance la démission d'aucun jour.**
+
+**Son coût tombe au pire moment.** La construction (40-60 h) se situe pendant les mois 1 à 3, la
+phase de preuve : 80-100 h ponctionnées sur un budget de 240 h, soit **33 à 40 %**. Conséquence
+probable : première vente repoussée au mois 4-5 — c'est-à-dire le déclenchement du critère d'abandon
+du plan mois 1 sur un retard auto-infligé.
+
+**Erreur de raisonnement :** « il n'y a pas de petites économies » vaut pour une *économie*, qui coûte
+zéro heure. Le clipping est un *investissement de la ressource rare*. La règle ne se transporte pas
+d'un problème à l'autre.
+
+**Condition de validité de l'objection :** elle ne tient que si la capacité d'épargne réelle est
+**inférieure à ~1 000 €/mois**, seuil au-delà duquel 15 000 € demandent plus de 12 mois.
+Cette capacité est encore marquée « à confirmer » dans `PROFIL.md`.
+
+**Action de résolution (30 min, semaine 1) :** relevés bancaires sur 3 mois, total des dépenses réelles
+(nourriture, chien, assurance, téléphone, transport, abonnements).
+
+- Épargne ≥ 1 000 €/mois → le clipping est sans effet sur la date de départ. Abandon définitif.
+- Épargne < 1 000 €/mois → le problème est la structure de dépenses, pas le revenu. Couper 300 €/mois
+  de dépenses est gratuit en temps, immédiat et sans risque de bannissement : supérieur au clipping
+  sur tous les critères.
+
+Dans les deux cas, la réponse n'est pas le clipping.
+
 ## Séquence proposée
 
 | Mois | Objectif |
