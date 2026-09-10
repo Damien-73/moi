@@ -1,0 +1,1653 @@
+<title>Le Milieu</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+  :root{
+    --nuit:#0D0E0C; --fumee:#161814; --cendre:#22251E; --trait:#33372C;
+    --os:#E8E3D5; --brume:#8E8C7E; --sang:#93251E; --sang-clair:#C2493F;
+    --laiton:#B3893A; --vert:#5E7A4E;
+    --display:"Bodoni Moda",Georgia,serif;
+    --corps:"Spectral",Georgia,serif;
+    --data:"Courier Prime",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--nuit);color:var(--os);font-family:var(--corps);
+    font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;margin:0}
+  .page{max-width:580px;margin:0 auto;padding:0 20px;padding-block:0 64px}
+  h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;line-height:1.15}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  .eyebrow{font-family:var(--data);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--brume)}
+
+  /* ── barre d'état ───────────────────────────────── */
+  .etat{position:sticky;top:0;z-index:20;background:rgba(13,14,12,.94);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--trait);
+    margin:0 -20px;padding:10px 20px 9px}
+  .etat-haut{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .semaine{font-family:var(--data);font-size:11px;letter-spacing:.16em;color:var(--brume);text-transform:uppercase}
+  .argent{font-family:var(--data);font-size:15px;font-weight:700;color:var(--laiton);
+    font-variant-numeric:tabular-nums}
+  .jauges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:9px}
+  .jauge-nom{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brume);display:flex;justify-content:space-between}
+  .jauge-nom b{color:var(--os);font-weight:400;font-variant-numeric:tabular-nums}
+  .rail{height:2px;background:var(--cendre);margin-top:4px;overflow:hidden}
+  .fill{height:100%;background:var(--brume);transition:width .5s cubic-bezier(.2,.7,.3,1)}
+  .fill.chaud{background:var(--sang-clair)}
+  .fill.loyal{background:var(--vert)}
+  .onglets{display:flex;gap:18px;margin-top:10px}
+  .onglets button{font-family:var(--data);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brume);padding:2px 0;border-bottom:1px solid transparent}
+  .onglets button:hover,.onglets button:focus-visible{color:var(--os);border-bottom-color:var(--laiton)}
+
+  /* ── scène ──────────────────────────────────────── */
+  .scene{padding-block:34px 0}
+  .scene h2{font-size:clamp(28px,8vw,38px);margin:8px 0 20px;letter-spacing:-.01em}
+  .prose p{margin:0 0 16px;max-width:62ch}
+  .prose p:first-child::first-letter{font-family:var(--display);font-size:3.1em;
+    float:left;line-height:.82;padding:4px 10px 0 0;color:var(--laiton);font-weight:900}
+  .dit{color:var(--brume);font-style:italic}
+
+  /* ── choix ──────────────────────────────────────── */
+  .choix{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+  .choix button{display:block;width:100%;text-align:left;background:var(--fumee);
+    border:1px solid var(--trait);border-left-width:2px;padding:14px 16px;
+    transition:background .18s,border-color .18s,transform .12s}
+  .choix button:hover,.choix button:focus-visible{background:var(--cendre);
+    border-color:var(--brume);transform:translateX(2px);outline:none}
+  .choix button.mortel{border-left-color:var(--sang)}
+  .choix button.mortel:hover,.choix button.mortel:focus-visible{border-color:var(--sang-clair)}
+  .marque{display:block;font-family:var(--data);font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--sang-clair);margin-top:7px}
+  .marque.calme{color:var(--brume)}
+
+  /* ── résultat ───────────────────────────────────── */
+  .resultat{margin-top:26px;border-top:1px solid var(--trait);padding-top:22px}
+  .deltas{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 0}
+  .delta{font-family:var(--data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--trait);padding:4px 9px;color:var(--brume);font-variant-numeric:tabular-nums}
+  .delta.plus{color:var(--laiton);border-color:#4a3a18}
+  .delta.moins{color:var(--sang-clair);border-color:#4a201c}
+  .cause{margin-top:20px;border-left:2px solid var(--laiton);padding:2px 0 2px 14px;
+    font-family:var(--data);font-size:12px;line-height:1.6;color:var(--brume)}
+  .cause b{color:var(--os);font-weight:400}
+  .suite{margin-top:26px;width:100%;border:1px solid var(--os);padding:13px;
+    font-family:var(--data);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    text-align:center;transition:background .18s,color .18s}
+  .suite:hover,.suite:focus-visible{background:var(--os);color:var(--nuit);outline:none}
+
+  /* ── panneaux ───────────────────────────────────── */
+  .voile{position:fixed;inset:0;z-index:30;background:rgba(8,9,8,.86);
+    overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .panneau{max-width:580px;margin:0 auto;padding:0 20px;padding-block:26px 60px}
+  .panneau h3{font-size:24px;margin-bottom:4px}
+  .fermer{position:sticky;top:0;float:right;font-family:var(--data);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--brume);padding:6px 0}
+  .fermer:hover{color:var(--os)}
+  .fiche{border-top:1px solid var(--trait);padding-block:16px}
+  .fiche-haut{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .fiche-nom{font-family:var(--display);font-size:19px;font-weight:700}
+  .statut{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    white-space:nowrap;padding:3px 8px;border:1px solid var(--trait);color:var(--brume)}
+  .statut.mort{color:var(--sang-clair);border-color:#4a201c}
+  .statut.dedans{color:var(--laiton);border-color:#4a3a18}
+  .role{color:var(--brume);font-size:15px;margin:4px 0 0}
+  .memoire{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:6px}
+  .memoire li{font-family:var(--data);font-size:12px;line-height:1.55;color:var(--brume);
+    padding-left:16px;position:relative}
+  .memoire li::before{content:"—";position:absolute;left:0;color:var(--trait)}
+  .barrette{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+  .barrette span{font-family:var(--data);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--brume);font-variant-numeric:tabular-nums}
+  .barrette b{color:var(--os);font-weight:400}
+
+  .maillon{border-left:1px solid var(--trait);padding:0 0 22px 20px;position:relative;margin-left:6px}
+  .maillon::before{content:"";position:absolute;left:-4.5px;top:7px;width:8px;height:8px;
+    background:var(--nuit);border:1px solid var(--brume);border-radius:50%}
+  .maillon.effet::before{background:var(--laiton);border-color:var(--laiton)}
+  .maillon:last-child{border-left-color:transparent}
+  .maillon .quand{font-family:var(--data);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brume)}
+  .maillon .quoi{font-size:15.5px;margin-top:2px}
+  .maillon .lien{font-family:var(--data);font-size:11.5px;color:var(--laiton);margin-top:5px;line-height:1.55}
+  .vide{color:var(--brume);font-style:italic;padding-block:20px}
+
+  /* ── écrans ─────────────────────────────────────── */
+  .titre-jeu{padding-block:56px 0}
+  .titre-jeu h1{font-size:clamp(46px,17vw,78px);font-weight:900;letter-spacing:-.03em;line-height:.92}
+  .sous{font-size:19px;color:var(--brume);margin:14px 0 0;max-width:34ch}
+  .amorce{margin-top:30px;border-top:1px solid var(--trait);padding-top:22px}
+  .regles{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+  .regles li{font-family:var(--data);font-size:12.5px;line-height:1.6;color:var(--brume);
+    padding-left:22px;position:relative}
+  .regles li b{color:var(--os);font-weight:400}
+  .regles li::before{counter-increment:r;content:counter(r,decimal-leading-zero);
+    position:absolute;left:0;color:var(--trait)}
+  .regles{counter-reset:r}
+  .fin h2{font-size:clamp(32px,10vw,44px);color:var(--laiton)}
+  .bilan{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--trait);
+    border:1px solid var(--trait);margin-top:26px}
+  .bilan div{background:var(--nuit);padding:14px}
+  .bilan .k{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brume)}
+  .bilan .v{font-family:var(--data);font-size:19px;color:var(--os);
+    font-variant-numeric:tabular-nums;margin-top:3px}
+
+  .apparait{animation:monte .5s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes monte{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+
+<div class="page">
+  <div class="etat" id="etat" hidden>
+    <div class="etat-haut">
+      <span class="semaine" id="semaine">Semaine 01</span>
+      <span class="argent" id="argent">400 €</span>
+    </div>
+    <div class="jauges">
+      <div>
+        <div class="jauge-nom">Respect <b id="v-respect">12</b></div>
+        <div class="rail"><div class="fill" id="f-respect" style="width:12%"></div></div>
+      </div>
+      <div>
+        <div class="jauge-nom">Chaleur <b id="v-chaleur">5</b></div>
+        <div class="rail"><div class="fill chaud" id="f-chaleur" style="width:5%"></div></div>
+      </div>
+      <div>
+        <div class="jauge-nom">Équipe <b id="v-loyaute">50</b></div>
+        <div class="rail"><div class="fill loyal" id="f-loyaute" style="width:50%"></div></div>
+      </div>
+    </div>
+    <div class="onglets">
+      <button id="btn-dossier" type="button">Le dossier</button>
+      <button id="btn-chaine" type="button">La chaîne</button>
+      <button id="btn-recommencer" type="button">Recommencer</button>
+    </div>
+  </div>
+
+  <main id="scene"></main>
+</div>
+
+<div class="voile" id="voile" hidden>
+  <div class="panneau">
+    <button class="fermer" id="btn-fermer" type="button">Fermer ×</button>
+    <div id="contenu-panneau"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   LE MILIEU — moteur à conséquences
+   Principe : aucun arbre de dialogue. Les choix modifient un
+   état du monde et programment des événements différés qui
+   citent leur cause. La causalité est visible, pas suggérée.
+   ═══════════════════════════════════════════════════════════ */
+
+const FICHES = {
+  serge:{nom:'Serge Vidal',role:'Ton patron. Tient les docks depuis vingt-deux ans. Ne crie jamais.'},
+  karim:{nom:'Karim Belkacem',role:'Dix-neuf ans. Court vite, réfléchit lentement. Te doit tout.'},
+  nadia:{nom:'Nadia Belkacem',role:'Sa sœur. Tient le bar du Phare. Voit tout, ne dit rien.'},
+  dris:{nom:'Dris Amrani',role:"Ton ami d'enfance. Le seul qui te tutoie devant Serge."},
+  tonio:{nom:'Tonio Sacco',role:"L'équipe d'en face. Ambitieux, patient, propre sur lui."},
+  vialat:{nom:'Commissaire Vialat',role:'Stups. Un prix connu de tous, un montant connu de personne.'},
+  abitbol:{nom:'Madame Abitbol',role:'Prête, rachète, oublie — contre intérêts hebdomadaires.'}
+};
+
+function neuf(){
+  const g = {};
+  for(const id in FICHES) g[id] = {statut:'vivant',rancune:0,dette:0,memoire:[]};
+  return {
+    semaine:1, argent:400, respect:12, chaleur:5, loyaute:50,
+    gens:g, drapeaux:{}, actes:[], chaine:[], file:[], joue:{}, fin:null
+  };
+}
+let S = neuf();
+
+/* ── helpers d'état ───────────────────────────────────────── */
+const borne = n => Math.max(0, Math.min(100, n));
+const G = id => S.gens[id];
+function souvient(id, texte){
+  const g = G(id);
+  if(!g.memoire.includes(texte)) g.memoire.push(texte);
+}
+function programme(dans, evenement, causeIdx){
+  S.file.push({du:S.semaine + dans, evenement, cause:causeIdx});
+}
+
+/* ═══ SCÈNES ══════════════════════════════════════════════
+   cond  : condition d'apparition (état du monde)
+   prio  : 2 = urgent, 0 = ordinaire
+   diff  : scène déclenchée uniquement par la file d'attente
+   ═══════════════════════════════════════════════════════ */
+const SCENES = {
+
+/* ---------- ouverture ---------- */
+ouverture:{
+  lieu:'Bar du Phare', titre:'La collecte',
+  texte:()=>`Serge pose son café et fait glisser un papier sur le zinc. Un nom, une adresse, un chiffre : <b>3 000</b>. Le garagiste de la rue Loubon a trois semaines de retard.
+  <p><span class="dit">« Tu me le ramènes ce soir. Comment, ça te regarde. »</span></p>
+  <p>Derrière le comptoir, Nadia essuie un verre qui est déjà sec. Karim attend dehors, adossé au scooter, et te regarde par la vitre comme un chien attend la laisse.</p>`,
+  choix:[
+    {t:'Y aller seul et casser quelque chose dans le garage.',
+     marque:'Rapide. Bruyant.',
+     fait(){ S.argent+=3000; S.respect+=8; S.chaleur+=9;
+       souvient('serge','Tu as ramené les 3 000 le soir même.');
+       return `Tu prends la clé à molette et tu descends le pare-brise de sa Mercedes. Il ouvre son coffre avant même que tu aies fini. Serge compte les billets sans lever les yeux — c'est sa façon de dire bien.
+       <p>Le garagiste, lui, a un beau-frère aux impôts et une longue mémoire.</p>`;
+     }, apres(i){ programme(6,'plainte_garagiste',i); }},
+
+    {t:'Emmener Karim. Lui laisser faire la voix, tu fais l’ombre.',
+     marque:'Il apprend. Tu observes.', calme:true,
+     fait(){ S.argent+=2200; S.respect+=4; S.chaleur+=3; S.loyaute+=10;
+       G('karim').dette+=30;
+       souvient('karim','Tu l’as emmené sur ta première collecte au lieu d’y aller seul.');
+       return `Karim parle trop vite, transpire, bafouille son texte — et le garagiste sort quand même 2 200. Huit cents manquent. Serge hausse un sourcil et ne dit rien : il te laisse le trou à combler.
+       <p>Dans la voiture, Karim n'arrête pas de parler. Il t'appelle « chef ». Tu ne le reprends pas.</p>`;
+     }},
+
+    {t:'Lui vendre un délai contre 25 % d’intérêts hebdomadaires.',
+     marque:'Personne ne saigne. Tout le monde compte.', calme:true,
+     fait(){ S.respect-=3; S.chaleur+=1; S.drapeaux.garagiste_rente=true;
+       souvient('serge','Tu as préféré le contrat à la peur.');
+       return `Tu t'assieds sur un bidon d'huile et tu lui montres le calcul au dos du papier. Il signe. Il te sert même un café.
+       <p>Serge, quand tu lui expliques, met longtemps à répondre. <span class="dit">« Les intérêts, c'est bien. Mais un type qui n'a pas peur de toi, un jour il ne paie plus. »</span></p>`;
+     }, apres(i){ programme(5,'rente_garagiste',i); }}
+  ]
+},
+
+/* ---------- le pivot : Karim vole ---------- */
+karim_vole:{
+  lieu:'Entrepôt 4, quai Est', titre:'Six cents euros',
+  cond:()=> S.semaine>=3 && G('karim').statut==='vivant',
+  prio:2,
+  texte:()=>`Il manque six cents euros dans la caisse de la semaine. Tu n'as pas eu à chercher longtemps : Karim porte des baskets neuves et il n'ose pas te regarder les pieds.
+  <p>Il est debout au milieu de l'entrepôt, les bras le long du corps. Dris est adossé au rideau de fer et attend de voir ce que tu es.</p>
+  <p><span class="dit">« C'est pour ma sœur. Le bar, le loyer, je te jure sur ma mère. »</span></p>
+  <p>Serge apprendra le trou avant dimanche. La seule question, c'est ce qu'il apprendra d'autre.</p>`,
+  choix:[
+    {t:'Le buter dans l’entrepôt. Dris regarde.',
+     marque:'Irréversible', mortel:true,
+     fait(){ G('karim').statut='mort'; S.respect+=16; S.chaleur+=14; S.loyaute-=22;
+       S.drapeaux.karim_mort=true;
+       G('nadia').rancune+=70; souvient('nadia','Son frère n’est pas rentré. Elle sait par qui.');
+       souvient('dris','Il t’a vu tuer un gamin de dix-neuf ans pour six cents euros.');
+       return `Deux détonations, très courtes, presque décevantes. Dris n'a pas bougé d'un millimètre et c'est ça, le pire.
+       <p>Le quartier apprend la nouvelle en trois jours. Plus personne ne compte deux fois devant toi. Plus personne ne rit non plus quand tu entres quelque part.</p>`;
+     }, apres(i){ programme(4,'nadia_deuil',i); programme(9,'dris_recule',i); }},
+
+    {t:'Combler le trou avec ton argent. Personne ne saura.',
+     marque:'600 € de ta poche. Et un secret à tenir.', calme:true,
+     fait(){ S.argent-=600; S.loyaute+=16; G('karim').dette+=60;
+       S.drapeaux.trou_cache=true;
+       souvient('karim','Tu as payé sa faute de ta poche et tu t’es tu.');
+       souvient('dris','Il t’a vu couvrir un voleur. Il ne sait pas encore si c’est de la force.');
+       return `Tu remets six cents billets dans la caisse sans un mot. Karim pleure comme un môme et jure des choses qu'il ne tiendra peut-être pas.
+       <p>Dris te suit dehors. <span class="dit">« Tu viens d'acheter un homme, ou tu viens de t'acheter un problème. On saura dans six mois. »</span></p>`;
+     }, apres(i){ programme(7,'serge_apprend',i); programme(11,'karim_rembourse',i); }},
+
+    {t:'Le livrer à Serge et laisser faire.',
+     marque:'Propre pour toi. Pas pour lui.',
+     fait(){ G('karim').statut='infirme'; S.respect+=6; S.loyaute-=12; G('karim').rancune+=55;
+       G('nadia').rancune+=30;
+       souvient('karim','Tu l’as livré. Il a perdu l’usage de sa main droite.');
+       souvient('serge','Tu lui as remis un voleur au lieu de régler toi-même.');
+       return `Serge écoute, hoche la tête, remercie. Deux jours plus tard on retrouve Karim assis contre un mur, la main droite dans un état qui ne se répare pas.
+       <p>Il vit. Il te salue toujours quand tu passes. Il met un temps très légèrement trop long à le faire.</p>`;
+     }, apres(i){ programme(8,'karim_balance',i); }}
+  ]
+},
+
+/* ---------- Vialat ---------- */
+vialat_offre:{
+  lieu:'Parking du stade', titre:'Le tarif du commissaire',
+  cond:()=> S.semaine>=4 && S.chaleur>=15 && G('vialat').statut==='vivant',
+  texte:()=>`Vialat baisse sa vitre et te tend un gobelet de café qu'il a acheté en double, exprès. Il connaît ton prénom, celui de ta mère, et le montant de la caisse de mardi.
+  <p><span class="dit">« Deux mille par mois et vos entrepôts deviennent ennuyeux à surveiller. Refusez, je le prendrai très bien. Simplement je m'ennuierai. »</span></p>`,
+  choix:[
+    {t:'Payer. Tous les mois, sans discuter.',
+     marque:'2 000 € / mois. Un flic à toi.', calme:true,
+     fait(){ S.argent-=2000; S.chaleur-=22; S.drapeaux.vialat_paye=true;
+       G('vialat').dette+=40;
+       souvient('vialat','Il est sur ta liste de paie depuis la semaine '+S.semaine+'.');
+       return `Tu poses l'enveloppe sur le siège passager. Il ne la compte pas — il la fait glisser dans la boîte à gants comme on range une amende.
+       <p>La semaine suivante, deux rondes disparaissent du quai Est. Le mois est calme. Le mois est cher.</p>`;
+     }, apres(i){ programme(10,'vialat_augmente',i); }},
+
+    {t:'Refuser poliment et espacer les livraisons.',
+     marque:'Gratuit. Et lent.', calme:true,
+     fait(){ S.chaleur+=8; S.argent-=400; G('vialat').rancune+=25;
+       souvient('vialat','Tu as refusé son arrangement en le regardant dans les yeux.');
+       return `Tu lui rends le café sans y avoir touché. Il sourit vraiment, pour la première fois.
+       <p>Le trafic passe désormais par la nuit et par des chemins plus longs. Ça coûte du temps, du carburant et deux clients impatients.</p>`;
+     }, apres(i){ programme(6,'descente',i); }},
+
+    {t:'Enregistrer la conversation et garder le fichier.',
+     marque:'Une arme. Qui coupe des deux côtés.',
+     fait(){ S.drapeaux.bande_vialat=true; S.chaleur+=4; G('vialat').rancune+=10;
+       souvient('vialat','Tu détiens un enregistrement de sa demande. Il ne le sait pas.');
+       return `Le téléphone est resté allumé dans ta poche pendant les quatre minutes. La qualité est mauvaise, sa proposition est parfaitement audible.
+       <p>Tu ne dis rien. Tu paies le premier mois pour ne pas éveiller de soupçon, et tu ranges le fichier à trois endroits différents.</p>`;
+     }, apres(i){ S.argent-=2000; programme(12,'bande_utile',i); }}
+  ]
+},
+
+/* ---------- Tonio ---------- */
+tonio_empiete:{
+  lieu:'Rue Loubon', titre:'Trois vitrines',
+  cond:()=> S.semaine>=5 && G('tonio').statut==='vivant',
+  texte:()=>`Trois commerçants de ta rue paient désormais Tonio Sacco. Ils ne s'en cachent même pas : ils t'expliquent le tarif, gênés, comme on annonce un changement de fournisseur.
+  <p>Tonio ne t'a pas prévenu. Il n'a pas non plus envoyé quelqu'un. C'est plus insultant que s'il l'avait fait.</p>`,
+  choix:[
+    {t:'Brûler sa camionnette devant chez lui, de nuit.',
+     marque:'Il comprendra. Tout le monde comprendra.',
+     fait(){ S.respect+=12; S.chaleur+=16; G('tonio').rancune+=60;
+       souvient('tonio','Tu as brûlé sa camionnette sous ses fenêtres.');
+       return `Elle brûle bien, une camionnette. Ça éclaire toute la rue et ça réveille quarante témoins qui n'ont rien vu.
+       <p>Les trois commerçants reviennent chez toi dès le lendemain. Tonio, lui, n'a rien dit du tout.</p>`;
+     }, apres(i){ programme(5,'tonio_riposte',i); }},
+
+    {t:'Lui proposer un partage : sa rue, ta rue, une frontière écrite.',
+     marque:'Moins d’argent. Moins de morts.', calme:true,
+     fait(){ S.respect-=5; S.argent-=800; S.chaleur-=4; S.drapeaux.pacte_tonio=true;
+       G('tonio').dette+=20;
+       souvient('tonio','Vous avez tracé une frontière ensemble, à deux, sans témoin.');
+       return `Vous vous voyez dans un restaurant vide, à quinze heures. Il écoute, corrige deux points, accepte le reste. Vous ne vous serrez pas la main : vous vous levez en même temps.
+       <p>Serge trouve ça faible. Serge n'a pas fait la guerre depuis douze ans.</p>`;
+     }, apres(i){ programme(9,'tonio_tient',i); }},
+
+    {t:'Ne rien faire. Regarder combien de temps il tient.',
+     marque:'Patience. Ou lâcheté. On verra.', calme:true,
+     fait(){ S.respect-=9; S.argent-=1200; S.drapeaux.tonio_libre=true;
+       souvient('tonio','Tu l’as laissé prendre trois vitrines sans réagir.');
+       return `Rien. Pendant deux semaines, rien. Les commerçants cessent de te saluer les premiers.
+       <p>Dris te demande si tu as un plan. Tu réponds que oui. Ce n'est pas encore tout à fait vrai.</p>`;
+     }, apres(i){ programme(6,'tonio_avance',i); }}
+  ]
+},
+
+/* ---------- Nadia ---------- */
+nadia_bar:{
+  lieu:'Bar du Phare', titre:'Les livres du bar',
+  cond:()=> S.semaine>=6 && G('nadia').statut==='vivant' && !S.drapeaux.karim_mort,
+  texte:()=>`Nadia ferme le rideau, sert deux verres et pose un cahier entre vous. Le bar perd de l'argent depuis huit mois. Elle a besoin de neuf mille euros ou elle vend.
+  <p><span class="dit">« Je ne te demande pas la charité. Je te demande combien tu veux dessus. »</span></p>`,
+  choix:[
+    {t:'Racheter 40 % du bar. Ça devient ta lessiveuse.',
+     marque:'9 000 € — et un lieu propre pour l’argent sale.',
+     fait(){ S.argent-=9000; S.drapeaux.bar_lessive=true; S.chaleur-=6; G('nadia').dette+=50;
+       souvient('nadia','Tu détiens 40 % du Phare. Elle tient les comptes.');
+       return `Elle signe sans rien négocier, ce qui te met vaguement mal à l'aise. Dès le mois suivant, le bar déclare des recettes qu'il n'a jamais faites, et l'argent en ressort blanc comme un drap.
+       <p>Elle ne pose aucune question sur les chiffres. C'est exactement ce que tu voulais, et ça te dérange quand même.</p>`;
+     }, apres(i){ programme(4,'bar_rapporte',i); }},
+
+    {t:'Lui prêter neuf mille sans intérêt et sans papier.',
+     marque:'Rien à gagner. Sauf elle.', calme:true,
+     fait(){ S.argent-=9000; G('nadia').dette+=90; S.loyaute+=8;
+       souvient('nadia','Tu lui as prêté 9 000 € sans papier et sans intérêt.');
+       return `Elle refuse deux fois avant d'accepter. Il n'y a pas de reconnaissance de dette, pas de témoin, pas d'échéance.
+       <p>Madame Abitbol, elle, prête à 12 % et n'a jamais perdu un centime. Tu viens de faire l'inverse d'un professionnel.</p>`;
+     }, apres(i){ programme(8,'nadia_rend',i); }},
+
+    {t:'Refuser. Le bar est un point de rendez-vous, pas un investissement.',
+     marque:'Froid. Et juste.', calme:true,
+     fait(){ G('nadia').rancune+=25; S.respect+=2;
+       souvient('nadia','Tu as refusé de l’aider en la regardant plier son cahier.');
+       return `Tu lui expliques que mêler l'argent et l'affection fait perdre les deux. Elle range le cahier lentement, hoche la tête, et te ressert un verre que tu ne bois pas.
+       <p>Elle vend 30 % à quelqu'un d'autre trois semaines plus tard. Tu ne sais pas encore à qui.</p>`;
+     }, apres(i){ programme(7,'bar_vendu',i); }}
+  ]
+},
+
+/* ---------- Serge ---------- */
+serge_test:{
+  lieu:'Villa des Goudes', titre:'La question de Serge',
+  cond:()=> S.semaine>=9 && S.respect>=35,
+  texte:()=>`Serge te reçoit chez lui, ce qui n'arrive pas. Il te fait visiter un jardin qu'il n'entretient pas et te parle de son fils, qui est notaire à Lyon et qui ne rappelle jamais.
+  <p>Puis, sans transition : <span class="dit">« Si je tombe, qui prend ? »</span></p>
+  <p>Ce n'est pas une question. C'est un piège, une offre, ou les deux.</p>`,
+  choix:[
+    {t:'« Toi. Tu ne tombes pas. »',
+     marque:'La bonne réponse. Peut-être.', calme:true,
+     fait(){ S.loyaute+=10; S.respect+=4; S.drapeaux.serge_rassure=true;
+       souvient('serge','Tu as refusé de te désigner toi-même quand il t’a tendu la perche.');
+       return `Il rit franchement, pour la première fois depuis que tu le connais, et te sert un alcool qui coûte plus cher que ta voiture.
+       <p>Sur le pas de la porte, il ajoute : <span class="dit">« Dommage. J'aurais préféré que tu répondes autre chose. »</span></p>`;
+     }},
+
+    {t:'« Moi. Et tu le sais, sinon je ne serais pas dans ton jardin. »',
+     marque:'Il te jauge à cette seconde exacte.',
+     fait(){ S.respect+=14; S.drapeaux.heritier=true; G('serge').rancune+=15;
+       souvient('serge','Tu t’es désigné toi-même, devant lui, dans son jardin.');
+       return `Silence de six secondes. Puis il pose sa main sur ta nuque, comme un père, et serre un peu plus fort que nécessaire.
+       <p><span class="dit">« Bien. Maintenant tout le monde va le savoir, et je ne le dirai à personne. »</span></p>`;
+     }, apres(i){ programme(6,'succession',i); }},
+
+    {t:'« Dris. Il est plus solide que moi. »',
+     marque:'Offrir la place à un autre.', calme:true,
+     fait(){ S.loyaute+=20; S.respect-=6; S.drapeaux.dris_designe=true;
+       souvient('dris','Tu as donné son nom à Serge alors que la place t’était offerte.');
+       souvient('serge','Tu as désigné Dris à ta place.');
+       return `Serge ne s'y attendait pas. Il te regarde longuement, cherche le calcul, ne le trouve pas.
+       <p>Dris l'apprend le soir même — le quartier va vite. Il ne t'en parle jamais directement. Il vient simplement plus souvent, et plus tôt.</p>`;
+     }, apres(i){ programme(8,'dris_fidele',i); }}
+  ]
+},
+
+/* ---------- Abitbol ---------- */
+abitbol_dette:{
+  lieu:'Arrière-boutique, cours Julien', titre:'Douze pour cent',
+  cond:()=> S.argent < 500 && S.semaine>=4,
+  prio:1,
+  texte:()=>`Il te reste de quoi tenir onze jours. Madame Abitbol te fait asseoir dans un fauteuil trop bas et sert un thé trop sucré.
+  <p><span class="dit">« Dix mille. Douze pour cent la semaine. Et je ne veux jamais entendre parler de vous ailleurs qu'ici. »</span></p>`,
+  choix:[
+    {t:'Prendre les dix mille.',
+     marque:'1 200 € par semaine. Chaque semaine.',
+     fait(){ S.argent+=10000; S.drapeaux.dette_abitbol=true; G('abitbol').dette-=100;
+       souvient('abitbol','Tu lui dois 10 000 € à 12 % hebdomadaires.');
+       return `Elle compte les billets deux fois, avec une élastique par mille, et note quelque chose dans un carnet que personne n'a jamais lu.
+       <p>Tu respires. Le compteur, lui, ne s'arrête plus.</p>`;
+     }, apres(i){ programme(3,'abitbol_reclame',i); }},
+
+    {t:'Refuser et vendre ta voiture.',
+     marque:'Moins d’air. Aucun compteur.', calme:true,
+     fait(){ S.argent+=3400; S.respect-=8;
+       souvient('abitbol','Tu as refusé son argent. Elle a trouvé ça élégant et stupide.');
+       return `Trois mille quatre cents, comptant, à un type qui sait très bien pourquoi tu vends. Tu rentres en bus, et le quartier voit que tu rentres en bus.
+       <p>Madame Abitbol te fait porter une bouteille le lendemain, sans un mot. Tu ne sais pas si c'est du respect ou une invitation à revenir.</p>`;
+     }}
+  ]
+},
+
+/* ══════════ SCÈNES DIFFÉRÉES (conséquences) ══════════ */
+
+nadia_deuil:{
+  diff:true, lieu:'Cimetière Saint-Pierre', titre:'La sœur',
+  texte:()=>`On a retrouvé Karim au bout de trois semaines, et il a fallu attendre encore pour l'enterrer. Nadia est debout devant le trou, sans une larme, entourée de gens qui ne savent pas quoi lui dire.
+  <p>Quand tu t'approches, elle te regarde exactement comme on regarde un meuble.</p>
+  <p><span class="dit">« Je sais. Tout le monde sait. Reste. Ça te coûtera plus cher de partir maintenant. »</span></p>`,
+  choix:[
+    {t:'Rester jusqu’au bout et payer l’enterrement.',
+     marque:'2 800 €. Ça ne rachète rien.', calme:true,
+     fait(){ S.argent-=2800; G('nadia').rancune-=20; S.respect-=4;
+       souvient('nadia','Tu as payé l’enterrement de son frère que tu as tué.');
+       return `Tu restes les quarante minutes. Tu paies le marbrier en liquide, le lendemain, sans le dire à personne — sauf qu'un marbrier, ça parle.
+       <p>Sa haine ne diminue pas. Elle change simplement de forme : elle devient patiente.</p>`;
+     }, apres(i){ programme(10,'nadia_frappe',i); }},
+
+    {t:'Partir avant la fin.',
+     marque:'Elle compte les secondes.',
+     fait(){ G('nadia').rancune+=20;
+       souvient('nadia','Tu es parti avant la fin de l’enterrement.');
+       return `Tu tournes les talons entre deux prières. Quarante personnes te regardent traverser l'allée.
+       <p>Le soir même, Nadia appelle un numéro qu'elle avait noté depuis longtemps sans jamais s'en servir.</p>`;
+     }, apres(i){ programme(6,'nadia_parle_flics',i); }}
+  ]
+},
+
+nadia_frappe:{
+  diff:true, lieu:'Parking souterrain', titre:'Ce qu’elle a attendu',
+  texte:()=>`Deux hommes que tu ne connais pas t'attendent entre les piliers. Ils ne sont pas d'ici, ils ne sont pas pressés, et l'un d'eux prononce le nom de Karim avant de lever le bras.
+  <p>Tu t'en sors avec trois côtes et une main gauche qui ne se referme plus complètement. Nadia a payé avec l'argent du bar.</p>`,
+  choix:[
+    {t:'Encaisser. Ne rien faire. La dette est réglée.',
+     marque:'Le seul choix qui arrête la boucle.', calme:true,
+     fait(){ S.respect-=10; G('nadia').rancune=10;
+       souvient('nadia','Elle a pris sa revanche. Tu ne l’as pas rendue.');
+       return `Tu ne dis à personne qui a payé les deux hommes. Le quartier invente ses propres versions, toutes fausses, et le silence te coûte du respect.
+       <p>Nadia et toi ne vous adressez plus la parole. Vous êtes quittes, ce qui n'est pas la même chose que la paix.</p>`;
+     }},
+    {t:'La faire disparaître aussi.',
+     marque:'Irréversible', mortel:true,
+     fait(){ G('nadia').statut='mort'; S.respect+=6; S.chaleur+=30; S.loyaute-=25;
+       souvient('nadia','Tu as tué le frère, puis la sœur.');
+       return `C'est plus facile la deuxième fois, et c'est cette phrase-là, plus que le reste, qui devrait t'inquiéter.
+       <p>Le bar reste fermé. Deux familles entières quittent le quartier en un mois. La police, elle, ouvre un dossier qui porte désormais ton nom en première page.</p>`;
+     }, apres(i){ programme(4,'etau',i); }}
+  ]
+},
+
+nadia_parle_flics:{
+  diff:true, lieu:'Hôtel de police, Noailles', titre:'Trois pages',
+  texte:()=>`Nadia est entrée d'elle-même et a parlé pendant deux heures. Elle a donné l'entrepôt, les horaires, le nom de Dris et le tien. Elle n'a rien demandé en échange, ce qui rend sa déposition redoutable.
+  <p>Vialat lit les trois pages devant toi, lentement, comme on lit un menu.</p>`,
+  choix:[
+    {t:'Payer Vialat pour que les pages disparaissent.',
+     marque:'15 000 €. Et il te tient à vie.',
+     fait(){ S.argent-=15000; S.chaleur-=25; G('vialat').dette-=60; S.drapeaux.vialat_tient=true;
+       souvient('vialat','Il a fait disparaître une déposition contre 15 000 €. Il s’en souviendra toujours.');
+       return `Les trois pages ne figurent dans aucun scellé. Vialat range l'enveloppe et te parle de sa retraite dans cinq ans, avec beaucoup de détails.
+       <p>Tu comprends que ce n'est pas le dernier versement. C'est le premier.</p>`;
+     }, apres(i){ programme(7,'vialat_augmente',i); }},
+    {t:'Ne rien payer et attendre le mandat.',
+     marque:'Gratuit. Pour l’instant.', calme:true,
+     fait(){ S.chaleur+=28;
+       souvient('vialat','Tu as laissé la déposition suivre son cours.');
+       return `Tu te lèves et tu sors sans dire un mot. Vialat ne te retient pas — il n'a pas besoin.
+       <p>La procédure met onze semaines. Tu n'en as peut-être pas onze.</p>`;
+     }}
+  ]
+},
+
+dris_recule:{
+  diff:true, lieu:'Quai Est, 4 h', titre:'Ce que Dris a vu',
+  texte:()=>`Dris décharge sans parler depuis un mois. Cette nuit, il pose la caisse et reste debout dans le froid.
+  <p><span class="dit">« Six cents euros. Le gamin il avait dix-neuf ans et il avait volé six cents euros. »</span></p>
+  <p>Il ne demande pas d'explication. Il annonce quelque chose.</p>`,
+  choix:[
+    {t:'Lui expliquer que c’était la seule option.',
+     marque:'Il ne te croira pas.', calme:true,
+     fait(){ S.loyaute-=14;
+       souvient('dris','Tu lui as expliqué. Ça a été pire que le silence.');
+       return `Tu parles cinq minutes. Il écoute jusqu'au bout, poliment, puis remonte dans la camionnette.
+       <p>Il continue de travailler. Il ne vient plus prendre de café. Ce n'est pas une trahison, c'est une sortie lente.</p>`;
+     }, apres(i){ programme(8,'dris_part',i); }},
+    {t:'Lui donner 20 % de tout, à vie, sans qu’il ait demandé.',
+     marque:'Cher. Et c’est le but.',
+     fait(){ S.loyaute+=24; S.argent-=3000; S.drapeaux.dris_associe=true;
+       souvient('dris','Tu lui as donné 20 % sans qu’il demande, après ce qu’il a vu.');
+       return `Il refuse. Tu insistes. Il finit par accepter en te disant que ça ne change rien à ce que tu as fait — et il a raison.
+       <p>Mais il reste. Et dans six mois, ça vaudra plus que n'importe quel serment.</p>`;
+     }},
+    {t:'Le prévenir que la porte se ferme dans les deux sens.',
+     marque:'Irréversible', mortel:true,
+     fait(){ S.loyaute-=30; G('dris').rancune+=70; S.respect+=6;
+       souvient('dris','Tu l’as menacé de mort dans un hangar, à quatre heures du matin.');
+       return `Tu ne cries pas. C'est justement ce qui rend la phrase efficace. Il hoche la tête, une fois, et part.
+       <p>Il ne dit rien à personne. Il commence simplement à noter des dates, des plaques et des montants dans un carnet.</p>`;
+     }, apres(i){ programme(7,'dris_carnet',i); }}
+  ]
+},
+
+dris_part:{
+  diff:true, lieu:'Gare Saint-Charles', titre:'Le train de 6 h 12',
+  texte:()=>`Dris part vivre chez son frère, à Nantes. Il te prévient la veille, par message, et il est déjà sur le quai quand tu arrives.
+  <p>Il te tend la main. C'est la première fois en vingt ans que vous vous serrez la main.</p>`,
+  choix:[
+    {t:'Le laisser partir.', marque:'', calme:true,
+     fait(){ S.loyaute-=8; S.respect-=2;
+       souvient('dris','Il est parti à Nantes. Vous vous êtes serré la main.');
+       return `Le train part à l'heure. Tu restes sur le quai plus longtemps que nécessaire.
+       <p>L'équipe apprend son départ dans la journée. Deux hommes demandent, dans la semaine, s'ils peuvent partir aussi.</p>`;
+     }},
+    {t:'Lui rappeler tout ce qu’il sait, très calmement.',
+     marque:'Il connaît chaque adresse.',
+     fait(){ S.loyaute-=16; G('dris').rancune+=50;
+       souvient('dris','Tu lui as rappelé ce qu’il savait, sur un quai de gare.');
+       return `Il retire sa main avant que tu aies fini ta phrase. <span class="dit">« Tu vois, ça, c'est exactement pour ça que je pars. »</span>
+       <p>Il monte. Il te regarde par la vitre jusqu'à ce que le train tourne.</p>`;
+     }, apres(i){ programme(9,'dris_carnet',i); }}
+  ]
+},
+
+dris_carnet:{
+  diff:true, lieu:'Boîte aux lettres', titre:'Le carnet',
+  texte:()=>`Une photocopie dans une enveloppe sans timbre. Vingt-six pages : dates, plaques, montants, points de livraison. Trois ans de ton activité, tenue proprement, d'une écriture que tu reconnaîtrais entre mille.
+  <p>Un mot agrafé : <span class="dit">« L'original est ailleurs. Il y reste tant que je vais bien. »</span></p>`,
+  choix:[
+    {t:'Accepter le marché. Ne plus jamais l’approcher.',
+     marque:'Une laisse. Dans l’autre sens.', calme:true,
+     fait(){ S.drapeaux.carnet_dris=true; S.respect-=6;
+       souvient('dris','Il détient un carnet de trois ans d’activité. C’est son assurance-vie.');
+       return `Tu n'appelles pas, tu n'envoies personne, tu ne prononces plus son nom. C'est le prix, et il est étrangement supportable.
+       <p>Tu vis désormais avec la certitude qu'un homme à cinq cents kilomètres peut te détruire un mardi matin s'il change d'avis.</p>`;
+     }},
+    {t:'Envoyer quelqu’un à Nantes.',
+     marque:'Irréversible', mortel:true,
+     fait(){ G('dris').statut='mort'; S.chaleur+=35; S.loyaute-=35; S.respect+=4;
+       souvient('dris','Tu as envoyé quelqu’un à Nantes.');
+       return `C'est fait un jeudi. Proprement, loin, par des gens qui ne te connaissent pas.
+       <p>L'original du carnet arrive à la brigade financière onze jours plus tard, envoyé par un notaire qui avait des instructions.</p>`;
+     }, apres(i){ programme(3,'etau',i); }}
+  ]
+},
+
+serge_apprend:{
+  diff:true, lieu:'Bar du Phare, après fermeture', titre:'Il savait',
+  texte:()=>`Serge fait glisser un papier sur le zinc, comme la première fois. Ce sont les comptes de la semaine où tu as comblé le trou de ta poche.
+  <p><span class="dit">« Six cents. Tu as payé de ta poche et tu ne me l'as pas dit. Je m'en fous des six cents. »</span></p>
+  <p>Il attend. Il sait déjà ce que tu vas répondre ; il veut voir comment.</p>`,
+  choix:[
+    {t:'Assumer entièrement. Sans citer Karim.',
+     marque:'Tu portes seul.', calme:true,
+     fait(){ S.respect+=10; S.loyaute+=12;
+       souvient('serge','Tu as porté seul une faute qui n’était pas la tienne, sans donner de nom.');
+       return `<span class="dit">« C'était mon équipe, c'était mon trou, je l'ai bouché. »</span> Serge te regarde longtemps.
+       <p>Il déchire le papier en quatre. <span class="dit">« La prochaine fois tu me le dis. Mais tu fais pareil. »</span></p>`;
+     }},
+    {t:'Donner Karim maintenant, avec des semaines de retard.',
+     marque:'Deux fautes valent mieux qu’une.',
+     fait(){ S.respect-=12; S.loyaute-=18; G('karim').rancune+=80;
+       souvient('serge','Tu as fini par donner Karim, en retard, sous la pression.');
+       souvient('karim','Tu l’as couvert, puis donné. Il a compris qu’il ne valait rien.');
+       return `Tu lâches le nom. Serge hoche la tête, déçu — pas par Karim.
+       <p><span class="dit">« Tu as menti pour lui, puis tu l'as vendu. Tu es lequel des deux, en fait ? »</span></p>`;
+     }, apres(i){ programme(4,'karim_balance',i); }}
+  ]
+},
+
+karim_rembourse:{
+  diff:true, lieu:'Entrepôt 4', titre:'La sacoche',
+  texte:()=>`Karim pose une sacoche sur la table et l'ouvre. Quatre mille deux cents euros, en petites coupures, comptés et élastiqués par mille.
+  <p><span class="dit">« Les six cents, plus les intérêts que t'as pas demandés. Le reste c'est un client à Tonio que j'ai fait passer chez nous. »</span></p>
+  <p>Il a monté l'opération seul. Il ne t'a rien demandé.</p>`,
+  choix:[
+    {t:'Prendre l’argent et le monter en second.',
+     marque:'Le pari se paie.', calme:true,
+     fait(){ S.argent+=4200; S.loyaute+=20; S.respect+=8; S.drapeaux.karim_second=true;
+       G('karim').dette=0; G('tonio').rancune+=30;
+       souvient('karim','Il t’a remboursé au triple et t’a ramené un client de Tonio.');
+       return `Tu lui donnes les clés de l'entrepôt. Il ne dit rien, met dix secondes à comprendre, et sort fumer dehors pour que personne ne le voie.
+       <p>Six cents euros investis dans un gamin plutôt que dans un cercueil : le meilleur rendement de ta carrière.</p>`;
+     }, apres(i){ programme(7,'karim_couvre',i); }},
+    {t:'Prendre l’argent et le remettre à sa place.',
+     marque:'Un chien bien dressé ne prend pas d’initiative.',
+     fait(){ S.argent+=4200; S.loyaute-=10; G('karim').rancune+=45;
+       souvient('karim','Il a ramené 4 200 € et tu l’as remis à sa place.');
+       return `Tu lui rappelles qu'on ne monte pas un coup sans en parler, et que la prochaine fois ce sera un problème.
+       <p>Il dit oui. Il pense non. Tonio, lui, cherche déjà qui lui a pris son client.</p>`;
+     }, apres(i){ programme(6,'karim_seul',i); }}
+  ]
+},
+
+karim_balance:{
+  diff:true, lieu:'Chez toi, 6 h 40', titre:'La perquisition',
+  texte:()=>`Ils sont neuf et ils ont les clés du bon entrepôt, le numéro du bon compte et l'horaire exact de la livraison de jeudi. Ce niveau de détail n'existe pas dans une écoute.
+  <p>Vialat, adossé à la porte, laisse traîner la phrase : <span class="dit">« Un jeune homme avec une main abîmée. Très bavard. »</span></p>`,
+  choix:[
+    {t:'Le faire taire définitivement.',
+     marque:'Irréversible', mortel:true,
+     fait(){ G('karim').statut='mort'; S.chaleur+=20; S.loyaute-=20; S.respect+=8;
+       G('nadia').rancune+=70; S.drapeaux.karim_mort=true;
+       souvient('karim','Tu l’as livré, il a parlé, tu l’as tué.');
+       souvient('nadia','Son frère est mort après être passé chez les flics.');
+       return `On ne retrouve rien. C'est le genre de disparition que le quartier comprend sans qu'on l'explique.
+       <p>Sa déposition, elle, reste au dossier. Un mort ne se rétracte pas.</p>`;
+     }, apres(i){ programme(5,'nadia_deuil',i); }},
+    {t:'Le sortir de la ville et payer son silence.',
+     marque:'8 000 € et un aller simple.', calme:true,
+     fait(){ S.argent-=8000; S.chaleur+=10; G('karim').statut='parti'; G('karim').rancune-=30;
+       souvient('karim','Tu l’as sorti de la ville avec 8 000 € au lieu de le tuer.');
+       return `Bus de nuit vers Perpignan, puis la frontière. Il pleure encore dans le parking, comme la première fois.
+       <p>Il ne se rétracte pas — mais il ne viendra jamais témoigner, et sans témoin la déposition ne pèse presque rien.</p>`;
+     }, apres(i){ programme(9,'karim_ecrit',i); }}
+  ]
+},
+
+karim_seul:{
+  diff:true, lieu:'Rue Loubon', titre:'Il a monté un coup',
+  texte:()=>`Karim a braqué un transporteur de Tonio sans prévenir personne. Onze mille euros et un chauffeur à l'hôpital.
+  <p>Il te tend ta part comme on tend un bouquet, fier, essoufflé. Tonio, dans l'heure, saura que ça vient de chez toi.</p>`,
+  choix:[
+    {t:'Rendre l’argent à Tonio et livrer Karim avec.',
+     marque:'La paix, payée par un autre.',
+     fait(){ G('karim').statut='infirme'; G('tonio').rancune-=40; S.respect-=4; S.loyaute-=20;
+       souvient('tonio','Tu lui as rendu l’argent et livré ton propre homme.');
+       souvient('karim','Tu l’as livré une deuxième fois.');
+       return `Tonio te remercie, sincèrement. Karim disparaît trois jours et revient en marchant mal.
+       <p>Ton équipe a compris la règle : ici, on peut être donné.</p>`;
+     }, apres(i){ programme(5,'equipe_doute',i); }},
+    {t:'Garder l’argent et assumer la guerre.',
+     marque:'11 000 € et une guerre.',
+     fait(){ S.argent+=11000; S.respect+=10; G('tonio').rancune+=70; S.loyaute+=10; S.chaleur+=12;
+       souvient('tonio','Tu as gardé les 11 000 € de son transporteur.');
+       return `Tu partages devant tout le monde, ce qui achète l'équipe pour six mois. Karim n'a jamais autant souri.
+       <p>Tonio ne répond pas la première semaine. Ni la deuxième.</p>`;
+     }, apres(i){ programme(4,'tonio_riposte',i); }}
+  ]
+},
+
+tonio_riposte:{
+  diff:true, lieu:'Entrepôt 4 — ce qu’il en reste', titre:'La réponse de Tonio',
+  texte:()=>`L'entrepôt a brûlé entre trois et cinq heures du matin. Trente-huit mille euros de marchandise, le stock de deux mois, et le hangar qui n'était même pas à ton nom.
+  <p>Personne n'a été blessé : Tonio a fait vérifier avant. C'est une déclaration de guerre polie.</p>`,
+  choix:[
+    {t:'Aller le voir seul, sans arme, et négocier.',
+     marque:'Il peut te tuer dans la pièce.', calme:true,
+     fait(){ S.argent-=8000; S.respect+=6; G('tonio').rancune-=45; S.drapeaux.pacte_tonio=true;
+       souvient('tonio','Tu es venu seul et désarmé après l’incendie.');
+       return `Il te fouille lui-même, te fait asseoir, et écoute quarante minutes. Vous convenez d'une frontière et d'un dédommagement — payé par toi, ce qui est le prix de l'arrêt.
+       <p>En partant, il dit : <span class="dit">« Beaucoup de gens seraient venus à six. »</span></p>`;
+     }},
+    {t:'Frapper ses trois points de vente la même nuit.',
+     marque:'L’escalade est un choix.',
+     fait(){ S.respect+=16; S.chaleur+=25; G('tonio').rancune+=40; S.loyaute-=8;
+       souvient('tonio','Tu as frappé ses trois points la même nuit.');
+       return `Trois équipes, quarante minutes, deux blessés dont un des tiens. Le quartier est terrorisé et la presse locale en parle.
+       <p>Vialat n'a plus le choix : quand ça se voit, il faut des arrestations.</p>`;
+     }, apres(i){ programme(3,'descente',i); }}
+  ]
+},
+
+tonio_avance:{
+  diff:true, lieu:'Ton propre quartier', titre:'Il ne s’est pas arrêté',
+  texte:()=>`Neuf commerces, la salle de sport, et deux de tes propres hommes qui prennent des enveloppes chez lui depuis un mois. Tonio n'a pas conquis ton territoire : tu le lui as laissé, semaine après semaine.
+  <p>Serge te convoque et pose une seule question : <span class="dit">« Il te reste quoi, exactement ? »</span></p>`,
+  choix:[
+    {t:'Reprendre par la force, tout de suite.',
+     marque:'Tard. Mais pas impossible.',
+     fait(){ S.respect+=8; S.chaleur+=20; S.argent-=4000; G('tonio').rancune+=50; S.loyaute-=6;
+       souvient('tonio','Tu as tenté de reprendre par la force, avec deux mois de retard.');
+       return `Tu récupères quatre commerces sur neuf. Les cinq autres préfèrent Tonio, et le disent.
+       <p>Ce n'est pas la force qui a manqué. C'est le moment, et il est passé.</p>`;
+     }, apres(i){ programme(4,'tonio_riposte',i); }},
+    {t:'Passer chez Tonio. Emmener ton équipe.',
+     marque:'Irréversible', calme:true,
+     fait(){ S.respect-=25; S.loyaute-=15; S.argent+=6000; S.drapeaux.chez_tonio=true;
+       G('serge').rancune+=80; G('tonio').dette+=30;
+       souvient('serge','Tu es passé chez Tonio avec ton équipe.');
+       souvient('tonio','Tu as changé de camp et tu lui as amené des hommes.');
+       return `Tonio accepte en une soirée. Il paie mieux, il paie à l'heure, il ne crie jamais non plus.
+       <p>Serge apprend la nouvelle par un tiers. Il ne t'appelle pas. Il ne t'appellera plus jamais.</p>`;
+     }, apres(i){ programme(6,'serge_repond',i); }}
+  ]
+},
+
+tonio_tient:{
+  diff:true, lieu:'Restaurant vide, 15 h', titre:'La frontière tient',
+  texte:()=>`Six semaines que la frontière tient. Tonio te propose un déjeuner et un chiffre : une route commune vers l'Espagne, ses contacts, ton entrepôt, moitié-moitié.
+  <p>C'est trois fois ton revenu actuel. Et c'est sortir du périmètre de Serge sans le lui dire.</p>`,
+  choix:[
+    {t:'Accepter, et en parler à Serge le soir même.',
+     marque:'Transparent. Donc risqué.', calme:true,
+     fait(){ S.argent+=9000; S.respect+=6; S.loyaute+=6; G('serge').rancune+=25;
+       S.drapeaux.route_espagne=true;
+       souvient('serge','Tu lui as annoncé toi-même ton accord avec Tonio.');
+       return `Serge encaisse mal, puis mieux, puis demande 20 % pour la forme. Tu les donnes.
+       <p>La route rapporte dès le premier mois. Deux hommes de Serge te regardent désormais comme un futur patron.</p>`;
+     }, apres(i){ programme(6,'succession',i); }},
+    {t:'Accepter, et ne rien dire à personne.',
+     marque:'Plus rentable. Plus court.',
+     fait(){ S.argent+=14000; S.chaleur+=8; S.drapeaux.route_secrete=true;
+       souvient('tonio','Vous avez une route commune que Serge ignore.');
+       return `L'argent rentre vite et il rentre entier. Tu ouvres un compte au nom de la sœur d'un cousin.
+       <p>Dans ce métier, tous les secrets ont la même durée de vie : jusqu'à ce que quelqu'un ait intérêt à parler.</p>`;
+     }, apres(i){ programme(5,'serge_decouvre_route',i); }}
+  ]
+},
+
+serge_decouvre_route:{
+  diff:true, lieu:'Villa des Goudes', titre:'Ce qu’il a fini par apprendre',
+  texte:()=>`Serge a un relevé sous les yeux et il ne te demande pas si c'est vrai. Il te demande depuis combien de temps.
+  <p><span class="dit">« Sept semaines. Sept. Tu as mangé à ma table trois fois pendant ces sept semaines. »</span></p>
+  <p>Deux hommes se tiennent près de la porte du jardin, et ils n'y étaient pas la dernière fois.</p>`,
+  choix:[
+    {t:'Tout lui donner. La route, les comptes, les contacts.',
+     marque:'Tout perdre pour rester en vie.', calme:true,
+     fait(){ S.argent-=14000; S.respect-=15; S.loyaute-=5; G('serge').rancune-=40;
+       souvient('serge','Tu lui as tout rendu quand il t’a pris en défaut.');
+       return `Tu poses les codes, les numéros, les noms. Il ne te remercie pas. Il te fait raccompagner.
+       <p>Tu restes dans l'équipe. Tu n'y es plus quelqu'un.</p>`;
+     }},
+    {t:'Le prendre de vitesse, avec Tonio, ce soir.',
+     marque:'Irréversible', mortel:true,
+     fait(){ G('serge').statut='mort'; S.respect+=25; S.chaleur+=30; S.loyaute-=15;
+       S.drapeaux.patron=true;
+       souvient('serge','Tu l’as fait tuer chez lui, dans son jardin.');
+       souvient('tonio','Vous avez tué Serge ensemble. Il connaît ton visage à cet instant-là.');
+       return `Ça dure moins de deux minutes et c'est Tonio qui a fourni les hommes — un détail qui, plus tard, vaudra très cher.
+       <p>Les docks sont à toi. Tout le monde le sait avant l'enterrement.</p>`;
+     }, apres(i){ programme(5,'tonio_reclame',i); }}
+  ]
+},
+
+tonio_reclame:{
+  diff:true, lieu:'Docks, bureau de Serge', titre:'La facture de Tonio',
+  texte:()=>`Tonio s'assoit dans le fauteuil de Serge avant toi. Il ne demande pas la moitié des docks : il l'annonce.
+  <p><span class="dit">« J'ai fourni les hommes. Tu as fourni le motif. La moitié me paraît généreuse — pour toi. »</span></p>`,
+  choix:[
+    {t:'Céder la moitié.', marque:'', calme:true,
+     fait(){ S.argent-=6000; S.respect-=10; G('tonio').dette-=40;
+       souvient('tonio','Il détient la moitié des docks.');
+       return `Vous partagez. Il tient parole, ce qui est le plus déroutant.
+       <p>Tu es patron d'une moitié de chose, avec un associé qui sait exactement comment on remplace un patron.</p>`;
+     }},
+    {t:'Sortir la bande de Vialat et le tenir autrement.',
+     cond:()=> S.drapeaux.bande_vialat,
+     marque:'L’arme rangée depuis des mois.',
+     fait(){ S.respect+=12; G('tonio').rancune+=30; S.drapeaux.tonio_tenu=true;
+       souvient('vialat','Sa demande enregistrée a servi de monnaie.');
+       return `Tu ne menaces pas Tonio : tu lui offres Vialat. Un commissaire tenu vaut plus que la moitié d'un dock, et il le sait.
+       <p>Il part avec le fichier et sans les docks. Vous êtes désormais deux à savoir que tu enregistres les conversations.</p>`;
+     }},
+    {t:'Refuser sec.', marque:'',
+     fait(){ S.respect+=8; G('tonio').rancune+=60; S.chaleur+=10;
+       souvient('tonio','Tu lui as refusé sa part après le meurtre de Serge.');
+       return `<span class="dit">« Bon. »</span> Il se lève, remet sa veste, te serre la main.
+       <p>Les hommes qui ont tué Serge travaillent toujours pour lui. Ils connaissent le chemin.</p>`;
+     }, apres(i){ programme(4,'tonio_riposte',i); }}
+  ]
+},
+
+serge_repond:{
+  diff:true, lieu:'Chez toi', titre:'La réponse de Serge',
+  texte:()=>`Il ne t'a pas appelé. Il a fait mieux : il a racheté ta dette chez Madame Abitbol, et il a fait savoir dans tout le quartier que quiconque travaille avec toi travaille contre lui.
+  <p>Tu es riche cette semaine et personne ne veut de ton argent.</p>`,
+  choix:[
+    {t:'Rentrer. Demander pardon devant témoins.',
+     marque:'Humiliation publique.', calme:true,
+     fait(){ S.respect-=30; S.loyaute-=10; G('serge').rancune-=50; S.drapeaux.chez_tonio=false;
+       souvient('serge','Tu es revenu demander pardon devant six personnes.');
+       return `Tu le fais dans le bar, à voix haute, devant six personnes qui regarderont ailleurs pendant vingt ans.
+       <p>Serge te reprend. Comme chauffeur.</p>`;
+     }},
+    {t:'Tenir avec Tonio et attendre que Serge vieillisse.',
+     marque:'Il a soixante-huit ans.', calme:true,
+     fait(){ S.chaleur+=8; S.argent+=3000;
+       souvient('serge','Tu as choisi d’attendre sa mort.');
+       return `Tu tiens. Quatre mois difficiles, puis les gens s'habituent — ils s'habituent toujours.
+       <p>Serge a soixante-huit ans et un cœur fatigué. C'est une stratégie honteuse et elle a déjà marché pour d'autres.</p>`;
+     }}
+  ]
+},
+
+succession:{
+  diff:true, lieu:'Clinique Bonneveine', titre:'Le cœur de Serge',
+  texte:()=>`Infarctus, mardi soir, dans sa cuisine. Il est vivant, il ne sortira pas avant six semaines, et il ne redeviendra jamais ce qu'il était.
+  <p>Son fils notaire est venu une heure. Toi, tu es là depuis trois jours. Les hommes attendent une phrase de ta part.</p>`,
+  choix:[
+    {t:'Prendre les docks maintenant, proprement, devant tout le monde.',
+     marque:'Personne ne conteste. Aujourd’hui.',
+     fait(){ S.respect+=22; S.drapeaux.patron=true; S.argent+=8000; S.loyaute+=6;
+       souvient('serge','Tu as pris les docks pendant son hospitalisation.');
+       return `Tu réunis l'équipe au bar, tu annonces les mêmes parts pour tous, et tu paies la tournée. Personne ne dit non.
+       <p>Quand Serge sort de clinique, la place est prise et le quartier l'a déjà appelé « l'ancien ».</p>`;
+     }, apres(i){ programme(5,'serge_rentre',i); }},
+    {t:'Faire tourner en son nom et lui rendre à sa sortie.',
+     marque:'Six semaines de pouvoir prêté.', calme:true,
+     fait(){ S.loyaute+=18; S.respect+=8; G('serge').dette+=70;
+       souvient('serge','Tu as fait tourner les docks six semaines et tu lui as tout rendu.');
+       return `Tu tiens les comptes au centime, tu ne changes aucune part, tu refuses les deux hommes qui te proposent de « régler la question ».
+       <p>Serge revient, vérifie tout, ne trouve rien. Il te regarde d'une façon nouvelle : il te doit quelque chose, et ça ne lui était jamais arrivé.</p>`;
+     }, apres(i){ programme(6,'serge_donne',i); }}
+  ]
+},
+
+serge_rentre:{
+  diff:true, lieu:'Bar du Phare', titre:'L’ancien',
+  texte:()=>`Serge revient plus maigre, plus lent, et s'assoit à sa table sans que personne ne se lève. Il regarde la salle pendant une longue minute, puis il te fait signe.
+  <p><span class="dit">« Tu as bien fait. Je n'aurais pas fait autrement. Maintenant écoute-moi : tu me laisses le bar, la table, et le salut des gens. Et je meurs tranquille sans jamais parler à personne. »</span></p>`,
+  choix:[
+    {t:'Accepter. Il garde les honneurs, tu gardes les docks.',
+     marque:'Peu cher pour un silence.', calme:true,
+     fait(){ S.loyaute+=10; S.respect+=4; G('serge').rancune-=40;
+       souvient('serge','Il a gardé sa table et son honneur. Toi les docks.');
+       return `Tu te lèves quand il entre, à partir de ce jour-là, et l'équipe t'imite. Ça ne coûte rien et ça vaut tout.
+       <p>Vingt-deux ans de contacts continuent de circuler par sa table.</p>`;
+     }},
+    {t:'Refuser. Il n’y a pas deux patrons.',
+     marque:'',
+     fait(){ S.respect+=8; G('serge').rancune+=60; S.loyaute-=12;
+       souvient('serge','Tu lui as refusé jusqu’à sa table.');
+       return `Tu lui expliques, poliment, qu'il vaut mieux qu'il vienne moins. Il ne discute pas.
+       <p>Un homme humilié qui connaît vingt-deux ans d'adresses, de noms et de dates — et qui n'a plus rien à perdre.</p>`;
+     }, apres(i){ programme(6,'serge_parle',i); }}
+  ]
+},
+
+serge_parle:{
+  diff:true, lieu:'Palais de justice', titre:'Vingt-deux ans de mémoire',
+  texte:()=>`Serge a négocié un statut de repenti. Il a soixante-huit ans, un cœur en morceaux, et plus rien à protéger — sauf un fils notaire à Lyon qui ne rappelle jamais.
+  <p>Sa déposition fait cent quarante pages. La tienne y occupe onze.</p>`,
+  choix:[
+    {t:'Fuir ce soir avec ce qui est liquide.',
+     marque:'Tout laisser. Vivre.', calme:true,
+     fait(){ S.drapeaux.fuite=true; S.chaleur-=10;
+       souvient('serge','Sa déposition t’a mis en fuite.');
+       return `Un sac, une voiture qui n'est pas à ton nom, et une frontière à quatre heures de route.
+       <p>Tu ne reverras jamais le quartier.</p>`;
+     }, apres(i){ S.fin='fuite'; }},
+    {t:'Rester et affronter la procédure.',
+     marque:'Onze pages contre toi.',
+     fait(){ S.chaleur+=40;
+       souvient('serge','Tu es resté malgré ses onze pages.');
+       return `Tu prends l'avocat le plus cher de la ville et tu ne sors plus sans savoir qui te suit.
+       <p>Onze pages d'un homme qui était là depuis vingt-deux ans. Ton avocat ne promet rien.</p>`;
+     }}
+  ]
+},
+
+serge_donne:{
+  diff:true, lieu:'Villa des Goudes', titre:'Ce qu’il te doit',
+  texte:()=>`Serge te fait asseoir dans le jardin et pose une enveloppe et un trousseau sur la table de fer.
+  <p><span class="dit">« Les docks à ton nom. Pas à ma mort : maintenant. Je garde 15 % et le bar. Tu as été le seul, en vingt-deux ans, à me rendre quelque chose. »</span></p>`,
+  choix:[
+    {t:'Accepter et lui laisser ses 15 %.',
+     marque:'Le seul chemin propre jusqu’ici.', calme:true,
+     fait(){ S.drapeaux.patron=true; S.respect+=25; S.loyaute+=15; S.argent+=12000;
+       souvient('serge','Il t’a transmis les docks de son vivant.');
+       return `Il te fait faire le tour des hangars et te présente aux hommes comme le patron, à voix haute, devant témoins. Personne ne conteste jamais une transmission faite devant témoins.
+       <p>C'est la seule façon de prendre une place sans que quelqu'un finisse par vouloir la reprendre.</p>`;
+     }}
+  ]
+},
+
+vialat_augmente:{
+  diff:true, lieu:'Parking du stade', titre:'Le nouveau tarif',
+  texte:()=>`Vialat ne baisse même plus sa vitre entièrement.
+  <p><span class="dit">« Cinq mille. Il y a une commission d'enquête, j'ai des gens à nourrir au-dessus de moi. »</span></p>
+  <p>C'est ainsi que ça marche toujours : le premier versement n'est jamais un prix, c'est une prise.</p>`,
+  choix:[
+    {t:'Payer. Encore.',
+     marque:'5 000 € / mois.', calme:true,
+     fait(){ S.argent-=5000; S.chaleur-=15;
+       souvient('vialat','Le tarif est passé à 5 000 €.');
+       return `Tu paies. Le quai Est reste ennuyeux à surveiller.
+       <p>Il n'y a aucune raison pour que le prochain chiffre ne soit pas huit mille.</p>`;
+     }, apres(i){ programme(9,'vialat_augmente',i); }},
+    {t:'Sortir la bande et renverser le rapport.',
+     cond:()=> S.drapeaux.bande_vialat,
+     marque:'Ce que tu gardes depuis des mois.',
+     fait(){ S.chaleur-=30; G('vialat').dette-=100; S.drapeaux.vialat_tenu=true;
+       souvient('vialat','Tu détiens l’enregistrement. Il travaille pour toi maintenant.');
+       return `Tu poses le téléphone sur le tableau de bord et tu lances la lecture. Sa propre voix, quatre minutes, très audible.
+       <p>Il ne dit rien pendant longtemps. Puis : <span class="dit">« Qu'est-ce que vous voulez ? »</span> — et à partir de cette phrase, c'est un autre métier.</p>`;
+     }},
+    {t:'Arrêter de payer et fermer les entrepôts un mois.',
+     marque:'Perte sèche. Air pur.', calme:true,
+     fait(){ S.argent-=6000; S.chaleur-=8; G('vialat').rancune+=40;
+       souvient('vialat','Tu as coupé les versements.');
+       return `Un mois sans rien faire passer. L'équipe s'impatiente, deux hommes vont voir ailleurs.
+       <p>Vialat, privé de revenu, redevient exactement ce qu'il n'aurait jamais dû cesser d'être : un policier.</p>`;
+     }, apres(i){ programme(4,'descente',i); }}
+  ]
+},
+
+bande_utile:{
+  diff:true, lieu:'Commissariat, bureau 12', titre:'Quatre minutes',
+  texte:()=>`Vialat te convoque pour une « vérification de routine » qui dure depuis trois heures. Il a un carton de procès-verbaux et l'intention de te garder.
+  <p>Dans ta poche, le fichier de la semaine 4.</p>`,
+  choix:[
+    {t:'Le faire écouter, ici, dans son bureau.',
+     marque:'Une seule fois.',
+     fait(){ S.chaleur-=28; S.drapeaux.vialat_tenu=true; G('vialat').dette-=100;
+       souvient('vialat','Tu lui as fait écouter sa propre demande dans son bureau.');
+       return `Sa voix sort du haut-parleur dans son propre bureau. Il fait le tour de la table et éteint lui-même le téléphone.
+       <p>Le carton retourne à l'armoire. Il te raccompagne jusqu'à la sortie et te tient la porte.</p>`;
+     }},
+    {t:'Ne rien sortir. Garder l’arme pour plus grave.',
+     marque:'Une nuit en cellule.', calme:true,
+     fait(){ S.chaleur+=12; S.respect+=6;
+       souvient('vialat','Il t’a gardé une nuit. Tu n’as rien dit.');
+       return `Vingt-quatre heures de garde à vue, aucune question à laquelle tu réponds. Il te relâche parce qu'il n'a rien.
+       <p>Le fichier est toujours à trois endroits. Sa valeur augmente avec la gravité de ce qui viendra.</p>`;
+     }}
+  ]
+},
+
+descente:{
+  diff:true, lieu:'Quai Est, 5 h 10', titre:'La descente',
+  texte:()=>`Trois véhicules, un chien, et un mandat parfaitement rédigé. Ils prennent quatorze kilos, deux téléphones et un de tes hommes qui n'a pas eu le réflexe de se taire.
+  <p>Il s'appelle Momo, il a vingt-six ans, il n'a jamais rien fait de plus grave que conduire.</p>`,
+  choix:[
+    {t:'Payer l’avocat et sa famille pendant toute sa détention.',
+     marque:'900 € / mois. La règle du milieu.', calme:true,
+     fait(){ S.argent-=5000; S.loyaute+=22; S.respect+=8; S.chaleur+=6;
+       souvient('serge','Tu as payé pour un homme tombé au lieu de l’oublier.');
+       return `Avocat le jour même, mandat mensuel à sa mère, visites organisées. Momo ne dit pas un mot pendant onze mois.
+       <p>Toute l'équipe a vu ce qui arrive à ceux qui tombent chez toi. C'est le meilleur investissement de ta carrière.</p>`;
+     }},
+    {t:'Le laisser se débrouiller. Il n’avait qu’à courir.',
+     marque:'Économie immédiate.',
+     fait(){ S.loyaute-=28; S.chaleur+=15;
+       souvient('serge','Tu as laissé tomber un homme arrêté.');
+       return `Personne ne dit rien. Personne ne dit jamais rien.
+       <p>Momo parle au bout de trois semaines, et il parle beaucoup, parce qu'il n'a plus aucune raison de se taire.</p>`;
+     }, apres(i){ programme(5,'equipe_doute',i); }}
+  ]
+},
+
+etau:{
+  diff:true, lieu:'Partout', titre:'L’étau',
+  texte:()=>`Écoutes, filatures, comptes gelés, deux hommes retournés. Ce n'est plus une enquête, c'est une opération, et elle porte un nom de code que ton avocat refuse de te dire.
+  <p>Il te reste peut-être trois semaines de liberté.</p>`,
+  choix:[
+    {t:'Partir cette nuit avec ce qui est liquide.',
+     marque:'Tout perdre sauf la liberté.', calme:true,
+     fait(){ S.drapeaux.fuite=true;
+       souvient('vialat','Tu es parti avant le mandat.');
+       return `Tu ne préviens personne, ce qui est la seule façon de partir.
+       <p>Le quartier apprend ta disparition en même temps que la police.</p>`;
+     }, apres(i){ S.fin='fuite'; }},
+    {t:'Rester. Ne rien dire. Prendre ce qui vient.',
+     marque:'',
+     fait(){ S.chaleur+=45; S.respect+=15;
+       souvient('serge','Tu es resté alors que tout le monde partait.');
+       return `Tu restes. Tu continues à ouvrir le bar à sept heures et à saluer les mêmes gens.
+       <p>Le respect que ça te donne est immense et parfaitement inutile.</p>`;
+     }}
+  ]
+},
+
+equipe_doute:{
+  diff:true, lieu:'Entrepôt 4', titre:'Ce que l’équipe a compris',
+  texte:()=>`Quatre hommes ne sont pas venus travailler cette semaine. Ils n'ont pas donné d'explication, ce qui est l'explication.
+  <p>Ceux qui restent te demandent leur part plus tôt qu'avant, et la comptent devant toi.</p>`,
+  choix:[
+    {t:'Doubler les parts pendant deux mois.',
+     marque:'Acheter ce que tu n’inspires plus.',
+     fait(){ S.argent-=7000; S.loyaute+=18;
+       souvient('serge','Tu as doublé les parts pour retenir l’équipe.');
+       return `Ils reviennent, tous sauf un. L'argent répare vite et mal.
+       <p>Ils savent maintenant que la loyauté a un prix chez toi, et ils connaissent ce prix.</p>`;
+     }},
+    {t:'Réunir tout le monde et dire la vérité.',
+     marque:'Sans promesse.', calme:true,
+     fait(){ S.loyaute+=10; S.respect+=4;
+       souvient('serge','Tu as dit la vérité à l’équipe, sans rien promettre.');
+       return `Tu expliques ce qui s'est passé, y compris ce qui te met en cause, et tu ne promets rien.
+       <p>Deux hommes partent quand même. Les autres restent pour de vraies raisons, ce qui vaut mieux que huit qui restent pour de mauvaises.</p>`;
+     }}
+  ]
+},
+
+plainte_garagiste:{
+  diff:true, lieu:'Convocation', titre:'Le beau-frère du garagiste',
+  texte:()=>`Le garagiste a porté plainte, avec photos du pare-brise, et son beau-frère travaille aux impôts. Un contrôle fiscal vise le bar, la société de transport et deux comptes.
+  <p>Ce n'est pas la police. C'est pire : c'est de l'administration, et elle ne s'achète pas au parking du stade.</p>`,
+  choix:[
+    {t:'Le dédommager largement pour qu’il se rétracte.',
+     marque:'6 000 € et des excuses.', calme:true,
+     fait(){ S.argent-=6000; S.chaleur-=12; S.respect-=6;
+       souvient('vialat','La plainte du garagiste a été retirée contre dédommagement.');
+       return `Tu paies le pare-brise, le manque à gagner, et un supplément qu'il n'ose pas refuser. Il se rétracte en quinze jours.
+       <p>Le contrôle fiscal, lui, suit son cours : l'administration ne se rétracte pas.</p>`;
+     }},
+    {t:'Le faire taire par la peur.',
+     marque:'Il a déjà tout écrit.',
+     fait(){ S.chaleur+=22; S.respect+=6;
+       souvient('vialat','Le garagiste a été menacé après sa plainte. Cela figure au dossier.');
+       return `Il retire sa plainte le lendemain, terrorisé — et sa rétractation, aussi soudaine, intéresse beaucoup le procureur.
+       <p>Menacer un plaignant n'efface pas une plainte : ça en crée une deuxième, plus grave.</p>`;
+     }, apres(i){ programme(5,'descente',i); }}
+  ]
+},
+
+rente_garagiste:{
+  diff:true, lieu:'Rue Loubon', titre:'Le contrat tient',
+  texte:()=>`Le garagiste paie depuis cinq semaines, à l'heure, sans qu'on ait à passer. Mieux : il t'envoie deux collègues qui ont le même problème de trésorerie et la même peur des banques.
+  <p>Tu es en train d'inventer, sans le vouloir, quelque chose qui ressemble à un établissement financier.</p>`,
+  choix:[
+    {t:'Monter un vrai réseau de prêt. Discret, écrit, tarifé.',
+     marque:'Lent. Régulier. Presque légal.', calme:true,
+     fait(){ S.argent+=5200; S.chaleur-=6; S.respect-=4; S.drapeaux.reseau_pret=true;
+       souvient('abitbol','Tu marches sur ses plates-bandes, proprement.');
+       return `Onze clients en deux mois, remboursements hebdomadaires, aucune violence, aucune trace. Madame Abitbol l'apprend et ne dit rien : c'est sa façon d'approuver.
+       <p>Serge trouve ça ennuyeux. Serge n'a jamais regardé un tableau de rendement.</p>`;
+     }, apres(i){ programme(6,'reseau_rapporte',i); }},
+    {t:'Serrer les tarifs à 40 % et prendre tout de suite.',
+     marque:'Trois fois plus. Trois fois plus court.',
+     fait(){ S.argent+=9000; S.chaleur+=14; S.respect+=6;
+       souvient('abitbol','Tu prêtes à 40 %. Elle appelle ça brûler un marché.');
+       return `Deux clients craquent en trois semaines. L'un d'eux vend sa camionnette, l'autre disparaît.
+       <p>Madame Abitbol te fait dire une seule phrase, par un tiers : <span class="dit">« Un champ, ça se moissonne ; ça ne se brûle pas. »</span></p>`;
+     }, apres(i){ programme(5,'descente',i); }}
+  ]
+},
+
+reseau_rapporte:{
+  diff:true, lieu:'Arrière-boutique, cours Julien', titre:'La proposition de Madame Abitbol',
+  texte:()=>`Elle te reçoit dans le même fauteuil trop bas, avec le même thé trop sucré, et pose son carnet sur la table — ouvert, cette fois.
+  <p><span class="dit">« Quarante ans de clients. Je n'ai personne à qui laisser ça. Vous ne cassez rien, vous notez tout, vous ne buvez pas. Ça suffit à faire un successeur. »</span></p>`,
+  choix:[
+    {t:'Reprendre son réseau.',
+     marque:'Une retraite. Dans ce métier.', calme:true,
+     fait(){ S.argent+=6000; S.drapeaux.reseau_abitbol=true; S.chaleur-=10; S.respect+=6;
+       souvient('abitbol','Elle t’a transmis quarante ans de clients.');
+       return `Elle te fait recopier chaque page à la main pour que tu retiennes les noms. Ça prend six soirées.
+       <p>Aucune arme, aucun entrepôt, aucun risque de descente. De l'argent qui rentre chaque lundi.</p>`;
+     }}
+  ]
+},
+
+bar_rapporte:{
+  diff:true, lieu:'Bar du Phare', titre:'Le blanchiment marche',
+  texte:()=>`Le Phare déclare 11 000 € de recettes ce mois-ci. Il en a fait 3 000. La différence est ton argent, et il ressort propre, imposé, irréprochable.
+  <p>Nadia a compris depuis longtemps. Elle vient de poser un chiffre sur la table : elle veut 20 % du blanchi, pas du bar.</p>`,
+  choix:[
+    {t:'Accepter. Elle prend un risque, elle prend une part.',
+     marque:'Une associée. Pas une employée.', calme:true,
+     fait(){ S.argent-=2200; S.chaleur-=8; G('nadia').dette+=30; S.loyaute+=6;
+       souvient('nadia','Elle est associée au blanchiment, à 20 %.');
+       return `Elle tient une double comptabilité d'une propreté effrayante et te reprend deux fois sur des montants trop ronds.
+       <p>Une personne qui a intérêt à ce que tu ne tombes pas vaut mieux qu'une personne qui a peur de toi.</p>`;
+     }},
+    {t:'Refuser. Elle est déjà payée en salaire.',
+     marque:'',
+     fait(){ G('nadia').rancune+=40; S.chaleur+=6;
+       souvient('nadia','Tu lui as refusé une part sur le blanchiment.');
+       return `Elle n'insiste pas. Elle continue à tenir les livres exactement comme avant.
+       <p>Elle continue aussi à photocopier, chaque mois, la vraie comptabilité.</p>`;
+     }, apres(i){ programme(8,'nadia_photocopies',i); }}
+  ]
+},
+
+nadia_photocopies:{
+  diff:true, lieu:'Bar du Phare', titre:'Les vraies écritures',
+  texte:()=>`Nadia pose une chemise cartonnée sur le zinc. Huit mois de vraie comptabilité, chaque somme, chaque date, chaque origine.
+  <p><span class="dit">« Je ne veux pas te faire tomber. Je veux mes 20 %, et une garantie que tu ne me tueras pas le jour où ça t'arrangera. C'est ça, la garantie. »</span></p>`,
+  choix:[
+    {t:'Payer et la traiter en associée, définitivement.',
+     marque:'Elle a gagné. Proprement.', calme:true,
+     fait(){ S.argent-=5000; G('nadia').rancune=0; S.loyaute+=8; S.chaleur-=5;
+       souvient('nadia','Elle a obtenu ses 20 % en te montrant qu’elle pouvait te détruire.');
+       return `Tu paies les huit mois d'arriéré. Elle range la chemise sans te la donner — évidemment.
+       <p>C'est la personne la plus dangereuse de ton entourage et c'est aussi, désormais, la plus fiable.</p>`;
+     }},
+    {t:'La menacer. Elle est seule et elle a peur.',
+     marque:'Irréversible',mortel:true,
+     fait(){ G('nadia').rancune+=80; S.chaleur+=25; S.respect+=4;
+       souvient('nadia','Tu l’as menacée après le meurtre de son frère... ou pas loin.');
+       return `Elle ne pleure pas. Elle te dit d'une voix parfaitement stable qu'il existe trois copies et une lettre chez un avocat.
+       <p>Tu la crois. Tu as raison de la croire.</p>`;
+     }, apres(i){ programme(3,'etau',i); }}
+  ]
+},
+
+bar_vendu:{
+  diff:true, lieu:'Bar du Phare', titre:'Le nouvel associé',
+  texte:()=>`Nadia a vendu 30 % du Phare. L'acheteur passe boire un café chaque matin à sept heures, s'assied à la table de Serge, et lit le journal jusqu'à ce que tout le monde soit parti.
+  <p>C'est Tonio.</p>`,
+  choix:[
+    {t:'Racheter les 30 % au double du prix.',
+     marque:'18 000 € pour une table.',
+     fait(){ S.argent-=18000; G('tonio').rancune+=20; S.respect+=6;
+       souvient('tonio','Tu as racheté ses parts au double pour le sortir du bar.');
+       return `Il vend sans discuter, avec un plaisir manifeste. Il a gagné neuf mille euros en six semaines pour avoir bu des cafés.
+       <p>Il te dit en partant : <span class="dit">« Tu vois, tu aurais dû l'aider quand elle demandait. »</span></p>`;
+     }},
+    {t:'Le laisser. Un bar n’est qu’un bar.',
+     marque:'', calme:true,
+     fait(){ S.respect-=10; S.chaleur+=6; S.drapeaux.tonio_bar=true;
+       souvient('tonio','Il possède 30 % du bar où ton équipe se réunit.');
+       return `Il entend tout. Il ne pose jamais de question. Il paie sa consommation.
+       <p>En trois mois, deux de tes hommes prennent l'habitude de lui dire bonjour d'abord.</p>`;
+     }, apres(i){ programme(5,'tonio_avance',i); }}
+  ]
+},
+
+nadia_rend:{
+  diff:true, lieu:'Bar du Phare', titre:'Ce qu’elle rend',
+  texte:()=>`Le bar tourne. Nadia pose neuf mille euros sur le zinc — la totalité, quatre mois plus tôt que ce qui n'avait jamais été convenu, puisque rien n'avait été convenu.
+  <p>Puis elle pose autre chose : un jeu de clés.</p>
+  <p><span class="dit">« La cave a une entrée par la rue de derrière. Personne ne la connaît. Elle est à toi quand tu veux, et je ne veux rien savoir. »</span></p>`,
+  choix:[
+    {t:'Prendre l’argent et les clés.',
+     marque:'Un point de chute invisible.', calme:true,
+     fait(){ S.argent+=9000; S.chaleur-=12; S.drapeaux.cave=true; S.loyaute+=6;
+       souvient('nadia','Elle t’a remboursé et t’a donné les clés de sa cave.');
+       return `La cave est sèche, sans fenêtre, avec deux issues. C'est mieux que l'entrepôt et ça n'est sur aucun registre.
+       <p>Neuf mille euros prêtés sans papier ont produit ce qu'aucun contrat n'aurait produit.</p>`;
+     }},
+    {t:'Prendre l’argent, refuser les clés.',
+     marque:'Ne pas la mettre dedans.', calme:true,
+     fait(){ S.argent+=9000; S.loyaute+=4; G('nadia').dette+=20;
+       souvient('nadia','Tu as refusé de mêler son bar à tes affaires.');
+       return `Elle repose les clés dans le tiroir sans insister. Vous n'en reparlez jamais.
+       <p>C'est probablement la seule décision entièrement gratuite que tu aies prise depuis que tu fais ce métier.</p>`;
+     }}
+  ]
+},
+
+karim_couvre:{
+  diff:true, lieu:'Garde à vue', titre:'Ce que Karim n’a pas dit',
+  texte:()=>`Ils ont pris Karim avec quatre kilos dans le coffre. Quarante-huit heures d'interrogatoire, la promesse d'une remise de peine, ton nom prononcé onze fois par les enquêteurs.
+  <p>Il n'a pas dit un mot. Pas un.</p>
+  <p>Il prend six ans.</p>`,
+  choix:[
+    {t:'Payer sa famille, ses avocats, et l’attendre.',
+     marque:'900 € / mois pendant six ans.', calme:true,
+     fait(){ S.argent-=4000; S.loyaute+=25; S.respect+=14; S.drapeaux.karim_dedans=true;
+       G('karim').statut='prison';
+       souvient('karim','Six ans. Il n’a pas parlé. Tu paies sa famille chaque mois.');
+       return `Tu ne rates pas un mois. Toute l'équipe le sait, et l'équipe entière sait maintenant ce qui l'attend si elle tombe.
+       <p>Six cents euros non vengés, un jour, dans un entrepôt. Voilà ce que ça a produit.</p>`;
+     }},
+    {t:'Ne rien payer. Il est en sécurité là où il est.',
+     marque:'',
+     fait(){ S.loyaute-=25; G('karim').rancune+=60; G('karim').statut='prison';
+       souvient('karim','Tu l’as oublié dès qu’il est tombé.');
+       return `Trois mois sans nouvelles, sans mandat, sans visite.
+       <p>En détention, on a beaucoup de temps pour reconsidérer un silence.</p>`;
+     }, apres(i){ programme(8,'karim_reconsidere',i); }}
+  ]
+},
+
+karim_reconsidere:{
+  diff:true, lieu:'Parloir, Baumettes', titre:'Il a reconsidéré',
+  texte:()=>`Karim a demandé à revoir le juge. Il a parlé quatre heures. Il connaissait les dates, les quantités, les points de livraison et le nom de chaque homme.
+  <p>Il a obtenu une remise de peine. Il sort dans quatorze mois.</p>`,
+  choix:[
+    {t:'Encaisser. Tu l’avais laissé tomber.',
+     marque:'La faute est à toi.', calme:true,
+     fait(){ S.chaleur+=35;
+       souvient('karim','Il a parlé après huit mois d’abandon.');
+       return `Ton avocat te demande pourquoi tu n'as jamais envoyé un mandat. Tu n'as pas de réponse à lui donner.
+       <p>Neuf cents euros par mois auraient coûté moins cher que ce qui arrive maintenant.</p>`;
+     }, apres(i){ programme(3,'etau',i); }},
+    {t:'Le faire atteindre à l’intérieur.',
+     marque:'Irréversible', mortel:true,
+     fait(){ G('karim').statut='mort'; S.chaleur+=25; S.loyaute-=25; S.respect+=6;
+       G('nadia').rancune+=80; S.drapeaux.karim_mort=true;
+       souvient('karim','Il est mort en détention, huit jours après sa déposition.');
+       return `Huit jours après sa déposition, dans une coursive. Personne n'a rien vu, comme toujours.
+       <p>Un détenu qui meurt après avoir parlé, c'est une enquête distincte, plus lourde, et confiée à d'autres.</p>`;
+     }, apres(i){ programme(3,'etau',i); programme(5,'nadia_deuil',i); }}
+  ]
+},
+
+karim_ecrit:{
+  diff:true, lieu:'Boîte aux lettres', titre:'Une lettre d’Espagne',
+  texte:()=>`Pas d'expéditeur, un timbre espagnol, quatre lignes d'une écriture appliquée :
+  <p><span class="dit">« Je travaille dans un restaurant. Je n'ai rien dit et je ne dirai rien. Ma sœur croit que je suis mort, laisse-la croire ça, c'est mieux pour elle. Merci pour le bus. »</span></p>`,
+  choix:[
+    {t:'Brûler la lettre. Ne jamais répondre.',
+     marque:'Le protéger, c’est l’oublier.', calme:true,
+     fait(){ S.loyaute+=6; S.chaleur-=6;
+       souvient('karim','Il vit en Espagne. Personne ne le sait.');
+       return `Tu brûles la lettre dans l'évier et tu ne cherches jamais le nom du restaurant.
+       <p>Huit mille euros pour un aller simple : la seule dépense de ta carrière qui n'a produit aucune conséquence.</p>`;
+     }},
+    {t:'Le retrouver et le faire revenir. Il t’est utile.',
+     marque:'Reprendre ce qu’on a sauvé.',
+     fait(){ S.chaleur+=14; G('karim').rancune+=50; G('karim').statut='vivant';
+       souvient('karim','Tu es allé le rechercher en Espagne.');
+       return `Tu mets trois semaines à le retrouver. Il ne dit pas non — il n'a jamais su dire non.
+       <p>Il revient. Il est en France, à nouveau, à portée de tous ceux qui le cherchent.</p>`;
+     }, apres(i){ programme(5,'karim_balance',i); }}
+  ]
+},
+
+abitbol_reclame:{
+  diff:true, lieu:'Arrière-boutique, cours Julien', titre:'Le compteur',
+  texte:()=>`Trois semaines à 12 % : tu dois quatorze mille quarante-neuf euros. Madame Abitbol te lit le chiffre à voix haute, au centime, sans aucune agressivité.
+  <p><span class="dit">« Je ne casse pas les jambes, moi. Je vends la créance. Et l'acheteur, lui, fait ce qu'il veut. »</span></p>`,
+  choix:[
+    {t:'Tout rembourser maintenant, même à sec.',
+     marque:'14 049 €.', calme:true,
+     fait(){ S.argent-=14049; G('abitbol').dette=0; S.respect+=6;
+       souvient('abitbol','Tu as remboursé au centime, à l’heure.');
+       return `Tu poses les liasses. Elle recompte, note dans le carnet, et referme.
+       <p>Tu es à sec. Tu es aussi la seule personne du quartier à qui elle prêtera à 6 %.</p>`;
+     }},
+    {t:'Ne pas payer. Voir qui rachète.',
+     marque:'Elle vendra à Tonio.',
+     fait(){ G('tonio').dette-=100; G('tonio').rancune+=20; S.drapeaux.dette_tonio=true;
+       souvient('abitbol','Elle a vendu ta créance.');
+       souvient('tonio','Il a racheté ta dette de 14 049 €.');
+       return `Elle vend en deux jours. L'acheteur passe te voir le surlendemain, souriant, une chemise repassée.
+       <p>Tonio ne réclame rien. Il préfère de loin que tu lui doives quelque chose.</p>`;
+     }, apres(i){ programme(6,'tonio_encaisse',i); }}
+  ]
+},
+
+tonio_encaisse:{
+  diff:true, lieu:'Restaurant vide, 15 h', titre:'Ce qu’il veut à la place',
+  texte:()=>`Tonio n'a jamais réclamé les quatorze mille. Aujourd'hui il explique ce qu'il veut à la place : ton entrepôt, tes horaires, et le nom de qui livre.
+  <p><span class="dit">« Ou l'argent. Vendredi. Je suis très souple, tu vois. »</span></p>`,
+  choix:[
+    {t:'Payer les quatorze mille.',
+     marque:'Si tu les as.', calme:true,
+     fait(){ S.argent-=14049; S.drapeaux.dette_tonio=false; S.respect+=8;
+       souvient('tonio','Tu as payé plutôt que de lui vendre ton équipe.');
+       return `Il compte, hausse les épaules, range. Tu vois passer sur son visage la seule chose qu'il ne voulait pas montrer : de la déception.
+       <p>Il espérait que tu ne pourrais pas payer.</p>`;
+     }},
+    {t:'Lui donner les informations.',
+     marque:'Vendre son équipe pour 14 000 €.',
+     fait(){ S.loyaute-=35; S.respect-=20; S.drapeaux.traitre=true;
+       souvient('tonio','Tu lui as vendu tes propres horaires de livraison.');
+       return `Tu lui donnes tout, sur un papier, de ta main. Il le lit devant toi et le brûle avec son briquet.
+       <p>Deux semaines plus tard, une livraison est interceptée. Tout le monde cherche la fuite. Tout le monde.</p>`;
+     }, apres(i){ programme(4,'chasse_taupe',i); }}
+  ]
+},
+
+chasse_taupe:{
+  diff:true, lieu:'Entrepôt 4', titre:'La chasse à la taupe',
+  texte:()=>`L'équipe est réunie et cherche qui a parlé. Les regards se posent sur le plus jeune, celui qui a acheté une moto le mois dernier, et qui jure qu'il a économisé.
+  <p>Tu sais parfaitement que ce n'est pas lui. Il n'y a que toi qui le sais.</p>`,
+  choix:[
+    {t:'Le laisser payer à ta place.',
+     marque:'Irréversible', mortel:true,
+     fait(){ S.loyaute-=15; S.respect+=6; S.drapeaux.innocent_mort=true;
+       souvient('serge','Un innocent a payé pour une fuite qui venait de toi.');
+       return `Il jure jusqu'au bout. Personne ne le croit, sauf toi.
+       <p>Tu es propre. Il n'y a rien de plus dangereux qu'un homme propre qui sait ce qu'il a fait.</p>`;
+     }},
+    {t:'Avouer devant l’équipe.',
+     marque:'Ils peuvent te tuer dans la pièce.', calme:true,
+     fait(){ S.respect-=25; S.loyaute-=20; S.drapeaux.avoue=true;
+       souvient('serge','Tu as avoué la fuite devant toute l’équipe.');
+       return `Tu dis tout : la dette, Abitbol, Tonio, le papier. Le silence dure très longtemps.
+       <p>Personne ne te touche. Trois hommes partent le soir même. Ceux qui restent ne te mentiront plus jamais — ni dans un sens ni dans l'autre.</p>`;
+     }}
+  ]
+},
+
+dris_fidele:{
+  diff:true, lieu:'Quai Est', titre:'Ce que Dris a fait de la place',
+  texte:()=>`Dris a pris la succession annoncée par Serge, et son premier geste a été de couper les parts en deux : la moitié pour lui, la moitié pour toi. Il n'a pas demandé ton avis.
+  <p><span class="dit">« Tu m'as donné une place que tu pouvais prendre. Je ne suis pas plus con que toi. »</span></p>`,
+  choix:[
+    {t:'Accepter la moitié.',
+     marque:'Deux patrons. Ça n’existe pas — sauf ici.', calme:true,
+     fait(){ S.argent+=10000; S.respect+=16; S.loyaute+=20; S.drapeaux.duo=true;
+       souvient('dris','Vous dirigez à deux, moitié-moitié.');
+       return `Vous dirigez à deux pendant des années, ce que personne dans ce métier n'a jamais réussi plus de six mois.
+       <p>Ça marche pour une seule raison : aucun des deux n'a pris la place, chacun l'a reçue de l'autre.</p>`;
+     }}
+  ]
+}
+
+};
+
+/* ══════════ FINS ══════════ */
+const FINS = {
+  prison:{titre:'Onze ans',
+    texte:()=>`Le procès dure six semaines. On te reproche cent quatorze faits, on en retient soixante-dix.
+    <p>Onze ans. Tu en feras sept si tu te tiens bien.</p>
+    <p>Ce qui te revient, la nuit, ce n'est aucun des jours où tu as tué ou frappé quelqu'un. C'est une conversation de quatre minutes sur le parking d'un stade, un mardi, avec un homme qui t'a offert un café en double.</p>`},
+  mort:{titre:'Vingt-neuf ans',
+    texte:()=>`Ça arrive dans une rue que tu connais, à une heure prévisible, parce que tu avais des habitudes.
+    <p>Le quartier y voit une conclusion logique. Deux cents personnes à l'enterrement, dont la moitié soulagée.</p>`},
+  fuite:{titre:'Ailleurs',
+    texte:()=>`Une ville dont tu ne parles pas la langue, un travail payé en liquide, un nom qui n'est pas le tien.
+    <p>Tu es libre, ce qui n'est pas rien, et seul, ce qui est beaucoup.</p>
+    <p>Tu penses au quartier tous les jours. Le quartier a cessé de penser à toi en trois mois.</p>`},
+  patron:{titre:'Les docks',
+    texte:()=>`Deux hangars, quarante hommes, une route vers l'Espagne et un commissaire dans la poche.
+    <p>Tu t'assieds à la table de Serge, et les gens se lèvent quand tu entres.</p>
+    <p>Tu as maintenant exactement ce qu'il avait — y compris la question qu'il t'avait posée dans son jardin, et que quelqu'un, un jour, te posera à toi.</p>`},
+  retrait:{titre:'Le lundi',
+    texte:()=>`Ni patron, ni mort, ni dedans. Tu as un bar, un réseau de prêt, et de l'argent qui rentre chaque lundi sans qu'aucune arme ne sorte.
+    <p>Les gens du quartier ne te craignent pas. Ils te consultent, ce qui dure plus longtemps.</p>
+    <p>C'est la fin la plus rare de ce métier. Ce n'est pas un hasard : tu as passé ton temps à choisir la solution ennuyeuse.</p>`},
+  survie:{titre:'Toujours là',
+    texte:()=>`Six mois de plus, comme les six précédents. Pas de docks, pas de procès, pas de tombe.
+    <p>Tu ouvres à sept heures, tu comptes, tu paies, tu recommences.</p>
+    <p>Dans ce métier, durer est déjà une performance. Personne ne la salue jamais.</p>`}
+};
+
+/* ══════════ MOTEUR ══════════ */
+const $ = id => document.getElementById(id);
+const scene = $('scene');
+let courante = null, indexActe = null;
+
+function sauver(){
+  try{ localStorage.setItem('milieu', JSON.stringify(S)); }catch(e){}
+}
+function charger(){
+  try{ const b = localStorage.getItem('milieu'); return b ? JSON.parse(b) : null; }catch(e){ return null; }
+}
+
+function majEtat(){
+  $('etat').hidden = false;
+  $('semaine').textContent = 'Semaine ' + String(S.semaine).padStart(2,'0');
+  $('argent').textContent = S.argent.toLocaleString('fr-FR') + ' €';
+  for(const k of ['respect','chaleur','loyaute']){
+    $('v-'+k).textContent = Math.round(S[k]);
+    $('f-'+k).style.width = borne(S[k]) + '%';
+  }
+}
+
+function verifieFin(){
+  if(S.fin) return S.fin;
+  if(S.chaleur>=100) return 'prison';
+  if(S.respect<=0 && S.semaine>6) return 'mort';
+  if(S.loyaute<=0 && S.semaine>8) return 'mort';
+  if(S.semaine>26){
+    if(S.drapeaux.patron || S.drapeaux.duo) return 'patron';
+    if(S.drapeaux.reseau_abitbol || S.drapeaux.reseau_pret || S.drapeaux.bar_lessive) return 'retrait';
+    return 'survie';
+  }
+  return null;
+}
+
+function choisitScene(){
+  // 1. événements programmés arrivés à échéance
+  const idx = S.file.findIndex(e => e.du <= S.semaine && !S.joue[e.evenement]);
+  if(idx >= 0){
+    const e = S.file.splice(idx,1)[0];
+    return {id:e.evenement, cause:e.cause};
+  }
+  // 2. sinon, scène ordinaire éligible
+  const pool = [];
+  for(const id in SCENES){
+    const s = SCENES[id];
+    if(s.diff || S.joue[id]) continue;
+    if(s.cond && !s.cond()) continue;
+    pool.push({id, prio: s.prio || 0});
+  }
+  if(!pool.length) return null;
+  const max = Math.max(...pool.map(p=>p.prio));
+  const top = pool.filter(p=>p.prio===max);
+  return {id: top[Math.floor(Math.random()*top.length)].id, cause:null};
+}
+
+function html(tag, cls, contenu){
+  const el = document.createElement(tag);
+  if(cls) el.className = cls;
+  if(contenu!=null) el.innerHTML = contenu;
+  return el;
+}
+
+function joueScene(){
+  const f = verifieFin();
+  if(f){ ecranFin(f); return; }
+  const pick = choisitScene();
+  if(!pick){ ecranFin(verifieFin() || 'survie'); return; }
+
+  courante = {id:pick.id, cause:pick.cause};
+  const s = SCENES[pick.id];
+  S.joue[pick.id] = true;
+  majEtat();
+  sauver();
+
+  scene.innerHTML = '';
+  const bloc = html('section','scene apparait');
+  bloc.appendChild(html('div','eyebrow', s.lieu));
+  bloc.appendChild(html('h2', null, s.titre));
+  bloc.appendChild(html('div','prose', '<p>' + s.texte() + '</p>'));
+
+  if(pick.cause != null && S.actes[pick.cause]){
+    const a = S.actes[pick.cause];
+    bloc.appendChild(html('div','cause',
+      'Ceci arrive à cause de ton choix de la semaine ' + String(a.semaine).padStart(2,'0') +
+      ' :<br><b>« ' + a.label + ' »</b>'));
+  }
+
+  const cx = html('div','choix');
+  s.choix.forEach((c,n)=>{
+    if(c.cond && !c.cond()) return;
+    const b = document.createElement('button');
+    b.type = 'button';
+    if(c.mortel) b.className = 'mortel';
+    b.innerHTML = c.t + (c.marque ? '<span class="marque'+(c.calme?' calme':'')+'">'+c.marque+'</span>' : '');
+    b.addEventListener('click', ()=>resout(s, c, n));
+    cx.appendChild(b);
+  });
+  bloc.appendChild(cx);
+  scene.appendChild(bloc);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function resout(s, c, n){
+  const avant = {argent:S.argent, respect:S.respect, chaleur:S.chaleur, loyaute:S.loyaute};
+  const texte = c.fait();
+  S.respect = borne(S.respect); S.chaleur = borne(S.chaleur); S.loyaute = borne(S.loyaute);
+
+  const acte = {semaine:S.semaine, scene:s.titre, label:c.t.replace(/<[^>]+>/g,'')};
+  S.actes.push(acte);
+  indexActe = S.actes.length - 1;
+
+  S.chaine.push({semaine:S.semaine, quoi:c.t.replace(/<[^>]+>/g,''),
+                 lieu:s.titre, cause: courante.cause, effet: courante.cause!=null});
+
+  if(c.apres) c.apres(indexActe);
+
+  const deltas = [];
+  const nom = {argent:'€', respect:'Respect', chaleur:'Chaleur', loyaute:'Équipe'};
+  for(const k in avant){
+    const d = Math.round(S[k] - avant[k]);
+    if(d === 0) continue;
+    const v = (k==='argent') ? (d>0?'+':'') + d.toLocaleString('fr-FR') + ' €'
+                             : nom[k] + ' ' + (d>0?'+':'') + d;
+    deltas.push({v, plus:d>0});
+  }
+
+  const bloc = html('div','resultat apparait');
+  bloc.appendChild(html('div','prose','<p>'+texte+'</p>'));
+  if(deltas.length){
+    const dd = html('div','deltas');
+    deltas.forEach(d=> dd.appendChild(html('span','delta '+(d.plus?'plus':'moins'), d.v)));
+    bloc.appendChild(dd);
+  }
+  const suite = document.createElement('button');
+  suite.type = 'button'; suite.className = 'suite'; suite.textContent = 'Semaine suivante';
+  suite.addEventListener('click', ()=>{ S.semaine += 1 + Math.floor(Math.random()*2); joueScene(); });
+  bloc.appendChild(suite);
+
+  scene.querySelector('.choix').remove();
+  scene.querySelector('.scene').appendChild(bloc);
+  majEtat();
+  sauver();
+  suite.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+
+function ecranFin(f){
+  const fin = FINS[f];
+  S.fin = f;
+  majEtat(); sauver();
+  scene.innerHTML = '';
+  const b = html('section','scene fin apparait');
+  b.appendChild(html('div','eyebrow','Fin · semaine '+String(S.semaine).padStart(2,'0')));
+  b.appendChild(html('h2',null,fin.titre));
+  b.appendChild(html('div','prose','<p>'+fin.texte()+'</p>'));
+
+  const vivants = Object.keys(FICHES).filter(id=>G(id).statut==='vivant').length;
+  const morts = Object.keys(FICHES).filter(id=>G(id).statut==='mort').length;
+  const bilan = html('div','bilan');
+  [['Argent', S.argent.toLocaleString('fr-FR')+' €'],
+   ['Semaines tenues', S.semaine],
+   ['Morts sur ta conscience', morts],
+   ['Encore en vie', vivants]].forEach(([k,v])=>{
+    const d = document.createElement('div');
+    d.appendChild(html('div','k',k));
+    d.appendChild(html('div','v',String(v)));
+    bilan.appendChild(d);
+  });
+  b.appendChild(bilan);
+
+  const rej = document.createElement('button');
+  rej.type='button'; rej.className='suite'; rej.textContent='Rejouer autrement';
+  rej.addEventListener('click', recommencer);
+  b.appendChild(rej);
+  scene.appendChild(b);
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+/* ── panneaux ─────────────────────────────────────────────── */
+const LIB_STATUT = {vivant:'Vivant', mort:'Mort', infirme:'Diminué', prison:'Détenu', parti:'Disparu'};
+function ouvre(quoi){
+  const c = $('contenu-panneau');
+  c.innerHTML = '';
+  if(quoi === 'dossier'){
+    c.appendChild(html('h3',null,'Le dossier'));
+    c.appendChild(html('p','role','Ce que chacun est devenu, et ce que chacun retient de toi.'));
+    for(const id in FICHES){
+      const g = G(id), f = FICHES[id];
+      const fiche = html('div','fiche');
+      const haut = html('div','fiche-haut');
+      haut.appendChild(html('span','fiche-nom', f.nom));
+      const cl = g.statut==='mort' ? 'statut mort' : (g.statut==='vivant' ? 'statut' : 'statut dedans');
+      haut.appendChild(html('span', cl, LIB_STATUT[g.statut]));
+      fiche.appendChild(haut);
+      fiche.appendChild(html('p','role', f.role));
+      const bar = html('div','barrette');
+      bar.appendChild(html('span',null,'Rancune <b>'+borne(g.rancune)+'</b>'));
+      bar.appendChild(html('span',null,'Te doit <b>'+borne(g.dette)+'</b>'));
+      fiche.appendChild(bar);
+      if(g.memoire.length){
+        const ul = html('ul','memoire');
+        g.memoire.forEach(m=> ul.appendChild(html('li',null,m)));
+        fiche.appendChild(ul);
+      }
+      c.appendChild(fiche);
+    }
+  } else {
+    c.appendChild(html('h3',null,'La chaîne'));
+    c.appendChild(html('p','role','Chaque événement, et le choix exact qui l’a provoqué.'));
+    if(!S.chaine.length){ c.appendChild(html('p','vide','Rien encore.')); }
+    S.chaine.forEach(m=>{
+      const el = html('div','maillon' + (m.effet ? ' effet' : ''));
+      el.appendChild(html('div','quand','Semaine '+String(m.semaine).padStart(2,'0')+' · '+m.lieu));
+      el.appendChild(html('div','quoi', m.quoi));
+      if(m.cause!=null && S.actes[m.cause]){
+        el.appendChild(html('div','lien','↳ provoqué par ton choix de la semaine '+
+          String(S.actes[m.cause].semaine).padStart(2,'0')+' : « '+S.actes[m.cause].label+' »'));
+      }
+      c.appendChild(el);
+    });
+  }
+  $('voile').hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+function ferme(){ $('voile').hidden = true; document.body.style.overflow = ''; }
+
+/* ── écran titre ──────────────────────────────────────────── */
+function ecranTitre(reprise){
+  $('etat').hidden = true;
+  scene.innerHTML = '';
+  const b = html('section','titre-jeu apparait');
+  b.appendChild(html('div','eyebrow','Marseille · quartier du Panier · vingt-six semaines'));
+  b.appendChild(html('h1',null,'Le Milieu'));
+  b.appendChild(html('p','sous','Un jeu où aucun choix ne se rattrape, et où l’on te montre toujours lequel t’a mené là.'));
+  const a = html('div','amorce');
+  const ul = html('ul','regles');
+  [`<b>Rien ne converge.</b> Aucun choix ne te ramène sur un rail commun. Les personnages meurent, partent, se souviennent.`,
+   `<b>Les conséquences arrivent tard.</b> Ce que tu fais en semaine 3 revient te chercher en semaine 12, et le jeu te dit d’où ça vient.`,
+   `<b>Personne ne t’indique la bonne réponse.</b> Épargner peut te tuer. Tuer peut te sauver. Les deux se paient.`,
+   `<b>Une partie dure environ quinze minutes.</b> Deux parties ne se ressemblent pas.`
+  ].forEach(t=> ul.appendChild(html('li',null,t)));
+  a.appendChild(ul);
+  b.appendChild(a);
+
+  const go = document.createElement('button');
+  go.type='button'; go.className='suite'; go.textContent = 'Commencer — semaine 01';
+  go.addEventListener('click', ()=>{ S = neuf(); joueScene(); });
+  b.appendChild(go);
+
+  if(reprise){
+    const rp = document.createElement('button');
+    rp.type='button'; rp.className='suite'; rp.style.marginTop='10px';
+    rp.textContent = 'Reprendre — semaine '+String(reprise.semaine).padStart(2,'0');
+    rp.addEventListener('click', ()=>{ S = reprise; if(S.fin) ecranFin(S.fin); else joueScene(); });
+    b.appendChild(rp);
+  }
+  scene.appendChild(b);
+}
+
+function recommencer(){
+  S = neuf();
+  try{ localStorage.removeItem('milieu'); }catch(e){}
+  ecranTitre(null);
+}
+
+$('btn-dossier').addEventListener('click', ()=>ouvre('dossier'));
+$('btn-chaine').addEventListener('click', ()=>ouvre('chaine'));
+$('btn-fermer').addEventListener('click', ferme);
+$('btn-recommencer').addEventListener('click', recommencer);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') ferme(); });
+
+function demarre(etat){
+  if(etat && etat.semaine){ S = etat; majEtat(); if(S.fin) ecranFin(S.fin); else joueScene(); return; }
+  const sv = charger();
+  ecranTitre(sv && sv.semaine>1 && !sv.fin ? sv : null);
+}
+window.claude?.hot?.snapshot?.(()=>S);
+if(window.claude?.hot?.ready) window.claude.hot.ready(demarre);
+else demarre(window.claude?.hot?.data ?? null);
+</script>
