@@ -271,3 +271,16 @@ Complément retenu (idée de Damien) : quand un retard est constaté, l'app ne s
 pas de le signaler — elle propose comment le rattraper, y compris en comparant
 des placements sûrs à faible rendement plutôt que de l'épargne dormante.
 Dans les limites de D15.
+
+---
+
+## D18 — Prix et essai
+
+**Décidé par Damien.** 29 €/mois, un seul niveau, **7 jours d'essai gratuit**.
+
+Conséquence assumée : la synthèse mensuelle n'est jamais vue pendant l'essai.
+Tout ce qui décide de l'abonnement doit se produire dans la première semaine.
+L'essai court réduit de moitié le coût des inscrits non convertis, mais il
+interdit toute montée en puissance lente.
+
+Pas de paliers d'abonnement avant 100 abonnés payants.
