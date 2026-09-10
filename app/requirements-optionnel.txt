@@ -1,0 +1,3 @@
+# Le noyau (forexlab/) n'a AUCUNE dépendance : bibliothèque standard uniquement.
+# Ce paquet ne sert qu'à `reel.py`, pour son jeu EUR/USD horaire embarqué.
+backtesting>=0.3

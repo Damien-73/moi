@@ -688,3 +688,44 @@ VERDICT                  NÉGATIF
 
 L'instabilité des seuils retenus d'un pli à l'autre est en soi un signal :
 un seuil qui change à chaque période n'est pas un seuil, c'est du bruit calibré.
+
+
+---
+
+## 13. Première mesure sur données réelles
+
+*EUR/USD horaire, 5 000 bougies, avril 2017 – février 2018. Détection sur H4,
+résolution sur H1. Deux dégradations assumées : pas de données M1 (résolution
+60 fois plus grossière, donc résultats pessimistes) et spread estimé faute de
+bid/ask.*
+
+```
+397 détections · 0 annoncée · 397 écartées (score insuffisant)
+
+espérance nette          +0,012 R ± 0,152   n = 396   [provisoire]
+objectif 1,5 R           −0,051 R
+objectif 2 R             −0,016 R
+Sharpe par trade         +0,008
+seuil dû au test multiple 0,084  (12 séries testées)
+Sharpe déflaté            6,4 %  — NON significatif
+séquentiel               calibré +0,029 R → hors échantillon −0,039 R
+VERDICT                  NUL
+```
+
+### Ce que cela établit, et ce que cela n'établit pas
+
+**Établi :** la chaîne complète fonctionne sur données de marché réelles, et le
+dispositif de contrôle a fait son travail — un avantage apparent de +0,029 R en
+calibration devient **−0,039 R hors échantillon**. Sans validation séquentielle,
+ce chiffre aurait été publié comme un résultat.
+
+**Non établi :** l'absence d'avantage. L'intervalle de confiance est de ±0,152 R
+pour un effet mesuré de 0,012 R — la vraie valeur peut se situer n'importe où
+entre −0,14 et +0,16. **396 détections sur dix mois ne permettent de conclure à
+rien**, sinon que rien ne ressort.
+
+C'est exactement le cas prévu au cahier des charges §9.1 : sous 400 occurrences,
+un résultat est *provisoire*, et sous 2 400 il ne permet pas d'affirmer un
+avantage de 2 points. La conduite est celle du §28.1, verdict « nul » :
+basculer sur le discours comparatif et l'analyse comportementale, ne pas
+annoncer d'avantage.
