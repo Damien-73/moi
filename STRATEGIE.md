@@ -72,6 +72,7 @@ Mise en place et pilotage des séquences automatisées d'une boutique en ligne
 | Coaching, formation en ligne | Exige une audience préalable — 18 mois minimum |
 | Digitalisation des centres de vacances | Marché associatif et subventionné, cycles d'achat 6-12 mois |
 | Assistant virtuel | Plafond trop bas, non récurrent, aucune montée en tarif |
+| Clipping payé aux vues | Non récurrent, marché anglophone, volume requis hors d'atteinte (détail ci-dessous) |
 
 ## Cas du dropshipping automatisé par IA (n8n + Claude)
 
@@ -98,6 +99,42 @@ de l'étape 2 (automatisation). Deux façons de les monétiser : les vendre à d
 
 Position retenue : **pas en premier, jamais avec l'épargne de départ.** Légitime en année 2,
 financé par les revenus de prestation, avec de l'argent perdable.
+
+## Cas du clipping payé aux vues
+
+Modèle : découper des vidéos longues en clips verticaux, rémunérés au CPM via des campagnes
+de créateurs ou de marques. Taux courants observés **0,50 à 2 $ / 1 000 vues**, budgets mensuels
+plafonnés, attribués au premier arrivé jusqu'à épuisement.
+
+**Volume requis pour 2 500 € nets/mois** (hypothèse 1 $/1 000 vues, charges micro-entreprise ~22 %) :
+
+| Élément | Valeur |
+|---|---|
+| Brut nécessaire | ~3 200 € ≈ 3 400 $ |
+| Vues à produire | **~3,4 M/mois**, soit ~113 000/jour |
+| Capacité à 20 h/semaine (20 min/clip) | ~250 clips/mois |
+| Moyenne requise par clip | **~13 500 vues** |
+| Médiane réelle, compte sans historique | quelques centaines de vues |
+
+Écart d'un facteur 20 à 50. Ce n'est pas un défaut d'exécution, c'est un ordre de grandeur.
+
+**Défauts structurels, indépendants du calcul :**
+
+1. **Aucune récurrence.** Revenu remis à zéro chaque mois, aucun contrat — incompatible avec le
+   critère 2 et avec une démission qui fait perdre salaire et logement le même jour.
+2. **Marché majoritairement anglophone**, sur un format où le hook écrit fait la performance.
+3. **Compétence non capitalisable** : le montage de clip court est le segment directement
+   commoditisé par l'auto-clipping IA. Le prix de la compétence baisse pendant l'apprentissage.
+4. **Même structure de risque que le dropshipping** : espérance faible, gagnants extrêmes.
+   La mise n'est pas du capital mais du temps — la seule ressource déjà limitante ici.
+
+**Variante défendable, tout de même inférieure :** vendre le clipping en forfait mensuel
+(400-800 €/mois) à des créateurs ou marques francophones. Cela rétablit la récurrence, mais pas
+la preuve : « 200 000 vues » ne se facture pas, « 8 400 € générés par email » se facture.
+Pour un novice sans références, c'est le point décisif.
+
+Position retenue : **écartée**. Réévaluable seulement comme service forfaitaire, et jamais avant
+le mois 4 sans aucune vente, conformément au critère d'arrêt du plan mois 1.
 
 ## Séquence proposée
 
