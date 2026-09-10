@@ -136,6 +136,46 @@ Pour un novice sans références, c'est le point décisif.
 Position retenue : **écartée**. Réévaluable seulement comme service forfaitaire, et jamais avant
 le mois 4 sans aucune vente, conformément au critère d'arrêt du plan mois 1.
 
+### Objection examinée : « tout automatiser par l'IA »
+
+Argument : des agents IA cherchent la vidéo, découpent, publient. Même à 300 €/mois, c'est du revenu
+quasi passif, quelques minutes de supervision par jour.
+
+**Réfutation 1 — c'est le raisonnement déjà rejeté pour le dropshipping.** La contrainte du clipping
+n'est pas le temps de découpe, c'est la **distribution** : les impressions que l'algorithme accorde,
+ressource finie attribuée par concurrence. L'IA rend la production de clips gratuite pour tous les
+entrants, donc augmente le nombre de clips en compétition, donc fait **baisser** la moyenne de vues
+par clip — le seul paramètre qui décide du revenu.
+
+**Réfutation 2 — la supervision n'est pas « quelques minutes ».** Le système est **adverse** : YouTube
+(politique de monétisation révisée mi-2025 sur le contenu inauthentique et produit en masse), TikTok
+(contenu non-original déclassé) et Meta investissent pour détecter ce pattern. S'y ajoutent les
+changements d'API, les bannissements de comptes et les règles de campagne mouvantes.
+Estimation : **3 à 6 h/semaine par à-coups**, avec des périodes à revenu nul.
+
+**Réfutation 3 — le plafond est structurel.** 30 clips/jour ≈ 300 €/mois (~360 vues/clip, plausible).
+Atteindre 2 500 € exige **250 clips/jour**, donc une ferme de comptes, c'est-à-dire exactement le seuil
+de détection. La méthode qui produit 300 € interdit d'aller à 2 500 €.
+
+**Réfutation 4 — coût en heures, la seule ressource limitante :**
+
+| Poste | Volume |
+|---|---|
+| Construction du pipeline (novice) | 40-60 h |
+| Maintenance 3 h/semaine sur 12 mois | ~145 h |
+| **Total an 1** | **~195 h ≈ 10 semaines du budget de 20 h/semaine** |
+| Rendement | ~3 600 €, non récurrent, décroissant |
+| Les mêmes 195 h sur la piste 1 | mois 1 à 4 complets, 1 client récurrent acquis 2 mois plus tôt |
+
+**Réfutation 5 — « c'est toujours ça de pris » est un piège comptable.** Un revenu non récurrent ne
+compte pas dans la règle de départ (3 mois consécutifs à 2 000 € nets **récurrents**). Il ne rapproche
+d'aucun jour la démission, mais il donne la sensation d'avancer — donc il achète de la patience.
+
+**Ce qui est conservé :** le pipeline a de la valeur **en prestation**, pas au CPM. Un créateur ou une
+marque francophone paie 500-1 000 €/mois pour l'automatisation de *son* propre contenu. Même
+construction technique, avec contrat et récurrence. C'est la Priorité 4 (mois 7-9), et la même
+conclusion que pour le dropshipping : être payé pour apprendre plutôt que payer pour apprendre.
+
 ## Séquence proposée
 
 | Mois | Objectif |
