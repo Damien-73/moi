@@ -103,7 +103,7 @@ def _issue(l):
     return f'<span class=neu>sans issue · {i["r_net"]:+.2f} R net</span>'
 
 
-def _carte(l, montrer_motif=False):
+def _carte(l, montrer_motif=False, ancre=False):
     etat = "ANNONCÉE" if l.statut == "annoncee" else "ÉCARTÉE"
     sens = "achat" if l.sens > 0 else "vente"
     c = [f"<div class=carte><div class=ligne1>"
@@ -114,8 +114,12 @@ def _carte(l, montrer_motif=False):
          f"<div class=niveaux>{_issue(l)}</div>"]
     if montrer_motif and l.motif_rejet:
         c.append(f"<div class=motif>Motif : {_e(l.motif_rejet)}</div>")
+    # Ne jamais écrire « ancrée » sans ancrage externe réel : ce serait
+    # exactement le genre d'affirmation invérifiable que le produit dénonce.
+    etat_ancrage = ("ancrée chez trois tiers" if ancre
+                    else "chaîne locale — <b>ancrage externe non encore en place</b>")
     c.append(f"<div class=pied>publiée {l.entree_ts:%Y-%m-%d %H:%M} UTC · "
-             f"empreinte {l.empreinte[:16]}… · ancrée</div></div>")
+             f"empreinte {l.empreinte[:16]}… · {etat_ancrage}</div></div>")
     return "".join(c)
 
 
@@ -148,8 +152,16 @@ def ecrire(dossier, lignes, stats_annoncees, stats_ecartees, classement,
             f" &nbsp;·&nbsp; {len(lignes)} détections conservées, "
             f"{len(ecartees)} écartées")
     corps = _tetiere(chiffre, lib, comp)
-    corps += "<p class=libelle>Chaque détection est publiée avant que son issue soit connue. Les échecs figurent au même rang que les réussites.</p>"
-    corps += "".join(_carte(l) for l in (annoncees or lignes)[:40])
+    corps += ("<p class=libelle>Chaque détection est publiée avant que son issue "
+              "soit connue. Les échecs figurent au même rang que les réussites.</p>")
+    if annoncees:
+        corps += "".join(_carte(l, ancre=integrite.get("ancre", False))
+                         for l in annoncees[:40])
+    else:
+        corps += ("<div class=avert style='margin-top:0'>Aucune configuration "
+                  "n'atteint le seuil d'annonce sur cette période. Le seuil sera "
+                  "calibré sur les données, jamais ajusté pour faire apparaître "
+                  "des annonces. Les détections écartées restent consultables.</div>")
     (d / "index.html").write_text(_page("Registre", "index.html", corps), encoding="utf-8")
 
     # Écran 3 — écartées, le groupe témoin
@@ -164,7 +176,8 @@ def ecrire(dossier, lignes, stats_annoncees, stats_ecartees, classement,
         chiffre = f"{len(ecartees)}"
     corps = _tetiere(chiffre, "espérance nette des configurations écartées", comp)
     corps += "<p class=libelle>Nous conservons et publions ce que nous écartons. Sans ce groupe témoin, la valeur du filtrage serait indémontrable.</p>"
-    corps += "".join(_carte(l, True) for l in ecartees[:40])
+    corps += "".join(_carte(l, True, integrite.get("ancre", False))
+                     for l in ecartees[:40])
     (d / "ecartees.html").write_text(_page("Écartées", "ecartees.html", corps),
                                      encoding="utf-8")
 
@@ -188,9 +201,12 @@ def ecrire(dossier, lignes, stats_annoncees, stats_ecartees, classement,
                                     encoding="utf-8")
 
     # Écran 5 — preuve et intégrité
-    corps = _tetiere(f"{integrite['cycles']}", "cycles ancrés",
-                     f"{integrite['detections']} détections · "
-                     f"{integrite['cycles_vides']} cycles vides, ancrés quand même")
+    anc0 = integrite.get("ancre", False)
+    corps = _tetiere(
+        f"{integrite['cycles']}",
+        "cycles chaînés et ancrés" if anc0 else "cycles chaînés, non encore ancrés",
+        f"{integrite['detections']} détections · "
+        f"{integrite['cycles_vides']} cycles vides, enregistrés quand même")
     corps += "<table><tr><th>Contrôle</th><th>Résultat</th></tr>"
     for c in ["Empreintes de détection recalculées",
               "Racines de Merkle recalculées",
@@ -201,7 +217,17 @@ def ecrire(dossier, lignes, stats_annoncees, stats_ecartees, classement,
         v = ("<span class=fav>conforme</span>" if integrite["valide"]
              else "<span class=def>à vérifier</span>")
         corps += f"<tr><td>{c}</td><td>{v}</td></tr>"
-    corps += "</table>"
+    anc = anc0
+    corps += ("<tr><td>Ancrage externe chez des tiers horodateurs</td><td>"
+              + ("<span class=fav>en place</span>" if anc else
+                 "<span class=def>NON EN PLACE — la chaîne seule ne prouve rien</span>")
+              + "</td></tr></table>")
+    if not anc:
+        corps += ("<p class=libelle>Sans ancrage externe, cette chaîne est "
+                  "vérifiable mais <b>non opposable</b> : celui qui la produit "
+                  "pourrait la recalculer entièrement. Tant que l'ancrage horaire "
+                  "sur trois supports indépendants n'est pas en service, aucun "
+                  "chiffre de ce site ne doit être présenté comme prouvé.</p>")
     corps += ("<p class=libelle>Téléchargez le jeu de données et le vérificateur, "
               "puis exécutez <code>python3 verificateur.py registre.json</code>. "
               "Il recalcule tout sans accès à nos serveurs. "

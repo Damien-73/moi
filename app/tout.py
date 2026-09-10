@@ -130,8 +130,11 @@ def main():
         print("\n   Probabilité selon le risque par trade")
         print("   " + "".join(f"{o['risque']:>7.2%}" for o in b["courbe"]))
         print("   " + "".join(f"{(o['probabilite'] or 0):>7.0%}" for o in b["courbe"]))
-        print(f"   optimum à {b['optimum']['risque']:.2%} — "
-              f"la courbe n'est pas monotone")
+        if b["pari"]:
+            print(f"\n   ⚠ {b['avertissement']}")
+        else:
+            print(f"   optimum à {b['optimum']['risque']:.2%} — "
+                  f"la courbe n'est pas monotone")
     else:
         print(f"   historique insuffisant : {sim['journees']} journées sur 60")
 
