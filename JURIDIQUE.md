@@ -10,6 +10,39 @@ Concerne toutes les pistes : conseil CRM, clipping, vente Amazon, boutique d'obj
 - **Ajout ultérieur** : déclaration de modification en ligne, gratuite.
 - **Seul point à régler avant** : l'adresse de domiciliation (voir plus bas), champ obligatoire.
 
+### Délais
+
+| Étape | Durée |
+|---|---|
+| Remplir le dossier en ligne | 20-30 min |
+| **Réception du SIREN (INSEE)** | **1 à 4 semaines**, ~2 en pratique |
+
+Aucune facturation possible avant réception du SIREN. Lancer la création **3 semaines avant** la
+date visée pour la première facture.
+
+**À préparer** : pièce d'identité, justificatif de domicile de moins de 3 mois, déclaration sur
+l'honneur de non-condamnation.
+
+### Coûts
+
+| Poste | Coût |
+|---|---|
+| Création | **0 €** |
+| Cotisations sociales | **% du CA uniquement** — 0 € de CA = 0 € de charges |
+| **CFE** (taxe annuelle) | **Exonérée l'année de création**. Ensuite ~200-600 €/an selon la commune. **Exonération totale si CA ≤ 5 000 €** |
+| Compte bancaire dédié | Obligatoire seulement si CA > 10 000 € deux années consécutives. Sinon 0 € |
+| Comptable | Inutile — un livre de recettes suffit |
+| Assurance RC pro | Non obligatoire pour ces activités. ~100-200 €/an si souscrite |
+| Domiciliation | 0 € chez soi ou chez un proche ; 15-30 €/mois via une société |
+
+**Piège de coût principal :** la déclaration de chiffre d'affaires est mensuelle ou trimestrielle sur
+`autoentrepreneur.urssaf.fr`, **même à 0 €**. Une déclaration oubliée coûte ~58 € de pénalité.
+C'est la seule façon de payer sans rien encaisser.
+
+**Décision à prendre au moment de la création :** le **versement libératoire de l'impôt sur le revenu**
+(1 % vente / 1,7 % BIC services / 2,2 % BNC, prélevé avec les cotisations). Sous condition de revenu
+fiscal de référence, il est généralement avantageux au démarrage.
+
 ## Une seule micro-entreprise couvre tout
 
 Un SIREN, une déclaration, plusieurs activités : une principale, autant de secondaires que nécessaire.
