@@ -729,3 +729,51 @@ un résultat est *provisoire*, et sous 2 400 il ne permet pas d'affirmer un
 avantage de 2 points. La conduite est celle du §28.1, verdict « nul » :
 basculer sur le discours comparatif et l'analyse comportementale, ne pas
 annoncer d'avantage.
+
+
+---
+
+## 14. Réplication sur trois jeux indépendants
+
+*Un résultat obtenu sur une seule période peut être un accident. Le répéter sur
+des périodes et des sources différentes est la seule façon de savoir s'il tient.*
+
+**Ce qui n'a pas été fait : concaténer les jeux.** Mélanger des sources de prix
+distinctes violerait la règle du §15 du cahier des charges — publier la source
+retenue et n'en jamais changer. Chaque jeu est exécuté séparément, les verdicts
+sont comparés.
+
+| Jeu | Période | Détections | Espérance nette | IC 95 % | Verdict |
+|---|---|---|---|---|---|
+| petewerner (GitHub) | 2013-11 → 2014-05 | 228 | **−0,217 R** | ± 0,171 | négatif |
+| tapy (GitHub) | 2019-02 → 2019-09 | 316 | **−0,146 R** | ± 0,150 | négatif |
+| paquet backtesting | 2017-04 → 2018-02 | 397 | **+0,012 R** | ± 0,152 | nul |
+
+### Validation séquentielle — ce qui survit hors échantillon
+
+| Jeu | Calibré | Hors échantillon |
+|---|---|---|
+| petewerner | −0,207 R | **−0,295 R** |
+| tapy | −0,227 R | −0,206 R |
+| backtesting | +0,029 R | **−0,039 R** |
+
+**Dans les trois cas, le hors-échantillon est égal ou pire que le calibré.**
+Aucun avantage ne survit. **Zéro configuration annoncée** sur les trois jeux.
+
+### Ce que la réplication établit
+
+**Le résultat n'est pas un accident de période.** Trois périodes séparées par
+cinq ans, deux sources indépendantes, et le même verdict.
+
+### Ce qu'elle n'établit toujours pas
+
+L'absence d'avantage. Chaque échantillon reste sous 400 détections, avec des
+intervalles de confiance de ±0,15 R — trois fois l'effet mesuré. Le cahier des
+charges §9.1 exige **2 400 occurrences** pour affirmer un avantage de 2 points.
+On en est loin, et le dire est aussi important que le résultat lui-même.
+
+### Conduite retenue
+
+Celle du §28.1, verdict « nul » ou « négatif » : **basculer sur le discours
+comparatif et l'analyse comportementale, ne pas annoncer d'avantage.** Cette
+conduite était écrite avant de connaître le moindre chiffre.
