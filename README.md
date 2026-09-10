@@ -21,6 +21,7 @@ utilisateur sur son propre comportement.
 
 | Document | Rôle | Lignes |
 |---|---|---|
+| **`DEMARRAGE.md`** | **Les étapes concrètes, sans prérequis technique. À lire en premier pour exécuter.** | 130 |
 | **`BRIEF.md`** | **À lire en premier par qui va construire** : la mission, les six interdits, l'ordre, ce que « terminé » veut dire, un exemple complet | 130 |
 | **`CAHIER-DES-CHARGES.md`** | Référence unique et autoportante : produit, méthode, technique, exploitation, exécution. **À lire en premier** | 1 230 |
 | `SPEC-LOT2.md` | Détection du range et calcul du score, au niveau formule | 587 |

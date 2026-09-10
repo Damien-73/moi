@@ -105,29 +105,70 @@ def ticks_vers_m1(ticks):
     return sortie
 
 
-def telecharger(symbole: str, debut: datetime, fin: datetime, sortie: Path):
+def _heures(debut: datetime, fin: datetime):
+    h, out = debut, []
+    while h < fin:
+        out.append(h)
+        h += timedelta(hours=1)
+    return out
+
+
+def telecharger(symbole: str, debut: datetime, fin: datetime, sortie: Path,
+                fils: int = 8):
+    """Téléchargement REPRENABLE et parallèle.
+
+    Un téléchargement de deux ans représente ~17 500 requêtes et plusieurs
+    heures. Sans reprise, une coupure au bout de six heures perd tout. Les
+    heures déjà obtenues sont donc notées dans un fichier d'état, et relancer
+    la même commande reprend là où elle s'était arrêtée.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+
     sortie.parent.mkdir(parents=True, exist_ok=True)
-    heure, total, heures, vides = debut, 0, 0, 0
-    with open(sortie, "w", newline="", encoding="utf-8") as f:
+    etat = sortie.with_suffix(".etat")
+    faites = set()
+    if etat.exists():
+        faites = {l.strip() for l in open(etat, encoding="utf-8") if l.strip()}
+        print(f"Reprise : {len(faites)} heures déjà téléchargées.\n")
+
+    toutes = _heures(debut, fin)
+    restantes = [h for h in toutes if h.isoformat() not in faites]
+    if not restantes:
+        print("Rien à faire : tout est déjà téléchargé.")
+        return 0
+
+    nouveau = not sortie.exists() or not faites
+    mode = "w" if nouveau else "a"
+    total, traitees = 0, 0
+
+    with open(sortie, mode, newline="", encoding="utf-8") as f, \
+            open(etat, "a", encoding="utf-8") as fe:
         w = csv.writer(f)
-        w.writerow(["ts", "o", "h", "l", "c", "spread"])
-        while heure < fin:
-            ticks = telecharger_heure(symbole, heure)
-            heures += 1
-            if ticks:
-                for b in ticks_vers_m1(ticks):
-                    w.writerow([b["ts"].strftime("%Y-%m-%dT%H:%M:%SZ"),
-                                f"{b['o']:.6f}", f"{b['h']:.6f}",
-                                f"{b['l']:.6f}", f"{b['c']:.6f}",
-                                f"{b['spread']:.6f}"])
-                    total += 1
-            else:
-                vides += 1
-            if heures % 168 == 0:
-                print(f"  {heure:%Y-%m-%d}  ·  {total:>8} bougies M1 écrites")
-            heure += timedelta(hours=1)
-    print(f"\n{total} bougies M1 écrites dans {sortie}")
-    print(f"{heures} heures parcourues, dont {vides} vides (week-ends et jours fériés)")
+        if nouveau:
+            w.writerow(["ts", "o", "h", "l", "c", "spread"])
+        with ThreadPoolExecutor(max_workers=fils) as pool:
+            # On traite par paquets pour écrire dans l'ordre et pouvoir
+            # interrompre proprement à tout moment.
+            for i in range(0, len(restantes), fils * 12):
+                paquet = restantes[i:i + fils * 12]
+                resultats = list(pool.map(
+                    lambda h: (h, telecharger_heure(symbole, h)), paquet))
+                for heure, ticks in resultats:
+                    for b in ticks_vers_m1(ticks):
+                        w.writerow([b["ts"].strftime("%Y-%m-%dT%H:%M:%SZ"),
+                                    f"{b['o']:.6f}", f"{b['h']:.6f}",
+                                    f"{b['l']:.6f}", f"{b['c']:.6f}",
+                                    f"{b['spread']:.6f}"])
+                        total += 1
+                    fe.write(heure.isoformat() + "\n")
+                    traitees += 1
+                f.flush(); fe.flush()
+                fait = len(faites) + traitees
+                print(f"  {fait:>6}/{len(toutes)} heures  ·  {total:>8} bougies  "
+                      f"·  {paquet[-1]:%Y-%m-%d}", flush=True)
+
+    print(f"\n{total} bougies M1 ajoutées dans {sortie}")
+    print(f"Pour reprendre ou étendre : relance la même commande.")
     return total
 
 
@@ -146,7 +187,10 @@ def main():
     jours = (fin - debut).days
     print(f"Téléchargement {symbole} du {debut:%Y-%m-%d} au {fin:%Y-%m-%d}")
     print(f"{jours} jours ≈ {jours * 24} requêtes. Compter environ "
-          f"{jours * 24 // 60} minutes.\n")
+          f"{max(1, jours * 24 // 400)} minutes avec 8 téléchargements "
+          f"en parallèle.")
+    print("Interruptible à tout moment : relancer la même commande reprend "
+          "où ça s'était arrêté.\n")
     telecharger(symbole, debut, fin, dest)
 
 
