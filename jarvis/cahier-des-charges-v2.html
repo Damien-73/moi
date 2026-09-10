@@ -380,6 +380,7 @@
         <table>
           <thead><tr><th>Rang</th><th>Brique</th><th>Ce qu'elle apporte</th></tr></thead>
           <tbody>
+            <tr><td class="num">0</td><td><b>Le mobile</b> — web installable</td><td>Socle de tout le reste. Un compagnon quotidien vit dans une poche. Le natif viendra après, sur le même code.</td></tr>
             <tr><td class="num">1</td><td><b>Les connexions</b> — agenda d'abord</td><td>De la donnée que le client n'a pas à taper, et de la valeur dès le jour 1</td></tr>
             <tr><td class="num">2</td><td><b>Le modèle de la personne</b></td><td>Affirmations typées, datées, contestables, avec leur source</td></tr>
             <tr><td class="num">3</td><td><b>Les agents qui exécutent</b></td><td>Sans eux, le premier mois est vide. En mode « je prépare, tu valides ».</td></tr>
@@ -431,7 +432,8 @@
         <div class="feat-head"><h3>Le miroir parle en premier</h3><span class="tag new">Nouveau</span></div>
         <p>Toutes les IA attendent qu'on leur parle : une page blanche, un curseur. JARVIS ouvre <b>en disant quelque chose</b> — tous les jours, un constat que le client n'a pas demandé, parce qu'elle a vu quelque chose bouger.</p>
         <p class="why">Effet : l'app n'est jamais deux jours identique, puisque sa première phrase vient de ce qui a changé. Et la relation s'inverse — ce n'est plus un outil qu'on consulte, c'est quelqu'un qui dit bonjour.</p>
-        <p><b>Un seul rendez-vous, jamais des notifications.</b> Le client choisit une heure. L'app se manifeste à ce moment-là, et à aucun autre. Ce n'est pas une notification proactive au sens habituel : c'est un horaire convenu, qu'il peut déplacer ou couper.</p>
+        <p><b>Un seul rendez-vous, à une heure choisie.</b> L'app se manifeste à ce moment-là, et à aucun autre.</p>
+        <p><b>Une notification ne se force pas.</b> Sur iPhone comme sur Android, elle exige l'autorisation du client : s'il refuse, il n'y a plus aucun canal, et l'insistance est la première cause de désinstallation. La seule parade qui fonctionne : <b>la notification contient la valeur, elle ne la réclame pas.</b> Pas « viens voir » mais le constat lui-même — <i>« tu as trois heures de libre jeudi, c'est la première fois depuis trois semaines »</i>. Celle-là, on l'ouvre. L'email sert de canal de secours, lui toujours disponible.</p>
         <p><b>La première phrase se calcule à l'ouverture, pas la veille.</b> Générer un constat quotidien pour chaque abonné, y compris ceux qui n'ouvrent jamais l'app, fait tourner la facture pour des gens absents. Le calcul se déclenche à l'arrivée du client.</p>
       </div>
 
@@ -537,7 +539,7 @@
       <ul class="rules">
         <li class="hard"><b>L'IA ne calcule jamais</b><span>Un modèle de langage devine l'arithmétique, il ne la fait pas. Il choisit la formule et les paramètres ; du code testé exécute le calcul. Capacité d'emprunt, mensualités, rendement, projections : tout passe par du code.</span></li>
         <li class="hard"><b>Ne jamais prétendre avoir agi</b><span>« C'est envoyé » si rien n'est parti est la faute qui détruit la confiance définitivement. Toute action exécutée doit produire une preuve vérifiée. En cas d'échec : « je n'ai pas réussi ».</span></li>
-        <li class="hard"><b>Toute action ratée est réparable et visible</b><span>Les agents casseront — c'est certain, pas probable. Chaque action exécutée est journalisée avec son état, affichée au client, et annulable. Quand une action échoue : dire ce qui a échoué, ce qui a déjà été fait, et ce qui ne l'a pas été. Jamais deux tentatives sur la même action sans redemander.</span></li>
+        <li class="hard"><b>Toute action ratée est réparable et visible</b><span>Les agents casseront — c'est certain, pas probable. Chaque action est journalisée avec son état, affichée au client, et annulable. Quand une action échoue : dire ce qui a échoué, ce qui a déjà été fait, et ce qui ne l'a pas été. Jamais deux tentatives sur la même action sans redemander.</span></li>
         <li class="hard"><b>Aucune affirmation sans provenance</b><span>Chaque chose que l'app croit savoir porte sa source. Sans ça, impossible de répondre à « pourquoi tu penses ça ? », et impossible de corriger.</span></li>
         <li class="hard"><b>Jamais d'écrasement</b><span>Une croyance qui change n'est pas modifiée : elle est datée et remplacée. C'est ce qui permet de raconter comment quelqu'un est devenu ce qu'il est.</span></li>
         <li><b>L'effort demandé doit décroître</b><span>Semaine 1, l'app pose dix questions parce qu'elle ne sait rien. Mois 3, elle en pose deux. Si l'effort reste constant, tout le monde part.</span></li>
@@ -551,6 +553,20 @@
       <span class="sec-n">Section 10</span>
       <h2>Lignes rouges</h2>
       <p class="lede">Trois zones où une erreur ne se rattrape pas. À faire valider par un juriste avant de coder, pas après.</p>
+
+      <h3>Les trois niveaux d'action</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Niveau</th><th>Exemples</th><th>Qui déclenche</th></tr></thead>
+          <tbody>
+            <tr><td>Annulable par l'app</td><td>Créneau bloqué, tâche créée, brouillon rédigé</td><td>L'app seule, avec un bouton <i>annuler</i> permanent</td></tr>
+            <tr><td>Ça sort vers l'extérieur</td><td>Message envoyé, formulaire soumis, rendez-vous confirmé</td><td>L'app prépare, le client appuie</td></tr>
+            <tr><td>Argent, contrat, engagement</td><td>Paiement, souscription, résiliation, signature</td><td>Jamais automatique, sans exception</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Un <b>journal des actions</b> rassemble tout : chaque action avec son état — prévue, faite, échouée, annulée. C'est l'écran qu'on consulte quand on se demande « qu'est-ce qu'elle a fait en mon nom ? », et la réponse doit toujours y être.</p>
+      <p class="why">Méthode : un seul agent qui marche parfaitement vaut mieux que cinq qui marchent à moitié. L'agenda d'abord, seul, jusqu'à ce qu'il ne casse plus.</p>
 
       <h3>Argent</h3>
       <div class="tw">
@@ -596,6 +612,18 @@
         <li><b>Deux voies de modèles</b> : un modèle économique pour l'usage courant (l'essentiel du volume), un modèle puissant pour les moments d'intelligence. C'est ce qui rend le prix viable.</li>
         <li><b>Le seul indicateur qui compte est le taux de résiliation.</b> Ni les inscriptions, ni l'usage.</li>
       </ul>
+
+      <h3>L'automatisation ne réduit pas le coût — elle l'augmente</h3>
+      <p>Chaque appel à l'IA se paie, qu'il soit déclenché par un humain ou par un script. Et une machine en déclenche beaucoup plus qu'un humain. C'est exactement le raisonnement déjà admis ailleurs : <i>l'IA supprime les deux heures de travail, pas les deux cents euros de dépense.</i></p>
+      <p>Les cinq leviers réels, du plus puissant au plus accessoire :</p>
+      <ul class="plain">
+        <li><b>Ne jamais renvoyer tout l'historique à chaque échange.</b> Le modèle structuré de la personne <i>est</i> la compression : quelques centaines d'affirmations classées remplacent des mois de conversation. C'est pour cette raison que la forme du stockage est une question économique, pas seulement technique — et c'est le levier qui décide de tous les autres.</li>
+        <li><b>Deux voies de modèles.</b> Le modèle économique pour l'essentiel du volume — comprendre, classer, router, résumer. Le modèle puissant seulement aux moments où le client perçoit l'intelligence.</li>
+        <li><b>Calculer à l'ouverture, jamais à heure fixe pour tout le monde.</b> Sinon la facture tourne pour les abonnés qui n'ouvrent jamais l'app.</li>
+        <li><b>Mettre en cache ce qui ne change pas.</b> Une synthèse mensuelle se calcule une fois, pas à chaque consultation.</li>
+        <li><b>Un plafond d'usage mensuel</b>, généreux mais réel, pour que les quelques abonnés extrêmes ne mangent pas la marge des autres.</li>
+      </ul>
+
     </section>
 
     <!-- 12 : acquisition -->
@@ -605,8 +633,20 @@
       <p class="lede">Le point le plus faible du projet, et le plus longtemps ignoré. Deux cents abonnés ne se décrètent pas. Sans budget publicitaire ni audience, il n'existe que trois voies — et une seule est gratuite.</p>
 
       <div class="callout">
-        <p class="h">Pourquoi la publicité payante est exclue au départ</p>
-        <p>Acquérir un abonné à 29 €/mois coûte, sur ce type de produit, plusieurs dizaines d'euros en publicité. C'est rentable seulement si le client reste longtemps — donc seulement après avoir prouvé qu'il reste. Payer pour acquérir avant de connaître son taux de résiliation revient à acheter des clients à perte.</p>
+        <p class="h">La publicité : oui, mais après la mesure</p>
+        <p>Un abonné payant coûte 40 à 150 € à acquérir sur ce type de produit <span class="ref">[estimation]</span>. À 29 €/mois, c'est rentable s'il reste six mois ou plus. Tant que le taux de résiliation n'est pas connu, dépenser en publicité revient à acheter des clients à perte sans le savoir. L'ordre est donc : prouver la rétention, <i>puis</i> acheter de la croissance — jamais l'inverse.</p>
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Canal</th><th>Ce qu'il fait vraiment</th><th>Quand</th></tr></thead>
+          <tbody>
+            <tr><td>Magasins d'applications</td><td><b>Une destination, pas une source.</b> On t'y trouve parce qu'on te cherche déjà — plus personne ne découvre une app en parcourant le magasin.</td><td>Y être, sans rien en attendre</td></tr>
+            <tr><td>Publicité payante</td><td>De la croissance achetée, efficace et immédiate</td><td>Après la mesure de rétention</td></tr>
+            <tr><td>Réseaux sociaux en organique</td><td>Ça marche, mais compte 6 à 18 mois de publication régulière avant que ça produise. Payé en temps, pas gratuit.</td><td>À démarrer tôt, sans en dépendre</td></tr>
+            <tr><td>Prospection automatisée</td><td><b>À exclure.</b> Bas de marché saturé, pénalisé par les plateformes — et surtout : recruter par message automatisé des gens à qui on demande de confier leur vie intime est une contradiction qu'ils sentent immédiatement.</td><td>Jamais</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <h3>1. Les cinquante premiers se recrutent à la main</h3>
