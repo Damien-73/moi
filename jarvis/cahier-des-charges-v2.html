@@ -238,7 +238,8 @@
       <li><a href="#s13"><span class="n">15</span> Le plan de versions</a></li>
       <li><a href="#s14"><span class="n">16</span> La taille finale</a></li>
       <li><a href="#s15"><span class="n">17</span> Contrer les failles</a></li>
-      <li><a href="#s12"><span class="n">18</span> Ce qui décidera</a></li>
+      <li><a href="#s16"><span class="n">18</span> Autour du produit</a></li>
+      <li><a href="#s12"><span class="n">19</span> Ce qui décidera</a></li>
     </ol>
   </nav>
 
@@ -597,6 +598,7 @@
         <li class="hard"><b>L'IA ne calcule jamais</b><span>Un modèle de langage devine l'arithmétique, il ne la fait pas. Il choisit la formule et les paramètres ; du code testé exécute le calcul. Capacité d'emprunt, mensualités, rendement, projections : tout passe par du code.</span></li>
         <li class="hard"><b>Ne jamais prétendre avoir agi</b><span>« C'est envoyé » si rien n'est parti est la faute qui détruit la confiance définitivement. Toute action exécutée doit produire une preuve vérifiée. En cas d'échec : « je n'ai pas réussi ».</span></li>
         <li class="hard"><b>Toute action ratée est réparable et visible</b><span>Les agents casseront — c'est certain, pas probable. Chaque action est journalisée avec son état, affichée au client, et annulable. Quand une action échoue : dire ce qui a échoué, ce qui a déjà été fait, et ce qui ne l'a pas été. Jamais deux tentatives sur la même action sans redemander.</span></li>
+        <li class="hard"><b>Toutes les sources n'ont pas le même poids</b><span>Les gens se décrivent comme ils aimeraient être — par pudeur, par optimisme, par oubli, rarement par malhonnêteté. L'agenda ne ment pas ; un pari résolu ne ment pas ; une déclaration, si. Chaque information porte donc son poids selon sa source, et l'écart entre ce qui est dit et ce qui est constaté est suivi comme une donnée à part entière : c'est l'une des choses les plus utiles que l'app puisse rendre.</span></li>
         <li class="hard"><b>Aucune affirmation sans provenance</b><span>Chaque chose que l'app croit savoir porte sa source. Sans ça, impossible de répondre à « pourquoi tu penses ça ? », et impossible de corriger.</span></li>
         <li class="hard"><b>Jamais d'écrasement</b><span>Une croyance qui change n'est pas modifiée : elle est datée et remplacée. C'est ce qui permet de raconter comment quelqu'un est devenu ce qu'il est.</span></li>
         <li><b>L'effort demandé doit décroître</b><span>Semaine 1, l'app pose dix questions parce qu'elle ne sait rien. Mois 3, elle en pose deux. Si l'effort reste constant, tout le monde part.</span></li>
@@ -639,6 +641,9 @@
 
       <h3>Santé et données sensibles</h3>
       <p>Collecter l'humeur, les peurs, le mal-être fait entrer le produit dans les données de santé — la catégorie la plus protégée qui existe. Conséquences : consentement explicite et séparé, liste fermée de ce qui ne peut jamais être inféré (diagnostic, pathologie, trait clinique), et aucune prétention thérapeutique.</p>
+
+      <h3>Mineurs</h3>
+      <p>Analyser l'état d'esprit d'un adolescent relève d'une zone réglementaire nettement plus lourde, et d'une responsabilité qu'un produit jeune ne peut pas porter. <b>Dix-huit ans minimum</b>, écrit dans les conditions et vérifié à l'inscription. Cette seule ligne supprime une catégorie entière de risque, pour zéro euro.</p>
 
       <h3>Détresse</h3>
       <p>Un produit qui sonde les échecs, les peurs et la démotivation rencontrera des gens qui vont très mal. Il faut un protocole : détection, arrêt immédiat du mode exigeant, orientation vers des ressources humaines réelles, journalisation. Cette partie existe avant la première bêta, jamais après.</p>
@@ -857,9 +862,55 @@
       </div>
     </section>
 
-    <!-- 18 -->
-    <section id="s12">
+    <!-- 18 : autour du produit -->
+    <section id="s16">
       <span class="sec-n">Section 18</span>
+      <h2>Autour du produit</h2>
+      <p class="lede">Ce qui ne relève pas de la conception mais qui décide quand même du sort du projet. Points trouvés en regardant l'affaire comme une entreprise et non comme un produit.</p>
+
+      <div class="changes">
+
+        <div class="change">
+          <span class="tag out">Bloquant</span>
+          <div class="body">
+            <b>Le nom</b>
+            <p><b>JARVIS est une marque déposée de Marvel et Disney.</b> Une application commerciale portant ce nom se fait retirer des magasins — ce n'est pas un risque théorique. Le nom de code interne peut rester ; le nom commercial doit changer avant toute publication. Une fois choisi, vérifier qu'il est libre comme marque et comme nom de domaine : une heure de travail, zéro euro.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag new">À budgéter</span>
+          <div class="body">
+            <b>Le service client</b>
+            <p>Un produit aussi intime ne génère pas des questions techniques : il génère des messages personnels, parfois lourds. Compter 10 à 30 conversations par mois pour 200 abonnés <span class="ref">[estimation]</span>, davantage en proportion quand l'app se trompe. À mille abonnés, c'est un poste à temps plein. Et ça ne s'automatise pas : l'intérêt d'un humain, c'est précisément quand l'IA a échoué. Absent du modèle de coûts jusqu'ici.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag keep">Engagement</span>
+          <div class="body">
+            <b>L'arrêt du service</b>
+            <p>Si le produit s'arrête dans trois ans, des gens perdent des années de leur vie déposées ici. L'engagement, publié dès le premier jour : <b>90 jours de préavis et export intégral en cas d'arrêt</b>. Ce n'est pas un aveu de fragilité, c'est un argument de confiance que personne d'autre n'ose donner — et il ne coûte rien tant qu'il est tenu.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Lucidité</span>
+          <div class="body">
+            <b>Les douze premiers mois sans protection</b>
+            <p>Le fossé, c'est la donnée accumulée <span class="ref">section 16</span> — elle n'existe pas avant un an. D'ici là, chaque fonction de ce document est copiable par n'importe qui. La seule protection réelle en année 1 est d'<b>être trop petit pour mériter d'être copié</b>. Conséquence pratique : la vitesse compte plus que le secret, et garder l'idée cachée ne protège rien.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>Ce qui reste hors de ce document</h3>
+      <p>Le choix du statut juridique de la structure et la fiscalité qui va avec. Ce sont des sujets de comptable, à traiter au moment de la première facture — pas avant, et pas ici.</p>
+    </section>
+
+    <!-- 19 -->
+    <section id="s12">
+      <span class="sec-n">Section 19</span>
       <h2>Ce qui décidera</h2>
       <p class="lede">Ni l'idée, ni la technologie. Aucune brique décrite ici n'exige une technologie qui n'existe pas.</p>
       <ol class="steps">
