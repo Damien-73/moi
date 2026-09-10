@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fond: #12100e;
+  --color-surface: #1b1815;
+  --color-surface-2: #262119;
+  --color-encre: #f2ece3;
+  --color-encre-douce: #a99f92;
+  --color-encre-faible: #6f665c;
+  --color-trait: #302a23;
+  --color-accent: #d9a441;
+  --color-accent-doux: #2a2118;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html, body { background: var(--color-fond); color: var(--color-encre); }
+body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .apparait { animation: apparait .32s ease both; }
+}
+@keyframes apparait {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
