@@ -18,8 +18,8 @@ from pathlib import Path
 ICI = Path(__file__).resolve().parent
 sys.path.insert(0, str(ICI))
 
-from forexlab import (agregation, contrainte, export, pipeline, rapport,
-                      registre, stats)
+from forexlab import (agregation, backtest, contrainte, export, pipeline,
+                      rapport, registre, stats)
 from forexlab.calendrier import marche_ouvert
 import verificateur
 
@@ -117,7 +117,35 @@ def main():
     if not cl["lignes"]:
         print("   aucune série n'atteint 100 occurrences")
 
-    titre("4. Mode contrainte — probabilité de réussite d'un examen")
+    titre("4. Backtest honnête — point de décision du lot 2")
+    dec = backtest.rapport_decision(lignes, cl["series_testees"])
+    if dec["verdict"] == "insuffisant":
+        print(f"   échantillon insuffisant : {dec['n']} détections")
+    else:
+        print(f"   espérance nette {dec['esperance']:+.3f} R sur {dec['n']} détections")
+        d = dec["deflate"]
+        if d.get("suffisant"):
+            print(f"   Sharpe par trade {d['sharpe']:+.3f} · seuil dû au test "
+                  f"multiple {d['sharpe_seuil']:.3f} ({d['essais']} séries testées)")
+            print(f"   Sharpe déflaté : {d['dsr']:.1%} "
+                  f"{'— significatif' if d['significatif'] else '— NON significatif'}")
+        wf = dec["walk_forward"]
+        if wf.get("suffisant"):
+            print(f"   validation séquentielle sur {len(wf['plis'])} plis :")
+            print(f"     calibré {wf['esperance_calibree']:+.3f} R  →  "
+                  f"hors échantillon {wf['esperance_hors_echantillon']:+.3f} R")
+            print(f"     dégradation {wf['degradation']:+.3f} R (pour information)")
+            print(f"     ce qui compte est le hors échantillon : la dégradation")
+            print(f"     absolue ne discrimine pas un vrai signal du bruit.")
+            print(f"     seuils retenus par pli : "
+                  f"{', '.join(f'{s:.2f}' for s in wf['seuils'])}"
+                  f" ({'stables' if wf['seuil_stable'] else 'INSTABLES'})")
+        else:
+            print(f"   validation séquentielle : {wf.get('raison', 'échantillon insuffisant')}")
+        print(f"\n   VERDICT : {dec['verdict'].upper()}")
+        print(f"   {dec['conduite']}")
+
+    titre("5. Mode contrainte — probabilité de réussite d'un examen")
     jours = contrainte.journees(lignes)
     sim = contrainte.simuler(jours, simulations=4000)
     if sim["suffisant"]:
@@ -138,7 +166,7 @@ def main():
     else:
         print(f"   historique insuffisant : {sim['journees']} journées sur 60")
 
-    titre("5. Registre, export et vérification par un tiers")
+    titre("6. Registre, export et vérification par un tiers")
     chaine = registre.Chaine()
     par_cycle = defaultdict(list)
     for l in lignes:
@@ -153,7 +181,7 @@ def main():
     print(f"   {v['cycles']} cycles · {v['detections']} détections · "
           f"{len(v['figures'])} figures")
 
-    titre("6. Écrans")
+    titre("7. Écrans")
     site = rapport.ecrire(ICI / "data" / "site", lignes, sa, se, cl, v)
     for f in sorted(site.glob("*.html")):
         print(f"   {f.relative_to(ICI)}")

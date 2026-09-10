@@ -647,3 +647,44 @@ l'utilisateur. L'explication donnée était donc fausse.
 **Règle : le détail du score affiche les points RÉELLEMENT appliqués, négatifs compris.**
 Un produit dont l'argument est l'explicabilité ne peut pas se permettre une explication
 approximative — c'est la même exigence que pour les chiffres publiés.
+
+
+### 12.3 La dégradation absolue ne mesure pas le surajustement
+
+*Constat d'exécution, sur validation séquentielle en 5 plis.*
+
+| Jeu | Espérance calibrée | Hors échantillon | Dégradation |
+|---|---|---|---|
+| Score **de bruit** | +0,081 R | **+0,034 R** | +0,047 |
+| Score **réellement prédictif** | +0,337 R | **+0,166 R** | **+0,171** |
+
+**Le score prédictif dégrade quatre fois plus en valeur absolue que le score de
+bruit.** Retenir la dégradation comme critère de surajustement aurait donc conduit
+à écarter le seul score qui fonctionne.
+
+La raison est mécanique : un score réellement prédictif part de plus haut, il a
+donc plus de marge pour retomber. La dégradation mesure la hauteur du départ
+autant que la fragilité.
+
+> **Critère retenu : lire l'espérance HORS ÉCHANTILLON, jamais la dégradation.**
+> Un score de bruit retombe à zéro (+0,03 R) ; un score prédictif conserve une
+> valeur nette (+0,17 R). C'est la seule séparation propre.
+
+La dégradation reste affichée pour information, jamais comme critère de décision.
+
+### 12.4 Ce que le backtest honnête produit
+
+Sur données synthétiques, la chaîne complète donne :
+
+```
+espérance nette          −0,190 R sur 2 239 détections
+Sharpe par trade         −0,134
+seuil dû au test multiple  0,039  (18 séries testées)
+Sharpe déflaté             0,0 %  — NON significatif
+validation séquentielle  calibré −0,078 R → hors échantillon −0,172 R
+seuils par pli           0,15 · 0,35 · 0,20 · 0,35 · 0,35  (INSTABLES)
+VERDICT                  NÉGATIF
+```
+
+L'instabilité des seuils retenus d'un pli à l'autre est en soi un signal :
+un seuil qui change à chaque période n'est pas un seuil, c'est du bruit calibré.
