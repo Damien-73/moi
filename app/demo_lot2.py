@@ -167,7 +167,7 @@ def main():
     _, ref = pipeline.executer("EURUSD", "H1", tronque, m1t, h4, d1)
     aberr = determinisme.donnees_aberrantes(tronque, facteur=10.0, nombre=500)
     _, avec = pipeline.executer("EURUSD", "H1", tronque + aberr, m1t, h4, d1)
-    e_ref = [l.empreinte for l in ref]
+    e_ref = [l.empreinte for l in ref if l.entree_ts <= fin]
     e_avec = [l.empreinte for l in avec if l.entree_ts <= fin]
     sain = e_ref == e_avec[:len(e_ref)]
     print(f"   {len(e_ref)} détections recalculées avec 500 bougies aberrantes"

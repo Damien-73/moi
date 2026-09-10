@@ -266,7 +266,9 @@ class TestScoreEtPipeline(unittest.TestCase):
 
         _, ref = pipeline.executer("EURUSD", "H1", tronque, m1_tronque,
                                    self.h4, self.d1)
-        emp_ref = [l.empreinte for l in ref]
+        # Les deux listes doivent être filtrées IDENTIQUEMENT : une détection
+        # sur la dernière bougie a une entrée postérieure à la coupure.
+        emp_ref = [l.empreinte for l in ref if l.entree_ts <= fin]
 
         aberrantes = determinisme.donnees_aberrantes(tronque, facteur=10.0, nombre=400)
         _, avec = pipeline.executer("EURUSD", "H1", tronque + aberrantes,

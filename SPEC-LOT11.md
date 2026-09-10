@@ -199,3 +199,40 @@ personne d'autre ne lui rend, et il s'en souviendra.
 | 7 | La courbe risque / réussite est produite sur toute la plage 0,25 % à 3 % |
 | 8 | Les quatre avertissements du §5 sont visibles sans avoir à faire défiler la page |
 | 9 | Aucune taille de compte n'est enregistrée en base |
+
+
+---
+
+## 7. Constat de construction : espérance négative et risque optimal
+
+*Mesuré à l'exécution, sur un jeu où l'espérance nette est de −0,19 R.*
+
+```
+risque      0,25%  0,50%  0,75%  1,00%  1,25%  1,50%  2,00%  2,50%  3,00%
+réussite       3%    12%    15%    17%    19%    20%    19%    20%    20%
+```
+
+**La courbe ne redescend pas. L'optimum est au risque maximal.**
+
+Ce n'est pas une anomalie, c'est la conséquence logique d'une espérance
+négative : quand chaque trade fait perdre en moyenne, atteindre un objectif de
+gain ne peut venir que de la **variance**. Augmenter le risque augmente la
+variance, donc la probabilité — faible — d'atteindre l'objectif avant de sauter.
+
+> **Autrement dit : lorsque l'espérance est négative, le simulateur recommande
+> mécaniquement de jouer gros. C'est le comportement d'un billet de loterie,
+> pas d'une méthode.**
+
+### Conséquence sur le produit
+
+Le mode contrainte **doit afficher le signe de l'espérance avant la courbe**,
+et, lorsqu'elle est négative, remplacer l'« optimum » par un avertissement :
+
+> Espérance nette de cette sélection : −0,19 R. Aucune taille de position ne
+> rend cette approche viable. La probabilité affichée augmente avec le risque
+> parce que seule la chance peut atteindre l'objectif — ce n'est pas une
+> recommandation, c'est la description d'un pari.
+
+Sans cette règle, un utilisateur lirait « optimum à 3 % » et prendrait le
+chiffre pour un conseil. Ce serait le contraire exact de ce que le produit
+prétend faire.

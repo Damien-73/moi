@@ -44,6 +44,7 @@ class Detection:
     objectif: float
     range_id: int
     atr: float
+    figure: str = "range"
     extra: dict = field(default_factory=dict)
 
 

@@ -5,7 +5,8 @@ import math
 from dataclasses import asdict, dataclass
 from datetime import timedelta
 
-from . import agregation, calendrier_eco, indicateurs, pivots, range_v1, registre, resolution, score
+from . import (agregation, calendrier_eco, figures, indicateurs, pivots,
+               range_v1, registre, resolution, score)
 from .parametres import RANGE_V1 as R
 
 DUREES = {"H1": timedelta(hours=1), "H4": timedelta(hours=4), "D1": timedelta(days=1)}
@@ -15,6 +16,7 @@ DUREES = {"H1": timedelta(hours=1), "H4": timedelta(hours=4), "D1": timedelta(da
 class Ligne:
     symbole: str
     unite: str
+    figure: str
     methode: str
     sens: int
     entree_ts: object
@@ -56,17 +58,27 @@ def contexte(symbole, unite, bougies, uts_bougies, d1, calendrier, pas_rond):
 
 
 def executer(symbole, unite, bougies, m1, uts_bougies, d1,
-             calendrier=None, pas_rond=0.0050, grille=None):
-    """Produit les lignes complètes, résolues, prêtes à être enregistrées."""
+             calendrier=None, pas_rond=0.0050, grille=None, catalogue=True):
+    """Produit les lignes complètes, résolues, prêtes à être enregistrées.
+
+    `catalogue` ajoute toutes les figures de SPEC-FIGURES au range.
+    """
     ctx = contexte(symbole, unite, bougies, uts_bougies, d1,
                    calendrier or calendrier_eco.Calendrier(), pas_rond)
     ranges, detections = range_v1.detecter(bougies, ctx.pivots, ctx.atrs)
+    if catalogue:
+        c = [b["c"] for b in bougies]
+        detections = detections + figures.toutes(
+            bougies, ctx.pivots, ctx.atrs,
+            indicateurs.ema(c, 20), indicateurs.ema(c, 50))
+        detections.sort(key=lambda d: (d.barreau, d.methode, d.sens))
     duree = DUREES[unite]
     lignes = []
 
     for det in detections:
-        rng = ranges[det.range_id] if det.range_id < len(ranges) else None
-        sc = score.evaluer(ctx, det, rng, neutralises=("zone",))
+        rng = ranges[det.range_id] if 0 <= det.range_id < len(ranges) else None
+        neutr = figures.NEUTRALISES.get(det.figure, ())
+        sc = score.evaluer(ctx, det, rng, neutralises=neutr)
         entree_ts = bougies[det.barreau]["ts"] + duree
         fin_ts = entree_ts + duree * R["HORIZON"]
         risque = abs(det.entree - det.invalidation)
@@ -83,13 +95,13 @@ def executer(symbole, unite, bougies, m1, uts_bougies, d1,
         motif = "" if sc.annoncee else (
             ";".join(sc.filtres) if sc.filtres else "score_insuffisant")
         emp = registre.feuille(
-            version=R["version"], symbole=symbole, unite=unite, sens=det.sens,
+            version=f'{det.figure}.v1', symbole=symbole, unite=unite, sens=det.sens,
             entree_ts=entree_ts, entree=det.entree, invalidation=det.invalidation,
             objectif_methode=det.objectif, objectif_1r5=o15, objectif_2r=o20,
             horizon=R["HORIZON"], score_points=sc.points, score_max=sc.maximum,
             statut=statut, motif_rejet=motif)
 
-        lignes.append(Ligne(symbole, unite, det.methode, det.sens, entree_ts,
+        lignes.append(Ligne(symbole, unite, det.figure, det.methode, det.sens, entree_ts,
                             det.entree, det.invalidation, det.objectif, o15, o20,
                             sc.points, sc.maximum, sc.normalise, statut, motif,
                             sc.detail, issues, emp))
