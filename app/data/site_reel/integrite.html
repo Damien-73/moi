@@ -1,0 +1,47 @@
+<!doctype html><html lang=fr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>Preuve</title><style>
+:root{
+  --fond:#FAF9F7; --surface:#FFFFFF; --texte:#16181D; --second:#5F6570;
+  --bord:#E6E3DE; --accent:#1F4FD8; --favorable:#1F6FEB; --defavorable:#C2621A;
+  --neutre:#8A8F98;
+}
+@media (prefers-color-scheme:dark){
+  :root{--fond:#0E0F11;--surface:#17181B;--texte:#EDEDEF;--second:#9BA1AC;
+        --bord:#26282D;--accent:#5B85F5;--favorable:#5B85F5;--defavorable:#D98A4A;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--texte);
+  font:16px/1.55 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-variant-numeric:tabular-nums;}
+.page{max-width:1180px;margin:0 auto;padding:32px 24px 96px}
+header{display:flex;gap:24px;align-items:baseline;flex-wrap:wrap;
+  border-bottom:1px solid var(--bord);padding-bottom:16px;margin-bottom:32px}
+h1{font-size:22px;margin:0;font-weight:600;letter-spacing:-.01em}
+nav a{color:var(--second);text-decoration:none;margin-right:16px;font-size:14px}
+nav a:hover,nav a.actif{color:var(--accent)}
+.chiffre{font-size:52px;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.libelle{color:var(--second);font-size:15px;margin-top:4px}
+.comparaison{color:var(--second);font-size:13px;margin-top:12px;
+  border-top:1px solid var(--bord);padding-top:12px}
+.tetiere{display:flex;gap:64px;flex-wrap:wrap;margin-bottom:40px}
+.carte{background:var(--surface);border:1px solid var(--bord);border-radius:8px;
+  padding:16px 18px;margin-bottom:12px}
+.ligne1{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  flex-wrap:wrap}
+.titre{font-weight:600}
+.etat{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--second)}
+.niveaux{color:var(--second);font-size:14px;margin-top:8px}
+.pied{color:var(--second);font-size:12px;margin-top:12px;
+  border-top:1px solid var(--bord);padding-top:10px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.fav{color:var(--favorable)} .def{color:var(--defavorable)} .neu{color:var(--neutre)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{text-align:left;color:var(--second);font-weight:500;font-size:13px;
+  border-bottom:1px solid var(--bord);padding:8px 10px}
+td{padding:9px 10px;border-bottom:1px solid var(--bord)}
+tr:hover td{background:var(--surface)}
+.num{text-align:right}
+.insuffisant{color:var(--second);font-style:italic}
+.avert{background:var(--surface);border:1px solid var(--bord);border-left:3px solid var(--defavorable);
+  border-radius:6px;padding:12px 16px;color:var(--second);font-size:13px;margin-top:48px}
+.motif{color:var(--defavorable);font-size:14px;margin-top:8px}
+</style></head><body><div class=page><header><h1>Registre prospectif</h1><nav><a href="index.html">Registre</a><a href="ecartees.html">Écartées</a><a href="figures.html">Figures</a><a href="integrite.html" class="actif">Preuve</a></nav></header><div class=tetiere><div><div class=chiffre>332</div><div class=libelle>cycles chaînés, non encore ancrés</div><div class=comparaison>397 détections · 0 cycles vides, enregistrés quand même</div></div></div><table><tr><th>Contrôle</th><th>Résultat</th></tr><tr><td>Empreintes de détection recalculées</td><td><span class=fav>conforme</span></td></tr><tr><td>Racines de Merkle recalculées</td><td><span class=fav>conforme</span></td></tr><tr><td>Chaîne des têtes continue</td><td><span class=fav>conforme</span></td></tr><tr><td>Toute détection appartient à un cycle</td><td><span class=fav>conforme</span></td></tr><tr><td>Configurations écartées présentes dans la chaîne</td><td><span class=fav>conforme</span></td></tr><tr><td>Numérotation des cycles continue</td><td><span class=fav>conforme</span></td></tr><tr><td>Ancrage externe chez des tiers horodateurs</td><td><span class=def>NON EN PLACE — la chaîne seule ne prouve rien</span></td></tr></table><p class=libelle>Sans ancrage externe, cette chaîne est vérifiable mais <b>non opposable</b> : celui qui la produit pourrait la recalculer entièrement. Tant que l'ancrage horaire sur trois supports indépendants n'est pas en service, aucun chiffre de ce site ne doit être présenté comme prouvé.</p><p class=libelle>Téléchargez le jeu de données et le vérificateur, puis exécutez <code>python3 verificateur.py registre.json</code>. Il recalcule tout sans accès à nos serveurs. Toute divergence confirmée sera publiée.</p><div class=avert>Les performances passées ne préjugent pas des performances futures. 70 à 85 % des comptes de particuliers perdent de l'argent sur les contrats financiers. Ce service fournit des analyses statistiques impersonnelles et ne constitue pas un conseil en investissement.</div></div></body></html>
