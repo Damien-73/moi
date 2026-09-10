@@ -159,3 +159,115 @@ Rattraper cela après le lancement coûte très cher.
 | O2 | Prix de l'abonnement (coût réel : 15-60 €/mois pour un client très actif) | Damien |
 | O3 | Associé technique : quand le chercher ? | Damien |
 | O4 | Calendrier de construction | Damien |
+
+---
+
+# Mise à jour — produit reprécisé par Damien
+
+## D12 — Le produit : un assistant personnel pour particuliers, tous objectifs
+
+**Décidé, contre ma recommandation initiale d'un domaine unique.**
+
+L'app sert n'importe quel objectif : vie privée, quotidien, carrière, investissement,
+projets. Y compris les gens qui n'ont **aucun objectif** — l'app les aide à le trouver.
+
+**Pourquoi ça tient malgré tout :** l'avantage ne vient pas de la connaissance du domaine,
+il vient de la connaissance de la personne. Sur l'immobilier, ChatGPT donne le même plan
+à tout le monde ; l'app sait que le client épargne réellement 300 € et pas les 600 annoncés,
+qu'il a lâché deux projets quand ça s'est compliqué, et qu'il veut pouvoir bouger.
+
+**Réserve maintenue :** la personnalisation est universelle, **les faits ne le sont pas**
+(voir D14).
+
+---
+
+## D13 — Ordre de construction : C, A, puis B, puis D
+
+| Bloc | Contenu | Rang |
+|---|---|---|
+| A | L'assistant qui comprend (modèle de la personne) | 2 |
+| C | Les connexions (agenda d'abord, puis mails) | **1** |
+| B | Les agents qui exécutent | 3 |
+| D | La couche ludique / visuelle (Sims) | 4 |
+
+**L'agenda en premier** parce qu'il règle l'erreur du journal-corvée : c'est une donnée
+que le client n'a pas à taper, elle donne de la valeur dès le premier jour, et elle
+alimente le modèle en continu et gratuitement.
+
+Le journal ne disparaît pas : il devient 2-3 questions glissées **dans** l'aide du jour.
+
+Les agents (B) restent en mode « je prépare, tu valides » longtemps. Un agent qui se
+plante dans la vie privée de quelqu'un coûte un client définitivement.
+
+---
+
+## D14 — L'IA ne calcule jamais
+
+**Règle absolue.** Un modèle de langage devine l'arithmétique, il ne la fait pas.
+
+L'IA choisit la formule et les paramètres. **Du code testé exécute le calcul.**
+Capacité d'emprunt, mensualités, rendement, plus-value, projections : tout passe
+par du code, jamais par le modèle.
+
+Sans cette règle, l'app produit des plans financiers faux avec assurance.
+
+---
+
+## D15 — Ligne rouge investissement et santé
+
+**L'app informe, simule et structure. Elle ne recommande jamais un produit précis.**
+
+| Autorisé | Interdit |
+|---|---|
+| Types de placements, avantages, inconvénients, horizons, risques | « Achète ce bien », « achète cette action » |
+| « Voici les options, voici ce que chacune donne dans ta situation » | « À ta place, je ferais ça » (sur de l'argent) |
+
+Le conseil en investissement est un métier réglementé en France (statut CIF,
+immatriculation). À faire valider par un juriste **avant** de coder cette partie.
+
+Même logique pour tout ce qui touche la santé.
+
+---
+
+## D16 — Ce que vend l'abonnement : la continuité
+
+**Constat central.** Aucune action isolée de l'app ne vaut 19 €/mois — ChatGPT fait
+gratuitement le plan, l'analyse et le conseil ponctuels. Ce qui les vaut, c'est ce que
+l'app fait sur 200 jours.
+
+Les quatre choses qui n'existent nulle part, et qui ont toutes la même cause :
+
+1. Se souvenir du plan de mars et en reparler en septembre.
+2. Un chiffre qui bouge seul : *« ton objectif passe de 40 à 47 ans »*.
+3. Une vue sur **tous** les objectifs à la fois, y compris quand ils se contredisent.
+4. Un système qui a un avis sur la personne et qui a déjà eu raison.
+
+**Elles n'existent que si le client est resté.**
+
+### Deux conséquences
+
+- **Le seul indicateur qui compte est le taux de résiliation.** Ni les inscriptions,
+  ni l'usage.
+- **Le mois 1 est le mois le plus faible** (l'app ne sait rien). Donc dès le jour 1,
+  montrer un exemple concret de ce qu'elle pourra dire dans 3 mois. On vend l'avenir
+  pendant que le présent se construit.
+
+---
+
+## D17 — Le plan long qui se recalcule
+
+Horizon tenu par l'app, recalculé quand la réalité bouge, à des rythmes différents :
+
+| Horizon | Fréquence de recalcul |
+|---|---|
+| Court terme | 6 mois à 1 an |
+| Moyen terme | 2 à 3 ans |
+| Long terme | 3 à 5 ans |
+
+Plus un recalcul déclenché par tout événement réel : augmentation, taux, étape ratée,
+changement de situation.
+
+Complément retenu (idée de Damien) : quand un retard est constaté, l'app ne se contente
+pas de le signaler — elle propose comment le rattraper, y compris en comparant
+des placements sûrs à faible rendement plutôt que de l'épargne dormante.
+Dans les limites de D15.
