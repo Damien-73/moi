@@ -1,0 +1,600 @@
+<title>Cahier des charges JARVIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#F6F7F9; --surface:#FFFFFF; --surface-2:#EDF0F4;
+    --ink:#14171C; --ink-soft:#59616D; --ink-faint:#8A929E;
+    --line:#DCE1E8; --line-strong:#C3CAD4;
+    --accent:#0D6E78; --accent-soft:#E3F0F1;
+    --removed:#9E3B34; --removed-soft:#F8E8E6;
+    --kept:#3F6B4E; --kept-soft:#E7EFE9;
+    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#101318; --surface:#171B21; --surface-2:#1E242C;
+      --ink:#E6EAF0; --ink-soft:#98A1AD; --ink-faint:#6E7784;
+      --line:#262D36; --line-strong:#333C47;
+      --accent:#48B6BF; --accent-soft:#13312F;
+      --removed:#E28C84; --removed-soft:#2E1D1B;
+      --kept:#88BA98; --kept-soft:#1B2A20;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#101318; --surface:#171B21; --surface-2:#1E242C;
+    --ink:#E6EAF0; --ink-soft:#98A1AD; --ink-faint:#6E7784;
+    --line:#262D36; --line-strong:#333C47;
+    --accent:#48B6BF; --accent-soft:#13312F;
+    --removed:#E28C84; --removed-soft:#2E1D1B;
+    --kept:#88BA98; --kept-soft:#1B2A20;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{
+    max-width:1180px; margin:0 auto;
+    padding-inline:20px; padding-block:0 88px;
+    display:grid; grid-template-columns:1fr; gap:0;
+  }
+  @media (min-width:1000px){
+    .shell{grid-template-columns:212px minmax(0,1fr); gap:56px; align-items:start}
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{grid-column:1/-1; padding-block:64px 44px; border-bottom:1px solid var(--line-strong)}
+  .eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 20px;
+  }
+  h1{
+    font-family:var(--serif); font-weight:400; font-size:clamp(2.9rem,7vw,4.6rem);
+    line-height:1.02; letter-spacing:-.015em; margin:0 0 22px; text-wrap:balance;
+  }
+  .standfirst{
+    font-size:1.16rem; line-height:1.58; color:var(--ink-soft);
+    max-width:60ch; margin:0 0 30px;
+  }
+  .meta{
+    display:flex; flex-wrap:wrap; gap:10px 26px;
+    font-family:var(--mono); font-size:12px; color:var(--ink-faint);
+  }
+  .meta b{color:var(--ink-soft); font-weight:500}
+
+  /* ---------- nav rail ---------- */
+  nav.rail{display:none}
+  @media (min-width:1000px){
+    nav.rail{
+      display:block; position:sticky; top:0; padding-block:46px;
+      border-right:1px solid var(--line); padding-right:22px;
+    }
+    nav.rail ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:11px}
+    nav.rail a{
+      display:flex; gap:9px; text-decoration:none; color:var(--ink-soft);
+      font-size:13.5px; line-height:1.35;
+    }
+    nav.rail a:hover{color:var(--accent)}
+    nav.rail .n{font-family:var(--mono); font-size:11px; color:var(--ink-faint); padding-top:2px}
+  }
+
+  main{padding-block:46px; min-width:0}
+
+  section{margin-bottom:64px; scroll-margin-top:24px}
+  h2{
+    font-family:var(--serif); font-weight:400; font-size:clamp(1.85rem,3.6vw,2.45rem);
+    line-height:1.14; letter-spacing:-.01em; margin:0 0 8px; text-wrap:balance;
+  }
+  .sec-n{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.12em;
+    color:var(--accent); text-transform:uppercase; display:block; margin-bottom:10px;
+  }
+  .lede{color:var(--ink-soft); max-width:66ch; margin:0 0 26px; font-size:1.02rem}
+  p{max-width:66ch; margin:0 0 18px}
+  h3{font-size:1.02rem; font-weight:600; margin:34px 0 10px; letter-spacing:-.005em}
+  strong{font-weight:600}
+  em{font-style:italic; color:var(--ink-soft)}
+  a{color:var(--accent)}
+
+  .ref{font-family:var(--mono); font-size:.82em; color:var(--ink-faint)}
+
+  /* ---------- mechanism steps ---------- */
+  .steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+  .steps li{
+    display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:baseline;
+    padding:15px 0; border-bottom:1px solid var(--line);
+  }
+  .steps li:first-child{border-top:1px solid var(--line)}
+  .steps .k{
+    font-family:var(--mono); font-size:12px; color:var(--accent);
+    font-variant-numeric:tabular-nums;
+  }
+  .steps .t{margin:0}
+  .steps .t b{display:block; font-weight:600; margin-bottom:2px}
+  .steps .t span{color:var(--ink-soft); font-size:.955rem}
+
+  /* ---------- change rows ---------- */
+  .changes{display:flex; flex-direction:column; gap:0}
+  .change{
+    display:grid; gap:6px 18px; padding:18px 0;
+    border-bottom:1px solid var(--line); grid-template-columns:1fr;
+  }
+  .change:first-child{border-top:1px solid var(--line)}
+  @media (min-width:660px){
+    .change{grid-template-columns:96px minmax(0,1fr)}
+  }
+  .tag{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
+    padding:3px 7px; border-radius:3px; justify-self:start; white-space:nowrap; align-self:start;
+  }
+  .tag.out{background:var(--removed-soft); color:var(--removed)}
+  .tag.keep{background:var(--kept-soft); color:var(--kept)}
+  .tag.new{background:var(--accent-soft); color:var(--accent)}
+  .change .body{min-width:0}
+  .change .body b{display:block; font-weight:600; margin-bottom:3px}
+  .change .body p{margin:0; color:var(--ink-soft); font-size:.955rem; max-width:62ch}
+  .arrow{color:var(--accent); font-family:var(--mono)}
+
+  /* ---------- feature blocks ---------- */
+  .feat{
+    padding:24px 0 26px; border-top:1px solid var(--line);
+  }
+  .feat:last-of-type{border-bottom:1px solid var(--line)}
+  .feat-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:8px}
+  .feat-head h3{margin:0; font-size:1.13rem}
+  .feat p{margin:0 0 12px; max-width:64ch}
+  .feat p:last-child{margin-bottom:0}
+  .quote{
+    font-family:var(--serif); font-size:1.22rem; line-height:1.42; font-style:italic;
+    color:var(--ink); border-left:2px solid var(--accent); padding:2px 0 2px 18px;
+    margin:14px 0; max-width:56ch;
+  }
+  .why{
+    font-size:.9rem; color:var(--ink-faint); font-family:var(--mono);
+    line-height:1.5; max-width:60ch;
+  }
+
+  /* ---------- rules ---------- */
+  .rules{list-style:none; margin:0; padding:0}
+  .rules li{
+    padding:14px 0 14px 20px; border-left:2px solid var(--line-strong);
+    margin-bottom:4px; max-width:66ch;
+  }
+  .rules li.hard{border-left-color:var(--removed)}
+  .rules li b{display:block; font-weight:600; margin-bottom:2px}
+  .rules li span{color:var(--ink-soft); font-size:.955rem}
+
+  /* ---------- table ---------- */
+  .tw{overflow-x:auto; margin:18px 0 8px; border:1px solid var(--line); border-radius:4px}
+  table{border-collapse:collapse; width:100%; min-width:440px; font-size:.94rem}
+  th,td{text-align:left; padding:11px 15px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:500; background:var(--surface-2);
+  }
+  tr:last-child td{border-bottom:none}
+  td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+
+  /* ---------- callout ---------- */
+  .callout{
+    background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--accent); padding:22px 24px; margin:26px 0; border-radius:0 4px 4px 0;
+  }
+  .callout p:last-child{margin-bottom:0}
+  .callout .h{
+    font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 10px;
+  }
+
+  .closing{
+    border-top:1px solid var(--line-strong); padding-top:40px; margin-top:8px;
+  }
+  .closing p{font-family:var(--serif); font-size:1.4rem; line-height:1.45; max-width:52ch}
+
+  ul.plain{margin:0 0 18px; padding-left:20px; max-width:64ch}
+  ul.plain li{margin-bottom:7px}
+
+  @media (prefers-reduced-motion:no-preference){
+    a{transition:color .15s ease}
+  }
+  a:focus-visible,nav.rail a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+</style>
+
+<div class="shell">
+
+  <header class="masthead">
+    <p class="eyebrow">Document de référence — version 2</p>
+    <h1>Cahier des charges JARVIS</h1>
+    <p class="standfirst">Un agent personnel qui apprend à connaître une personne, adapte ses solutions à son caractère, agit pour elle, et corrige sa méthode en fonction de ce qui s'est réellement passé. Le sujet change. Le mécanisme, jamais.</p>
+    <div class="meta">
+      <span><b>Révision</b> 10 septembre 2026</span>
+      <span><b>Remplace</b> la V1 en 108 sections</span>
+      <span><b>Décideur</b> Damien</span>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Sommaire">
+    <ol>
+      <li><a href="#s1"><span class="n">01</span> Le mécanisme</a></li>
+      <li><a href="#s2"><span class="n">02</span> Ce qu'on retire</a></li>
+      <li><a href="#s3"><span class="n">03</span> Ce qui reste</a></li>
+      <li><a href="#s4"><span class="n">04</span> Le cœur</a></li>
+      <li><a href="#s5"><span class="n">05</span> L'usage quotidien</a></li>
+      <li><a href="#s6"><span class="n">06</span> L'irremplaçable</a></li>
+      <li><a href="#s7"><span class="n">07</span> Les cinq nouvelles</a></li>
+      <li><a href="#s8"><span class="n">08</span> Règles absolues</a></li>
+      <li><a href="#s9"><span class="n">09</span> Lignes rouges</a></li>
+      <li><a href="#s10"><span class="n">10</span> Économie</a></li>
+      <li><a href="#s11"><span class="n">11</span> Hors périmètre</a></li>
+      <li><a href="#s12"><span class="n">12</span> Ce qui décidera</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- 1 -->
+    <section id="s1">
+      <span class="sec-n">Section 01</span>
+      <h2>Le mécanisme</h2>
+      <p class="lede">Une personne arrive avec n'importe quoi : un objectif précis, un flou, un blocage, une envie. L'application fait toujours la même chose, dans le même ordre.</p>
+
+      <ol class="steps">
+        <li><span class="k">01</span><p class="t"><b>Elle comprend la personne</b><span>Pas ses données : son fonctionnement. Comment elle décide, ce qui la fait tenir, ce qui la fait lâcher, son humeur, son rapport au risque.</span></p></li>
+        <li><span class="k">02</span><p class="t"><b>Elle propose des solutions calibrées sur cette personne</b><span>Jamais sur la moyenne des gens. Une réponse générique, c'est ce qu'on donne quand on ne sait pas à qui on parle.</span></p></li>
+        <li><span class="k">03</span><p class="t"><b>Elle agit</b><span>Elle ne se contente pas de dire quoi faire. Dès le premier jour, elle fait quelque chose de concret.</span></p></li>
+        <li><span class="k">04</span><p class="t"><b>Elle regarde ce qui s'est réellement passé</b><span>Prévision contre réalité. C'est la seule chose qu'aucune IA généraliste ne fait.</span></p></li>
+        <li><span class="k">05</span><p class="t"><b>Elle corrige</b><span>Sa compréhension de la personne, et sa méthode. Puis elle recommence, en étant meilleure.</span></p></li>
+      </ol>
+
+      <div class="callout">
+        <p class="h">Pourquoi « tous les objectifs » tient debout</p>
+        <p>Ce cycle ne dépend pas du sujet. Carrière, argent, quotidien, projet, santé, apprentissage : le sujet change, le mécanisme ne change jamais. L'avantage n'est pas dans la connaissance du domaine — il est dans la connaissance de la personne.</p>
+      </div>
+
+      <h3>Le caractère ne change pas la réponse. Il change le plan.</h3>
+      <p>Deux personnes avec le même objectif reçoivent les mêmes faits. Mais l'une reçoit un plan en trois étapes sur six mois avec un point le dimanche, l'autre un plan en douze étapes sur deux ans avec des marges partout — parce que la première abandonne quand c'est long, et la seconde panique quand c'est rapide.</p>
+      <p>C'est la définition opérationnelle de « pas générique ». Rien à voir avec le ton employé.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Capacité</th><th>Une IA généraliste</th><th>JARVIS</th></tr></thead>
+          <tbody>
+            <tr><td>Connaît le monde</td><td>oui</td><td>oui</td></tr>
+            <tr><td>Connaît la personne</td><td>non</td><td>oui, et de mieux en mieux</td></tr>
+            <tr><td>Repart de zéro</td><td>à chaque conversation</td><td>jamais</td></tr>
+            <tr><td>Agit</td><td>non</td><td>oui</td></tr>
+            <tr><td>Sait si son conseil a marché</td><td>jamais</td><td>oui</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="s2">
+      <span class="sec-n">Section 02</span>
+      <h2>Ce qu'on retire de la V1</h2>
+      <p class="lede">Huit points du document fondateur sont faux ou dangereux. Ils sont remplacés, pas supprimés — la V1 avait raison sur l'intention à chaque fois.</p>
+
+      <div class="changes">
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>Le Board of Directors à cinq voix <span class="ref">§31</span></b>
+            <p>Cinq perspectives jouées par le même modèle sur les mêmes données produisent cinq reformulations, pas cinq analyses. C'était décoratif. <span class="arrow">→</span> Remplacé par le débat à deux arguments réels <span class="ref">§06</span>.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>La gamification par badges et séries <span class="ref">§43-46</span></b>
+            <p>Contredit directement la règle « la bonne métrique n'est pas le temps passé » <span class="ref">§45</span>. Une app qui a besoin de badges pour retenir ne marche pas. <span class="arrow">→</span> Remplacé par la ligne de vie, qui montre la progression réelle.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>Un seul domaine : la carrière <span class="ref">§73</span></b>
+            <p>Ses cycles de résultat durent 3 à 6 mois — trop lents pour la boucle d'apprentissage. Et restreindre le domaine ne servait à rien puisque l'avantage vient de la personne, pas du sujet. <span class="arrow">→</span> Tous les objectifs, dès le départ.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>Le journal quotidien comme questionnaire</b>
+            <p>Demander à quelqu'un de raconter sa journée est un deuxième travail. Abandon en deux semaines. <span class="arrow">→</span> Les informations sont arrachées à l'usage : 2 ou 3 questions glissées dans l'aide du jour, et l'agenda fait le reste sans rien demander.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>La valeur qui arrive au bout d'un mois</b>
+            <p>« Parle-moi de toi, je te dirai ça dans trois mois » est invendable. <span class="arrow">→</span> L'app livre un diagnostic, un premier obstacle nommé et <b>une action déjà faite</b> le premier jour. La synthèse du mois 1 devient un bonus, jamais la promesse.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>L'indépendance multi-fournisseurs dès la V1 <span class="ref">§88</span></b>
+            <p>Optimisation prématurée avant d'avoir des clients. <span class="arrow">→</span> L'abstraction dans le code dès le départ, la bascule réelle plus tard. L'indépendance vient de la suite de tests, pas de la couche technique.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>Le vocabulaire de la prédiction</b>
+            <p>L'app ne prédit rien. Elle projette une trajectoire à partir de données réelles, avec ses hypothèses affichées. La différence n'est pas cosmétique : elle décide de ce qu'on peut promettre.</p>
+          </div>
+        </div>
+
+        <div class="change">
+          <span class="tag out">Retiré</span>
+          <div class="body">
+            <b>Le prix à 19 €</b>
+            <p>C'est exactement le prix d'un abonnement IA généraliste — la pire position possible. <span class="arrow">→</span> 29 €/mois : le client compare à un coach (60-150 €/heure), pas à un chatbot.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section id="s3">
+      <span class="sec-n">Section 03</span>
+      <h2>Ce qui reste intact</h2>
+      <p class="lede">Le fond de la V1 tient. Ces principes ne se négocient plus.</p>
+
+      <ul class="rules">
+        <li><b>Connaître avant d'agir</b><span>Aucun conseil personnalisé tant qu'on ne connaît pas suffisamment la personne. Mais la connaissance s'acquiert en aidant, jamais en interrogeant.</span></li>
+        <li><b>Chercher le vrai objectif</b><span>Derrière « je veux gagner 5 000 € » il y a peut-être la liberté, la sécurité ou le contrôle du temps. L'app formule une hypothèse et demande confirmation. Elle n'impose jamais son interprétation.</span></li>
+        <li><b>Ne jamais confondre désir et réalité</b><span>L'app doit pouvoir dire « non, pas dans ces conditions ». Elle distingue explicitement : fait vérifié, probable, possible, incertain, inconnu.</span></li>
+        <li><b>Toujours explorer les options</b><span>Plusieurs trajectoires comparées, avec leurs hypothèses affichées et ce qui les ferait basculer. L'app recommande. Elle ne confisque jamais la décision.</span></li>
+        <li><b>Apprendre de la réalité</b><span>Objectif → hypothèse → stratégie → action → résultat → analyse → nouvelle stratégie. L'app doit pouvoir dire « mon analyse précédente était fausse ».</span></li>
+        <li><b>Le modèle de la personne doit pouvoir être faux</b><span>Révisable, contestable, éditable par le client. Chaque affirmation porte sa nature (fait / observation / hypothèse), sa confiance, sa date et sa source.</span></li>
+        <li><b>L'humain garde le contrôle</b><span>Le client doit pouvoir dire « tu as tort », « j'ai changé d'avis », « oublie ça », « pourquoi tu me proposes ça ». L'app accepte, sans discuter.</span></li>
+        <li><b>Sérieux sur le fond, léger dans la forme</b><span>L'humour est autorisé. Jamais au détriment de la justesse.</span></li>
+      </ul>
+    </section>
+
+    <!-- 4 -->
+    <section id="s4">
+      <span class="sec-n">Section 04</span>
+      <h2>Le cœur : ce qui doit exister en premier</h2>
+      <p class="lede">Ordre de construction. Rien de ce qui suit n'est optionnel — c'est le produit minimum qui n'est pas un chatbot.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Rang</th><th>Brique</th><th>Ce qu'elle apporte</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td><b>Les connexions</b> — agenda d'abord</td><td>De la donnée que le client n'a pas à taper, et de la valeur dès le jour 1</td></tr>
+            <tr><td class="num">2</td><td><b>Le modèle de la personne</b></td><td>Affirmations typées, datées, contestables, avec leur source</td></tr>
+            <tr><td class="num">3</td><td><b>Les agents qui exécutent</b></td><td>Sans eux, le premier mois est vide. En mode « je prépare, tu valides ».</td></tr>
+            <tr><td class="num">4</td><td><b>Le carnet de décisions</b></td><td>Contexte, options, recommandation, décision, prévision datée, résultat</td></tr>
+            <tr><td class="num">5</td><td><b>La ligne de vie</b></td><td>L'écran principal. Tout se lit dessus.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>La ligne de vie — l'écran unique</h3>
+      <p>Pas un tableau de bord. Pas des graphiques empilés. Une ligne qui va du passé vers l'avenir : derrière, les décisions prises et ce qu'elles ont donné ; au centre, ce qui compte aujourd'hui ; devant, les branches possibles.</p>
+      <p>Objectifs, plans, actions, humeur, compétences : tout se lit <b>sur cette ligne</b>. C'est ce qui rend l'application compréhensible par quelqu'un qui n'y connaît rien, et c'est là que vit la dimension ludique sans tomber dans le gadget.</p>
+    </section>
+
+    <!-- 5 -->
+    <section id="s5">
+      <span class="sec-n">Section 05</span>
+      <h2>Ce qui la rend utile tous les jours</h2>
+      <p class="lede">Le problème d'un produit d'accompagnement long, c'est la répétition. Trois mécanismes l'empêchent.</p>
+
+      <div class="feat">
+        <div class="feat-head"><h3>Le miroir parle en premier</h3><span class="tag new">Nouveau</span></div>
+        <p>Toutes les IA attendent qu'on leur parle : une page blanche, un curseur. JARVIS ouvre <b>en disant quelque chose</b> — tous les jours, un constat que le client n'a pas demandé, parce qu'elle a vu quelque chose bouger.</p>
+        <p class="why">Effet : l'app n'est jamais deux jours identique, puisque sa première phrase vient de ce qui a changé. Et la relation s'inverse — ce n'est plus un outil qu'on consulte, c'est quelqu'un qui dit bonjour.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>Le mode « décide pour moi »</h3><span class="tag new">Nouveau</span></div>
+        <p>Pour les petites décisions réversibles, le client délègue. L'app tranche et dit ce qu'elle a fait. Où caler la séance de sport, quel créneau proposer, dans quel ordre attaquer la semaine.</p>
+        <p class="why">Bornes strictes : réversible, sans argent engagé, sans tiers impliqué. Tout le reste demande une validation.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>Le mode « je te laisse tranquille »</h3><span class="tag new">Nouveau</span></div>
+        <p>L'app peut dire : <em>« tu n'as pas besoin de moi cette semaine, tout est en place, on se reparle jeudi. »</em></p>
+        <p class="why">Aucun grand acteur ne fera jamais ça : leur modèle économique leur interdit de réduire l'usage. Un produit à l'abonnement le peut. C'est le signal de confiance le plus fort qui existe, et il est structurellement inimitable.</p>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="s6">
+      <span class="sec-n">Section 06</span>
+      <h2>Ce qui la rend irremplaçable</h2>
+      <p class="lede">Quatre fonctions qui n'existent que si le client est resté. C'est là, et nulle part ailleurs, que se justifie l'abonnement.</p>
+
+      <div class="feat">
+        <div class="feat-head"><h3>Le jumeau qui vit sans toi</h3><span class="tag new">Nouveau</span></div>
+        <p>L'app fait tourner le jumeau <b>en avant</b>. Pas une prédiction : une projection de la trajectoire actuelle, calculée sur des données réelles. <em>« Si tu continues exactement comme ces trois derniers mois, voilà où tu es dans deux ans. »</em> Le client change une variable et regarde son jumeau revivre les deux ans autrement.</p>
+        <p class="why">Il ne lit pas un conseil. Il regarde une version de lui vivre les conséquences de ses choix. C'est la dimension Sims, prise au sérieux — et personne ne l'a.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>La contre-épreuve</h3><span class="tag new">Nouveau</span></div>
+        <p>Problème invisible du produit : le client ne peut pas <b>voir</b> que sa réponse est personnalisée — il ne connaît que sa version. Donc l'app montre les deux, côte à côte.</p>
+        <p class="quote">« Le conseil standard, c'est ça. Le tien, c'est ça. Voilà pourquoi ils diffèrent : toi, tu lâches quand une étape dure plus de trois semaines. »</p>
+        <p class="why">Sans ce mécanisme, le client croit qu'il paie pour un chatbot. C'est le seul moyen de rendre visible ce qui justifie le prix.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>Le débat interne visible</h3><span class="tag new">Nouveau</span></div>
+        <p>Pas cinq voix décoratives : les <b>deux arguments réels</b> entre lesquels l'app a hésité avant de trancher.</p>
+        <p class="quote">« J'ai hésité. Pour : tu as l'énergie en ce moment. Contre : les trois fois où tu as accéléré comme ça, tu as tenu six semaines. J'ai tranché pour la version lente. Tu peux me contredire. »</p>
+        <p class="why">Aucun produit ne montre son hésitation. C'est ce qui fait qu'on croit quelqu'un — et c'est cohérent avec la règle « mieux vaut dire je dois vérifier que je suis certain ».</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>Les moments de bascule</h3><span class="tag new">Nouveau</span></div>
+        <p>Rétrospectivement, l'app marque les journées qui ont compté. <em>« Le 12 mars, tu as dit non à cette réunion. C'est le premier jour où tu as repris la main. »</em></p>
+        <p class="why">Une vie contient peut-être vingt de ces jours-là. Personne ne peut les identifier — sauf quelque chose qui a regardé tous les autres jours.</p>
+      </div>
+
+      <h3>Le score de fiabilité, affiché</h3>
+      <p>L'app publie à quel point elle s'est trompée : <em>« mes vingt dernières estimations : douze justes, huit fausses. Je suis trop optimiste sur tes délais, j'en tiens compte. »</em> C'est ce qui la rend croyable quand elle dit quelque chose de dur.</p>
+
+      <div class="callout">
+        <p class="h">Le principe économique</p>
+        <p>Aucune action isolée de l'app ne vaut 29 €/mois — le plan, l'analyse et le conseil ponctuels existent gratuitement ailleurs. Ce qui les vaut, c'est ce qu'elle fait sur deux cents jours. <b>L'abonnement vend la continuité</b>, et la continuité est la seule chose que le gratuit ne peut pas copier.</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="s7">
+      <span class="sec-n">Section 07</span>
+      <h2>Cinq idées qui n'étaient nulle part</h2>
+      <p class="lede">Ajouts à la V1. Les deux premières sont celles qui donnent le vertige — et celles qui demandent le plus de précautions.</p>
+
+      <div class="feat">
+        <div class="feat-head"><h3>1. Les gens autour de toi</h3></div>
+        <p>L'app retient les personnes qui comptent dans une vie — un prénom, un rôle, une relation — telles que le client les raconte. Et elle remarque leur effet sur lui.</p>
+        <p class="quote">« Chaque fois que tu parles de ce projet à Marc, tu le repousses la semaine suivante. C'est arrivé quatre fois. »</p>
+        <p class="why">Précautions obligatoires : uniquement ce que le client raconte lui-même, jamais de données collectées ailleurs sur des tiers ; effaçable d'un geste ; jamais de jugement sur la personne citée, seulement un constat sur l'effet observé.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>2. La trace</h3></div>
+        <p>Après des années, l'app détient l'histoire des décisions d'une vie : ce qu'on voulait, ce qu'on a essayé, pourquoi on a changé d'avis, ce qui a marché. Exportable en document réel — <em>« comment j'en suis arrivé là »</em>.</p>
+        <p class="why">C'est la profondeur temporelle du document fondateur <span class="ref">§98</span>, rendue tangible. Et c'est la raison la plus forte de ne jamais partir : ça n'existe que si on est resté.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>3. Le contrat avec toi-même</h3></div>
+        <p>Le client écrit un engagement, daté. L'app le garde et le ressort au bon moment : <em>« tu as écrit ceci le 3 mars. Tu maintiens, tu modifies, ou tu annules ? »</em></p>
+        <p class="why">Sans jugement, sans harcèlement. C'est la responsabilisation par le miroir, pas par le rappel. Et annuler est une option légitime, affichée comme telle.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>4. Le passage de relais</h3></div>
+        <p>Avec l'accord du client, l'app prépare un résumé de sa situation pour un vrai professionnel : médecin, banquier, avocat, comptable, coach. Elle ne remplace pas le professionnel — <b>elle prépare la personne à le rencontrer</b>.</p>
+        <p class="why">Résout élégamment les limites légales de la section 09, et ouvre une ligne de revenus séparée de l'abonnement.</p>
+      </div>
+
+      <div class="feat">
+        <div class="feat-head"><h3>5. Les objectifs qui se parlent entre eux</h3></div>
+        <p>Un client veut acheter un bien <b>et</b> changer de métier <b>et</b> dégager du temps. Ces objectifs se contredisent : changer de métier fait chuter sa capacité d'emprunt pendant trois ans.</p>
+        <p class="why">Un coach voit un objectif. Un conseiller voit l'argent. L'app est la seule chose au monde qui les voit tous en même temps — parce qu'elle est la seule à qui il a tout raconté.</p>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section id="s8">
+      <span class="sec-n">Section 08</span>
+      <h2>Règles absolues</h2>
+      <p class="lede">Non négociables. Chacune répare une façon précise dont ce produit peut échouer.</p>
+
+      <ul class="rules">
+        <li class="hard"><b>L'IA ne calcule jamais</b><span>Un modèle de langage devine l'arithmétique, il ne la fait pas. Il choisit la formule et les paramètres ; du code testé exécute le calcul. Capacité d'emprunt, mensualités, rendement, projections : tout passe par du code.</span></li>
+        <li class="hard"><b>Ne jamais prétendre avoir agi</b><span>« C'est envoyé » si rien n'est parti est la faute qui détruit la confiance définitivement. Toute action exécutée doit produire une preuve vérifiée. En cas d'échec : « je n'ai pas réussi ».</span></li>
+        <li class="hard"><b>Aucune affirmation sans provenance</b><span>Chaque chose que l'app croit savoir porte sa source. Sans ça, impossible de répondre à « pourquoi tu penses ça ? », et impossible de corriger.</span></li>
+        <li class="hard"><b>Jamais d'écrasement</b><span>Une croyance qui change n'est pas modifiée : elle est datée et remplacée. C'est ce qui permet de raconter comment quelqu'un est devenu ce qu'il est.</span></li>
+        <li><b>L'effort demandé doit décroître</b><span>Semaine 1, l'app pose dix questions parce qu'elle ne sait rien. Mois 3, elle en pose deux. Si l'effort reste constant, tout le monde part.</span></li>
+        <li><b>Aucune question dont l'app connaît déjà la réponse</b><span>Sinon le client comprend qu'il remplit un formulaire.</span></li>
+        <li><b>Rien qui vise le temps passé dans l'application</b><span>Ni série, ni badge, ni notification dont le but est le retour. La bonne question est « est-ce que sa situation s'améliore », pas « combien de temps il reste ».</span></li>
+      </ul>
+    </section>
+
+    <!-- 9 -->
+    <section id="s9">
+      <span class="sec-n">Section 09</span>
+      <h2>Lignes rouges</h2>
+      <p class="lede">Trois zones où une erreur ne se rattrape pas. À faire valider par un juriste avant de coder, pas après.</p>
+
+      <h3>Argent</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Autorisé</th><th>Interdit</th></tr></thead>
+          <tbody>
+            <tr><td>Types de placements, avantages, inconvénients, horizons, risques</td><td>« Achète ce bien », « achète cette action »</td></tr>
+            <tr><td>« Voici les options, voici ce que chacune donne dans ta situation, tu choisis »</td><td>« À ta place, je ferais ça » — dès qu'il s'agit d'argent</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Le conseil en investissement est un métier réglementé en France. La frontière est nette : l'app <b>informe, simule et structure</b>. Elle ne recommande jamais un produit précis.</p>
+
+      <h3>Santé et données sensibles</h3>
+      <p>Collecter l'humeur, les peurs, le mal-être fait entrer le produit dans les données de santé — la catégorie la plus protégée qui existe. Conséquences : consentement explicite et séparé, liste fermée de ce qui ne peut jamais être inféré (diagnostic, pathologie, trait clinique), et aucune prétention thérapeutique.</p>
+
+      <h3>Détresse</h3>
+      <p>Un produit qui sonde les échecs, les peurs et la démotivation rencontrera des gens qui vont très mal. Il faut un protocole : détection, arrêt immédiat du mode exigeant, orientation vers des ressources humaines réelles, journalisation. Cette partie existe avant la première bêta, jamais après.</p>
+    </section>
+
+    <!-- 10 -->
+    <section id="s10">
+      <span class="sec-n">Section 10</span>
+      <h2>Économie</h2>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Abonnés</th><th>Brut mensuel</th><th>Reste estimé</th></tr></thead>
+          <tbody>
+            <tr><td class="num">100</td><td class="num">2 900 €</td><td class="num">~1 900 €</td></tr>
+            <tr><td class="num">200</td><td class="num">5 800 €</td><td class="num">~3 800 €</td></tr>
+            <tr><td class="num">500</td><td class="num">14 500 €</td><td class="num">~9 500 €</td></tr>
+            <tr><td class="num">1 000</td><td class="num">29 000 €</td><td class="num">~19 000 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="why">Estimations après coût des modèles, hébergement et frais bancaires. Hors charges sociales et impôts.</p>
+
+      <ul class="plain">
+        <li><b>29 €/mois</b>, un seul niveau, 14 jours d'essai gratuit. Pas de paliers avant 100 abonnés payants : avant, on devine.</li>
+        <li><b>Environ 200 abonnés</b> suffisent à dépasser l'objectif de revenu. Le problème n'est pas la marge — c'est d'aller chercher ces 200 personnes.</li>
+        <li><b>Un prix bas attire des gens qui ne s'investissent pas.</b> Ce produit meurt sans engagement : le prix filtre, et il filtre dans le bon sens.</li>
+        <li><b>Deux voies de modèles</b> : un modèle économique pour l'usage courant (l'essentiel du volume), un modèle puissant pour les moments d'intelligence. C'est ce qui rend le prix viable.</li>
+        <li><b>Le seul indicateur qui compte est le taux de résiliation.</b> Ni les inscriptions, ni l'usage.</li>
+      </ul>
+    </section>
+
+    <!-- 11 -->
+    <section id="s11">
+      <span class="sec-n">Section 11</span>
+      <h2>Hors périmètre</h2>
+      <p class="lede">Ce qu'on ne construit pas maintenant — non par manque d'ambition, mais parce que chaque brique ici coûte du temps qui manquera ailleurs.</p>
+      <ul class="plain">
+        <li>Application mobile native, voix de synthèse, avatar animé</li>
+        <li>Multilingue, devises, fuseaux horaires</li>
+        <li>Actions irréversibles exécutées seules : paiement, engagement, publication</li>
+        <li>Apprentissage entre utilisateurs (il faudra environ mille personnes sur six mois — c'est l'avantage de long terme, pas le point de départ)</li>
+        <li>Paliers d'abonnement</li>
+        <li>Notifications proactives autres que le rendez-vous quotidien de l'app</li>
+      </ul>
+    </section>
+
+    <!-- 12 -->
+    <section id="s12">
+      <span class="sec-n">Section 12</span>
+      <h2>Ce qui décidera</h2>
+      <p class="lede">Ni l'idée, ni la technologie. Aucune brique décrite ici n'exige une technologie qui n'existe pas.</p>
+      <ol class="steps">
+        <li><span class="k">01</span><p class="t"><b>L'app est-elle utile le premier jour ?</b><span>Pas au mois 3. Le premier jour.</span></p></li>
+        <li><span class="k">02</span><p class="t"><b>Les agents tiennent-ils sans casser ?</b><span>Un agent qui se plante dans la vie de quelqu'un coûte un client pour toujours.</span></p></li>
+        <li><span class="k">03</span><p class="t"><b>Les gens restent-ils au-delà du quatrième mois ?</b><span>C'est le seul chiffre qui dit s'il y a une entreprise.</span></p></li>
+      </ol>
+
+      <div class="closing">
+        <p>La place est vide parce qu'elle est difficile, pas parce qu'elle est petite. Les grands laboratoires construisent des assistants qui répondent à tout le monde. Personne ne construit un assistant qui appartient à quelqu'un.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
