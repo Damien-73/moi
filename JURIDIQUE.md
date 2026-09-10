@@ -29,26 +29,29 @@ formulaire, pas de comptabilité.
 **Ajout d'activité ultérieur** : déclaration de modification en ligne, gratuite, ~15 minutes.
 Rien à anticiper aujourd'hui — déclarer ce qui est réellement exercé, compléter au fil de l'eau.
 
-## Blocage : ne pas créer la structure maintenant
+## Contrat de travail — pas de clause d'exclusivité
 
-Deux raisons, dans cet ordre :
+Déclaré par Damien : le contrat autorise l'exercice d'une activité à côté. À confirmer par une
+relecture du texte si l'affirmation vient de la mémoire.
 
-1. **Clause d'exclusivité.** Tant que rien n'est créé, il n'y a rien à reprocher. La création fait
-   exister l'activité légalement.
-2. **Les données SIRENE sont publiques** — nom, activité, date de création. Un employeur qui cherche
-   le nom trouve l'entreprise. Ce n'est pas un risque théorique.
+Ce qui s'applique malgré l'absence de clause :
 
-**Obligation de loyauté** : elle s'applique même sans clause. Ne jamais prospecter depuis le matériel
-ou les heures de l'employeur, ni viser un client de son secteur.
+- **Obligation de loyauté**, automatique. Pas de prospection sur le temps ou le matériel de
+  l'employeur, aucun client de son secteur.
+- **Statut de directeur** : la loyauté est appréciée plus strictement pour un cadre dirigeant.
+- **Clause d'information** : distincte de l'exclusivité, elle oblige seulement à prévenir
+  l'employeur. Souvent négligée — à vérifier lors de la relecture.
 
-## Séquence correcte
+## Domiciliation — contrainte propre au logement de fonction
 
-1. Relire le contrat de travail — clause d'exclusivité.
-2. Si clause : obtenir une levée écrite, ou attendre la démission. Se former et produire restent
-   possibles ; encaisser non.
-3. Créer la micro-entreprise **le jour de la première facture**, pas avant.
+La micro-entreprise doit être domiciliée. L'adresse actuelle est un logement appartenant à
+l'employeur : y domicilier une entreprise demande normalement l'accord du propriétaire et rend
+l'activité visible.
 
-Cette vérification est commune à toutes les pistes : une seule lecture du contrat les couvre toutes.
+Options : domiciliation chez un proche, ou société de domiciliation (~15-30 €/mois).
+À régler **avant** la création.
+
+Les données SIRENE (nom, activité, date de création) sont publiques.
 
 ## Incertitude signalée
 
@@ -62,3 +65,40 @@ Sans effet à court terme au vu des montants visés.
 - **REP** (responsabilité élargie du producteur) : enregistrement et éco-contributions.
 
 Ces obligations ne concernent pas les prestations de services ni le clipping.
+
+## Démission-reconversion — droits au chômage après démission
+
+Une démission n'ouvre normalement aucun droit. Le dispositif de **démission-reconversion** fait
+exception et couvre le cas présent.
+
+**Conditions** *(fait ; éligibilité personnelle à confirmer)* :
+
+- **5 ans d'activité salariée continue** (1 300 jours travaillés sur les 60 derniers mois)
+- Projet de reconversion réel et sérieux — **la création d'entreprise est éligible**
+- **Demander un CEP** (conseil en évolution professionnelle, gratuit) **AVANT de démissionner**
+- Validation du projet par la commission **Transitions Pro**
+
+**Valeur estimée dans la situation actuelle :**
+
+| Élément | Estimation |
+|---|---|
+| ARE ≈ 57 % du brut | ~1 300-1 500 €/mois |
+| Durée (moins de 53 ans, réforme 2023) | ~18 mois |
+| **Total potentiel** | **~25 000 à 30 000 €** |
+| Variante **ARCE** : 45 % des droits restants en capital, en deux versements | **> 10 000 €** immédiats |
+
+**Conséquence sur la règle de départ :** avec ~1 300 €/mois d'ARE, le seuil de 2 000 € récurrents
+n'est plus nécessaire pour démissionner. Le départ peut intervenir plus tôt et avec plus de sécurité.
+
+### Deux pièges de calendrier
+
+1. **Le CEP doit être demandé avant la démission** — après, le droit est perdu. À engager vers le
+   **mois 9-10** pour que la validation précède le départ.
+2. **Le projet doit être prospectif.** Une micro-entreprise créée et active depuis plusieurs mois
+   risque d'être vue comme un projet *déjà réalisé*, donc non éligible. Or le plan actuel prévoit la
+   création au mois 3 pour facturer le premier client.
+
+**Non tranché — incertitude assumée.** C'est la première question à poser au CEP, et elle peut valoir
+25 000 €. Le CEP est gratuit, confidentiel, sans engagement, et n'informe pas l'employeur.
+
+**Condition d'entrée à vérifier : ancienneté salariée continue supérieure à 5 ans.**

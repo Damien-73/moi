@@ -14,8 +14,14 @@ Toute inversion de cet ordre engage l'épargne de départ, donc repousse le dép
 
 ## Priorité 1 — Cette semaine (2 h)
 
-- Relire le contrat de travail : **clause d'exclusivité**. Détermine si tu peux facturer avant de démissionner.
+- Contrat de travail : pas de clause d'exclusivité (déclaré). Vérifier au passage une éventuelle
+  **clause d'information** et confirmer par une relecture du texte.
+- **Prendre rendez-vous avec un CEP** (gratuit, confidentiel, sans information de l'employeur) pour
+  la **démission-reconversion** — potentiellement 25 000 à 30 000 € de droits. Deux questions à
+  poser : ancienneté continue de 5 ans, et si créer la micro-entreprise au mois 3 disqualifie le
+  projet. Voir `JURIDIQUE.md`.
 - Ouvrir un compte Klaviyo gratuit et démarrer la certification (gratuite).
+- Relever les **dépenses réelles** des 3 derniers mois (30 min).
 
 ## Priorité 2 — Mois 1 à 3 : la preuve
 
@@ -41,6 +47,11 @@ Toute inversion de cet ordre engage l'épargne de départ, donc repousse le dép
 
 > 3 mois consécutifs à 2 000 € nets récurrents **et** 15 000 € minimum de réserve
 > → démission dans les 30 jours.
+
+**Seuil à réviser si la démission-reconversion est validée.** Avec ~1 300 €/mois d'ARE pendant
+~18 mois, le seuil de revenu récurrent nécessaire au départ baisse fortement et la démission peut
+intervenir plusieurs mois plus tôt. Engager le CEP au mois 9-10 au plus tard — le droit est perdu
+si la demande intervient après la démission.
 
 Rappel : la démission fait perdre le salaire **et** le logement de fonction le même jour.
 La réserve doit couvrir un relogement à l'étranger avec un chien.
