@@ -284,3 +284,41 @@ L'essai court réduit de moitié le coût des inscrits non convertis, mais il
 interdit toute montée en puissance lente.
 
 Pas de paliers d'abonnement avant 100 abonnés payants.
+
+---
+
+## D19 — Le nom : Louis
+
+**Décidé par Damien**, après 29 candidats testés. Seul à ne ressortir occupé
+par aucun produit logiciel.
+
+Réserves consignées : protection faible (prénom courant, peu distinctif — c'est le
+choix qu'a fait Alan et il a réussi), éviter tout monogramme ou stylisation d'initiale
+à cause de LVMH, et « Louie AI » existe en anglais avec la même prononciation.
+
+**Le genre se règle par le renommage, proposé dans les cinq premières minutes :**
+*« Je m'appelle Louis. Mais c'est le tien — tu peux m'appeler comme tu veux. »*
+La marque reste Louis ; l'instance porte le nom que chacun lui donne.
+
+Vérification TMview classes 9 et 42 encore à faire.
+
+## D20 — Décisions techniques
+
+| Sujet | Décision |
+|---|---|
+| Agenda | **Google Calendar seul en V1.** Apple n'a pas d'accès serveur correct ; Outlook en V2 |
+| Hébergement | **Région européenne**, base PostgreSQL gérée. Réévaluation obligatoire avant quelques centaines de clients |
+| Langage | **TypeScript seul**, Next.js, PostgreSQL. Pas de microservices, pas de n8n dans le cœur |
+
+## D21 — Le rendez-vous quotidien entre en V1
+
+Ajout au périmètre de la section 15. Sans lui, la semaine 1 n'a aucun rythme
+et l'app redevient une page blanche qu'il faut solliciter.
+
+## D22 — Le protocole de détresse est écrit
+
+Déclencheurs, réaction immédiate, interdits, suites. Numéro 3114 affiché en clair.
+Règle retenue : en cas de doute le protocole se déclenche — un faux positif coûte
+une gêne, un faux négatif coûte une vie.
+
+Les échanges concernés sont conservés mais **exclus du modèle de la personne**.
