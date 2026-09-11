@@ -1,0 +1,1797 @@
+<title>Une Vie</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --fond:#E9E8E2; --carte:#FFFFFF; --creux:#DFDED6; --trait:#C8C6BB; --trait-fin:#DDDBD1;
+    --encre:#15161A; --gris:#63635C; --pale:#8D8C83;
+    --bleu:#1F3C7A; --bleu-clair:#3A63B8; --tampon:#A32619; --vert:#3D6B45; --or:#8A6A1F;
+    --ui:"Archivo",system-ui,sans-serif;
+    --recit:"Newsreader",Georgia,serif;
+    --data:"IBM Plex Mono",ui-monospace,monospace;
+    --r:3px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --fond:#131416; --carte:#1B1D20; --creux:#232529; --trait:#33363B; --trait-fin:#282A2E;
+      --encre:#E8E7E1; --gris:#9B9A92; --pale:#74736C;
+      --bleu:#7FA0E8; --bleu-clair:#A2BAF2; --tampon:#E0655A; --vert:#7FB489; --or:#D3AC57;
+    }
+  }
+  :root[data-theme="dark"]{
+    --fond:#131416; --carte:#1B1D20; --creux:#232529; --trait:#33363B; --trait-fin:#282A2E;
+    --encre:#E8E7E1; --gris:#9B9A92; --pale:#74736C;
+    --bleu:#7FA0E8; --bleu-clair:#A2BAF2; --tampon:#E0655A; --vert:#7FB489; --or:#D3AC57;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fond);color:var(--encre);font-family:var(--ui);font-size:15px;
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  .app{max-width:600px;margin:0 auto;padding:0 14px;padding-block:0 96px}
+  .mono{font-family:var(--data);font-variant-numeric:tabular-nums}
+  .lab{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pale)}
+
+  /* ─── en-tête ─── */
+  .haut{position:sticky;top:0;z-index:20;background:var(--fond);border-bottom:1px solid var(--trait);
+    margin:0 -14px;padding:9px 14px 0}
+  .ident{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .nom{font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .poste{font-family:var(--data);font-size:11px;color:var(--gris);margin-top:1px}
+  .fric{font-family:var(--data);font-size:16px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+  .fric.dette{color:var(--tampon)}
+  .date{font-family:var(--data);font-size:10.5px;color:var(--pale);text-align:right;margin-top:1px}
+  .jauges{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:9px 0 0}
+  .j{min-width:0}
+  .j .t{font-family:var(--data);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--pale);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .j .n{font-family:var(--data);font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.3}
+  .j .r{height:2px;background:var(--creux);margin-top:2px;overflow:hidden}
+  .j .f{height:100%;background:var(--gris);transition:width .45s ease}
+  .f.bleu{background:var(--bleu)} .f.rouge{background:var(--tampon)}
+  .f.vert{background:var(--vert)} .f.or{background:var(--or)}
+  .nav{display:flex;gap:2px;margin-top:8px}
+  .nav button{font-family:var(--data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gris);padding:7px 9px;border-bottom:2px solid transparent}
+  .nav button[aria-current="true"],.nav button:hover{color:var(--encre);border-bottom-color:var(--bleu)}
+
+  /* ─── cartes ─── */
+  .carte{background:var(--carte);border:1px solid var(--trait-fin);border-radius:var(--r);
+    padding:16px;margin-top:12px}
+  .carte.evt{border-left:3px solid var(--bleu)}
+  .carte.evt.grave{border-left-color:var(--tampon)}
+  .titre-evt{font-family:var(--recit);font-size:23px;font-weight:500;line-height:1.2;
+    letter-spacing:-.01em;text-wrap:balance;margin:5px 0 10px}
+  .recit{font-family:var(--recit);font-size:17px;line-height:1.65;color:var(--encre)}
+  .recit p{margin:0 0 12px;max-width:60ch}
+  .recit p:last-child{margin-bottom:0}
+  .recit em{color:var(--gris)}
+
+  /* ─── choix ─── */
+  .opts{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .opt{display:block;width:100%;text-align:left;background:var(--carte);border:1px solid var(--trait);
+    border-radius:var(--r);padding:11px 13px;line-height:1.45;transition:background .15s,border-color .15s}
+  .opt:hover,.opt:focus-visible{background:var(--creux);border-color:var(--gris);outline:none}
+  .opt .sub{display:block;font-family:var(--data);font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--pale);margin-top:5px}
+  .opt.risk{border-left:3px solid var(--tampon)}
+  .opt.risk .sub{color:var(--tampon)}
+  .opt.gain{border-left:3px solid var(--vert)}
+  .opt[disabled]{opacity:.4;cursor:not-allowed}
+
+  /* ─── actions du trimestre ─── */
+  .grp{margin-top:18px}
+  .grp h4{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--pale);font-weight:500;margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid var(--trait-fin)}
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  @media (max-width:440px){.acts{grid-template-columns:1fr}}
+  .act{text-align:left;background:var(--carte);border:1px solid var(--trait-fin);border-radius:var(--r);
+    padding:10px 11px;transition:border-color .15s,background .15s}
+  .act:hover,.act:focus-visible{border-color:var(--bleu);background:var(--creux);outline:none}
+  .act b{display:block;font-weight:600;font-size:14px}
+  .act span{display:block;font-family:var(--data);font-size:10px;color:var(--pale);margin-top:3px;line-height:1.4}
+  .act[disabled]{opacity:.38;cursor:not-allowed}
+  .act.attente span{color:var(--or)}
+  .act[disabled]:hover{border-color:var(--trait-fin);background:var(--carte)}
+
+  /* ─── suites ─── */
+  .deltas{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px}
+  .d{font-family:var(--data);font-size:10.5px;padding:3px 7px;border-radius:2px;
+    background:var(--creux);color:var(--gris);font-variant-numeric:tabular-nums}
+  .d.p{color:var(--vert)} .d.m{color:var(--tampon)}
+  .cause{margin-top:14px;padding:9px 11px;background:var(--creux);border-radius:var(--r);
+    border-left:2px solid var(--or);font-family:var(--data);font-size:11px;line-height:1.55;color:var(--gris)}
+  .cause b{color:var(--encre);font-weight:500}
+  .cta{width:100%;margin-top:16px;padding:12px;border:1px solid var(--encre);border-radius:var(--r);
+    font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-align:center;
+    transition:background .15s,color .15s}
+  .cta:hover,.cta:focus-visible{background:var(--encre);color:var(--fond);outline:none}
+  .cta.plein{background:var(--bleu);border-color:var(--bleu);color:#fff}
+  .cta.plein:hover{background:var(--bleu-clair);border-color:var(--bleu-clair);color:#fff}
+
+  /* ─── listes / panneaux ─── */
+  .ligne{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    padding:10px 0;border-bottom:1px solid var(--trait-fin)}
+  .ligne:last-child{border-bottom:0}
+  .ligne .g{min-width:0}
+  .ligne .nm{font-weight:600;font-size:14.5px}
+  .ligne .ds{font-size:13px;color:var(--gris);line-height:1.4}
+  .puce{font-family:var(--data);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 6px;border:1px solid var(--trait);border-radius:2px;color:var(--gris);white-space:nowrap}
+  .puce.mort{color:var(--tampon);border-color:var(--tampon)}
+  .puce.ok{color:var(--vert);border-color:var(--vert)}
+  .puce.att{color:var(--or);border-color:var(--or)}
+  .memo{list-style:none;margin:7px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+  .memo li{font-family:var(--data);font-size:11px;color:var(--gris);line-height:1.5;
+    padding-left:13px;position:relative}
+  .memo li::before{content:"·";position:absolute;left:3px;color:var(--pale)}
+
+  .an{border-left:2px solid var(--trait);padding:0 0 16px 16px;margin-left:5px;position:relative}
+  .an::before{content:"";position:absolute;left:-5px;top:6px;width:8px;height:8px;border-radius:50%;
+    background:var(--fond);border:2px solid var(--trait)}
+  .an.imp::before{background:var(--bleu);border-color:var(--bleu)}
+  .an.grave::before{background:var(--tampon);border-color:var(--tampon)}
+  .an:last-child{border-left-color:transparent}
+  .an .q{font-family:var(--data);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--pale)}
+  .an .w{font-size:14.5px;margin-top:1px;line-height:1.45}
+  .an .lk{font-family:var(--data);font-size:10.5px;color:var(--or);margin-top:4px;line-height:1.5}
+
+  /* ─── titre / fins ─── */
+  .ecran{padding-block:38px 0}
+  .ecran h1{font-family:var(--recit);font-size:clamp(40px,13vw,62px);font-weight:300;
+    letter-spacing:-.03em;line-height:.95;margin:0}
+  .ecran h1 em{font-style:italic;font-weight:400}
+  .chapo{font-family:var(--recit);font-size:18px;color:var(--gris);margin:14px 0 0;max-width:38ch;line-height:1.5}
+  .bilan{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--trait-fin);
+    border:1px solid var(--trait-fin);border-radius:var(--r);overflow:hidden;margin-top:16px}
+  .bilan>div{background:var(--carte);padding:12px}
+  .bilan .v{font-family:var(--data);font-size:18px;font-weight:500;margin-top:2px;font-variant-numeric:tabular-nums}
+  .vide{color:var(--pale);font-style:italic;padding:18px 0}
+  .tampon{display:inline-block;font-family:var(--data);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--tampon);border:2px solid var(--tampon);border-radius:2px;
+    padding:4px 9px;transform:rotate(-2.5deg);margin-top:14px}
+
+  /* ─── barre du bas ─── */
+  .pied{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--carte);
+    border-top:1px solid var(--trait);padding:8px 14px calc(8px + env(safe-area-inset-bottom))}
+  .pied-in{max-width:600px;margin:0 auto;display:flex;gap:8px;align-items:center}
+  .pied .info{flex:1;min-width:0;font-family:var(--data);font-size:10.5px;color:var(--gris);line-height:1.35}
+  .pied .info b{color:var(--encre);font-weight:500}
+
+  .fade{animation:f .35s ease both}
+  @keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+
+<div class="app">
+  <header class="haut" id="haut" hidden>
+    <div class="ident">
+      <div>
+        <div class="nom" id="h-nom">—</div>
+        <div class="poste" id="h-poste">—</div>
+      </div>
+      <div>
+        <div class="fric" id="h-fric">0 €</div>
+        <div class="date" id="h-date">—</div>
+      </div>
+    </div>
+    <div class="jauges" id="h-jauges"></div>
+    <nav class="nav">
+      <button type="button" data-vue="jeu" aria-current="true">Trimestre</button>
+      <button type="button" data-vue="vie">Ma vie</button>
+      <button type="button" data-vue="gens">Entourage</button>
+      <button type="button" data-vue="dossier">Dossier</button>
+    </nav>
+  </header>
+  <main id="vue"></main>
+</div>
+<div class="pied" id="pied" hidden><div class="pied-in">
+  <div class="info" id="pied-info"></div>
+  <button class="cta plein" id="pied-btn" style="width:auto;margin:0;padding:11px 18px" type="button">Passer</button>
+</div></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   UNE VIE — simulateur de trajectoire
+   Pas de scénario. Un état du monde, des métiers, des gens qui
+   se souviennent, et des conséquences qui reviennent des années
+   plus tard en citant leur cause.
+   ══════════════════════════════════════════════════════════════ */
+
+const SAISONS = ['Hiver','Printemps','Été','Automne'];
+const rnd = n => Math.floor(Math.random()*n);
+const pioche = a => a[rnd(a.length)];
+const chance = p => Math.random() < p;
+const borne = (n,a=0,b=100) => Math.max(a, Math.min(b, n));
+
+/* ─────────── MÉTIERS ─────────── */
+const METIERS = {
+  rien:      {nom:'Sans activité',           sect:'civil',   rev:1800,  rang:0},
+  etudiant:  {nom:'Étudiant',                sect:'civil',   rev:900,   rang:0},
+  interim:   {nom:'Intérimaire',             sect:'civil',   rev:4500,  rang:1},
+  ouvrier:   {nom:'Ouvrier',                 sect:'civil',   rev:5400,  rang:2},
+  employe:   {nom:'Employé de bureau',       sect:'civil',   rev:5700,  rang:2},
+  chef:      {nom:'Chef d’équipe',           sect:'civil',   rev:7200,  rang:3},
+  gerant:    {nom:'Gérant',                  sect:'affaires',rev:8700,  rang:4},
+  cadre:     {nom:'Cadre',                   sect:'civil',   rev:11400, rang:4},
+  patron:    {nom:'Chef d’entreprise',       sect:'affaires',rev:19000, rang:5},
+  promoteur: {nom:'Promoteur immobilier',    sect:'affaires',rev:34000, rang:6},
+
+  assoc:     {nom:'Président d’association', sect:'public',  rev:0,     rang:1},
+  conseiller:{nom:'Conseiller municipal',    sect:'public',  rev:1300,  rang:2},
+  adjoint:   {nom:'Adjoint au maire',        sect:'public',  rev:4600,  rang:3},
+  maire:     {nom:'Maire',                   sect:'public',  rev:10800, rang:5},
+  depute:    {nom:'Député',                  sect:'public',  rev:17400, rang:6},
+
+  gardien:   {nom:'Gardien de la paix',      sect:'police',  rev:5600,  rang:2},
+  brigadier: {nom:'Brigadier',               sect:'police',  rev:6900,  rang:3},
+  lieutenant:{nom:'Lieutenant',              sect:'police',  rev:8400,  rang:4},
+  commissaire:{nom:'Commissaire',            sect:'police',  rev:12600, rang:5},
+
+  guetteur:  {nom:'Guetteur',                sect:'crime',   rev:2700,  rang:1},
+  revendeur: {nom:'Revendeur',               sect:'crime',   rev:6600,  rang:2},
+  semi:      {nom:'Semi-grossiste',          sect:'crime',   rev:16500, rang:4},
+  tete:      {nom:'Tête de réseau',          sect:'crime',   rev:39000, rang:5},
+  parrain:   {nom:'Parrain',                 sect:'crime',   rev:84000, rang:6},
+
+  detenu:    {nom:'Détenu',                  sect:'marge',   rev:0,     rang:0},
+  retraite:  {nom:'Retraité',                sect:'civil',   rev:0,     rang:0}
+};
+// Un rang ne s'atteint ni avant un certain âge, ni avant d'avoir tenu le poste précédent.
+const SEUILS = {2:{age:20,anc:6}, 3:{age:25,anc:10}, 4:{age:30,anc:14},
+                5:{age:36,anc:20}, 6:{age:44,anc:26}};
+// Un mandat n'est pas un métier : on reste ouvrier ou cadre en étant
+// conseiller municipal. Seuls maire et député occupent à plein temps.
+const MANDATS = {
+  militant:  {nom:'Militant associatif', indem:0,    rang:1, age:20, anc:0,  renom:30},
+  conseiller:{nom:'Conseiller municipal',indem:1300, rang:2, age:23, anc:8,  renom:38},
+  adjoint:   {nom:'Adjoint au maire',    indem:4600, rang:3, age:28, anc:12, renom:50},
+  maire:     {nom:'Maire',               indem:10800,rang:4, age:33, anc:16, renom:62},
+  depute:    {nom:'Député',              indem:17400,rang:5, age:38, anc:20, renom:75}
+};
+const SUITE_MANDAT = {militant:'conseiller', conseiller:'adjoint', adjoint:'maire', maire:'depute'};
+
+const PROMO = {
+  interim:'ouvrier', ouvrier:'chef', employe:'chef', chef:'gerant', gerant:'cadre',
+  cadre:'patron', patron:'promoteur',
+  gardien:'brigadier', brigadier:'lieutenant', lieutenant:'commissaire',
+  guetteur:'revendeur', revendeur:'semi', semi:'tete', tete:'parrain'
+};
+
+/* ─────────── ÉTAT ─────────── */
+const PRENOMS = ['Damien','Sofiane','Élodie','Malik','Camille','Youssef','Laura','Bastien','Naïma','Théo','Inès','Rachid','Clara','Jonas'];
+const NOMS = ['Bonnet','Delaunay','Amrani','Fabre','Léger','Bianchi','Roussel','Kessler','Nguyen','Barrault','Cortez','Villard'];
+
+function nouvelleVie(origine, nom, heritage){
+  const base = {
+    populaire:{argent:300, savoir:25, reseau:15, rue:22, renom:5},
+    moyenne:  {argent:2500, savoir:45, reseau:30, rue:5,  renom:10},
+    aisee:    {argent:15000, savoir:60, reseau:55, rue:0,  renom:20}
+  }[origine];
+  const h = heritage || {};
+  return {
+    nom: nom || (pioche(PRENOMS)+' '+pioche(NOMS)),
+    origine, generation: h.generation || 1,
+    age:18, an:2026, sais:0, tour:0,
+    argent: base.argent + (h.argent||0),
+    sante:88, moral:70, savoir:base.savoir, reseau:base.reseau + (h.reseau||0),
+    renom: borne(base.renom + (h.renom||0)), rue: base.rue, soupcon:0,
+    metier:'rien', anciennete:0, salaireBonus:0, mandat:null, mandatAnc:0,
+    traits:{}, drapeaux:{}, casier:[], condamnations:0,
+    prison:null, gens:{}, file:[], actes:[], journal:[],
+    patrimoine:0, mort:null, enfant:null, heritage:h,
+    stats:{crimes:0, refus:0, morts:0, elections:0}
+  };
+}
+let S = nouvelleVie('moyenne');
+
+/* ─────────── GENS ─────────── */
+const ARCHETYPES = [
+  {r:'mere',   t:'Ta mère',                    dom:'famille'},
+  {r:'ami',    t:'Ami d’enfance',              dom:'famille'},
+  {r:'conjoint',t:'Conjoint·e',                dom:'famille'},
+  {r:'enfant', t:'Ton enfant',                 dom:'famille'},
+  {r:'patron', t:'Ton supérieur',              dom:'travail'},
+  {r:'collegue',t:'Collègue',                  dom:'travail'},
+  {r:'caid',   t:'Caïd du quartier',           dom:'rue'},
+  {r:'petit',  t:'Un jeune du quartier',       dom:'rue'},
+  {r:'flic',   t:'Officier de police',         dom:'police'},
+  {r:'juge',   t:'Magistrat',                  dom:'justice'},
+  {r:'elu',    t:'Élu local',                  dom:'public'},
+  {r:'promoteur',t:'Promoteur',                dom:'affaires'},
+  {r:'journaliste',t:'Journaliste local',      dom:'public'}
+];
+function creeGens(role){
+  const a = ARCHETYPES.find(x=>x.r===role);
+  const id = role+'_'+Object.keys(S.gens).length;
+  S.gens[id] = {id, role, nom: pioche(PRENOMS)+' '+pioche(NOMS), desc:a.t,
+    lien:50, rancune:0, statut:'vivant', memoire:[], rencontre:S.an};
+  return S.gens[id];
+}
+function qq(role, cree){
+  const l = Object.values(S.gens).filter(g=>g.role===role && g.statut!=='mort');
+  if(l.length) return pioche(l);
+  return cree===false ? null : creeGens(role);
+}
+function note(g, txt){ if(g && !g.memoire.includes(txt)) g.memoire.push(txt); }
+
+/* ─────────── OUTILS DE CONSÉQUENCE ─────────── */
+let acteCourant = null;
+function differe(trimestres, evId, cause){
+  S.file.push({du: S.tour + trimestres, ev: evId, cause: cause!==undefined ? cause : acteCourant});
+}
+function trait(t, on){ if(on===false) delete S.traits[t]; else S.traits[t] = S.an; }
+function aTrait(t){ return S.traits[t] !== undefined; }
+function condamne(motif, trimestres){
+  S.casier.push({an:S.an, motif, peine:trimestres});
+  S.condamnations++;
+  S.prison = {reste:trimestres, total:trimestres, motif};
+  if(S.mandat){ S.mandat = null; trait('ineligible'); }
+  S.metier = 'detenu';
+  trait('detenu');
+  S.soupcon = 20;
+}
+function journalise(txt, type, cause){
+  S.journal.push({an:S.an, sais:S.sais, age:S.age, txt, type, cause});
+}
+
+/* ═════════════ ACTIONS DU TRIMESTRE ═════════════ */
+const sect = () => METIERS[S.metier].sect;
+const revenu = () => Math.round(METIERS[S.metier].rev * (1 + S.salaireBonus))
+  + (S.mandat ? MANDATS[S.mandat].indem : 0);
+const elu = () => S.mandat && MANDATS[S.mandat].rang >= 3;   // adjoint et au-dessus
+
+const ACTIONS = [
+/* ── travail ── */
+{id:'bosser', grp:'Travail', nom:'Se donner à fond', desc:'Revenu +25 %. Santé −',
+ cond:()=> !S.prison && !['rien','detenu','retraite'].includes(S.metier),
+ fait(){ const p = Math.round(revenu()*0.25);
+   S.argent += p; S.sante -= 3; S.anciennete += 2; S.moral -= 2;
+   if(sect()==='crime'){ S.rue += 3; S.soupcon += 4; }
+   if(chance(.18)) S.salaireBonus += 0.05;
+   return `Trois mois de trop-plein. Tu rentres tard, tu manges mal, et tu fais rentrer ${p.toLocaleString('fr-FR')} € de plus que prévu.`; }},
+
+{id:'chercher', grp:'Travail', nom:'Chercher du travail', desc:'Selon savoir et réseau',
+ cond:()=> !S.prison && ['rien','interim','retraite'].includes(S.metier),
+ fait(){ let p = .25 + S.savoir/260 + S.reseau/240;
+   if(aTrait('detenu')) p -= .28;
+   if(S.condamnations>1) p -= .12;
+   S.reseau += 2;
+   if(chance(p)){
+     const cible = S.savoir>=55 ? 'employe' : 'ouvrier';
+     S.metier = cible; S.anciennete = 0; S.moral += 10;
+     return `Un entretien qui se passe bien, un essai d’un mois, un contrat. Tu es ${METIERS[cible].nom.toLowerCase()}.`;
+   }
+   S.moral -= 5;
+   return aTrait('detenu')
+     ? `Quatre entretiens. À chacun, la même question sur le trou de plusieurs années dans ton parcours, et la même gêne quand tu réponds.`
+     : `Onze candidatures, deux réponses, aucun entretien décisif. Le trimestre passe.`; }},
+
+{id:'promotion', grp:'Travail', nom:'Viser au-dessus', desc:()=>{
+   const s=SEUILS[METIERS[PROMO[S.metier]].rang];
+   return s && (S.age<s.age||S.anciennete<s.anc) ? `Pas encore : ${s.age} ans et ${(s.anc/4).toFixed(0)} ans de poste`
+     : 'Monter d’un cran';},
+ cond:()=> !S.prison && PROMO[S.metier] && S.metier!=='rien',
+ dur:()=>{ const s=SEUILS[METIERS[PROMO[S.metier]].rang];
+   return !!s && (S.age<s.age || S.anciennete<s.anc); },
+ fait(){ const suiv = PROMO[S.metier];
+   const seuil = SEUILS[METIERS[suiv].rang];
+   if(seuil && (S.age<seuil.age || S.anciennete<seuil.anc)){
+     S.anciennete += 1; S.moral -= 3; S.reseau += 2;
+     return S.age < seuil.age
+       ? `On te trouve « prometteur », ce qui est le mot poli pour « trop jeune ». Le poste ira à quelqu’un de quarante ans.`
+       : `Tu n’as pas assez d’ancienneté dans le poste. Ici, l’ancienneté n’est pas une qualité, c’est un préalable.`;
+   }
+   let p = .10 + S.anciennete/180 + S.reseau/420 + S.savoir/420;
+   if(sect()==='crime') p += S.rue/300;
+   if(S.mandat) p += S.renom/280;   // être connu aide aussi dans le privé
+   if(aTrait('detenu') && sect()!=='crime') p -= .20;
+   p = Math.min(p, .55);
+   if(chance(p)){
+     S.metier = suiv; S.anciennete = 0; S.moral += 12; S.reseau += 5;
+     if(METIERS[suiv].sect==='crime'){ S.rue += 8; S.soupcon += 6; }
+     if(METIERS[suiv].sect==='public'){ S.renom += 10; S.stats.elections++; }
+     return `C’est passé. Tu es ${METIERS[suiv].nom.toLowerCase()}. Certains te félicitent sincèrement, d’autres apprennent ton nom ce jour-là.`;
+   }
+   S.moral -= 4; S.anciennete += 1;
+   return `On t’a écouté poliment, puis on a nommé quelqu’un d’autre. On te dit d’attendre le prochain tour.`; }},
+
+{id:'former', grp:'Travail', nom:'Se former', desc:'Savoir +. Coûte du temps et 900 €',
+ cond:()=> !S.prison && S.argent >= 900,
+ fait(){ S.argent -= 900; S.savoir += 7; S.moral -= 2;
+   return `Cours du soir, trois soirs par semaine. C’est fatigant, personne ne te félicite, et dans cinq ans ça aura tout changé.`; }},
+
+{id:'affaire', grp:'Travail', nom:'Monter son affaire', desc:'20 000 €. Tout ou rien',
+ cond:()=> !S.prison && S.argent >= 20000 && !['patron','promoteur'].includes(S.metier),
+ fait(){ S.argent -= 20000;
+   const p = .34 + S.savoir/230 + S.reseau/230;
+   if(chance(p)){ S.metier = 'gerant'; S.anciennete = 0; S.moral += 14; trait('entrepreneur');
+     return `Tu ouvres. Les six premières semaines sont vides, puis ça prend. Tu es à ton compte.`; }
+   S.moral -= 16; S.sante -= 4;
+   differe(3,'echec_dettes');
+   return `Ça ne prend pas. Neuf mois plus tard tu fermes, avec les stocks sur les bras et le bail à honorer.`; }},
+
+/* ── argent ── */
+{id:'placer', grp:'Argent', nom:'Placer de l’argent', desc:'Lent, sûr, cumulatif',
+ cond:()=> !S.prison && S.argent >= 5000,
+ fait(){ const m = Math.min(S.argent*0.6, 40000); S.argent -= m; S.patrimoine += Math.round(m*1.02);
+   return `Tu places ${Math.round(m).toLocaleString('fr-FR')} €. Ça ne change rien ce trimestre. Dans vingt ans, ce sera la seule chose qui aura changé quelque chose.`; }},
+
+{id:'emprunter', grp:'Argent', nom:'Emprunter', desc:'Liquide tout de suite. Ça se rembourse',
+ cond:()=> !S.prison && !S.drapeaux.dette,
+ fait(){ const m = S.renom>40 || sect()!=='crime' ? 15000 : 8000;
+   S.argent += m; S.drapeaux.dette = m; S.moral -= 3;
+   differe(4,'remboursement');
+   return `${m.toLocaleString('fr-FR')} € sur le compte. Les échéances commencent dans un an.`; }},
+
+{id:'jouer', grp:'Argent', nom:'Tenter sa chance', desc:'2 000 €. Espérance négative',
+ cond:()=> !S.prison && S.argent >= 2000,
+ fait(){ S.argent -= 2000;
+   if(chance(.30)){ const g = 2000 + rnd(9000); S.argent += g; S.moral += 6;
+     if(chance(.5)) trait('joueur');
+     return `Tu gagnes ${g.toLocaleString('fr-FR')} €. C’est exactement ce qui te fera revenir.`; }
+   S.moral -= 6; if(aTrait('joueur')) S.moral -= 4; else if(chance(.3)) trait('joueur');
+   return `Deux mille euros en une soirée et demie. Tu ne le dis à personne.`; }},
+
+/* ── vie privée ── */
+{id:'monde', grp:'Vie privée', nom:'Voir du monde', desc:'Réseau +, moral +',
+ cond:()=> !S.prison,
+ fait(){ S.reseau += 6; S.moral += 7; S.argent -= 400;
+   if(chance(.3)) { const g = creeGens(pioche(['collegue','ami','elu','promoteur','journaliste']));
+     return `Dîners, terrasses, un mariage. Tu rencontres ${g.nom} — ${g.desc.toLowerCase()} — et vous échangez vos numéros.`; }
+   return `Trois mois de gens, de repas et de conversations sans objet. C’est comme ça que les portes s’ouvrent, des années plus tard.`; }},
+
+{id:'soigner', grp:'Vie privée', nom:'S’occuper de sa santé', desc:'Santé +. 600 €',
+ cond:()=> !S.prison && S.argent >= 600,
+ fait(){ S.argent -= 600; S.sante += 9; S.moral += 3;
+   return `Bilan complet, un peu de sport, moins d’alcool. Le corps encaisse ce qu’on lui rend.`; }},
+
+{id:'souffler', grp:'Vie privée', nom:'Souffler', desc:'Moral ++. Aucun revenu en plus',
+ cond:()=> true,
+ fait(){ if(S.prison){ S.moral += 6; S.sante += 2; } else { S.moral += 13; S.sante += 4; }
+   return S.prison ? `Tu passes le trimestre à dormir, lire et compter. C’est déjà beaucoup.`
+     : `Rien de spécial. Des week-ends vides, un peu de marche, du sommeil en retard. Tu te sens redevenu quelqu’un.`; }},
+
+{id:'famille', grp:'Vie privée', nom:'Construire une famille', desc:'Attaches. Coûts. Raisons',
+ cond:()=> !S.prison && S.age>=22,
+ fait(){ const c = qq('conjoint', false);
+   if(!c){ const n = creeGens('conjoint'); n.lien = 72; S.moral += 16; trait('en_couple');
+     return `Tu rencontres ${n.nom}. Six mois plus tard vous vivez ensemble, ce qui est à la fois la chose la plus ordinaire et la plus structurante de ta vie.`; }
+   if(!S.enfant && S.age<=46 && chance(.55)){
+     const e = creeGens('enfant'); S.enfant = e.id; S.moral += 18; S.argent -= 2500; trait('parent');
+     return `Un enfant. ${e.nom}. Tu passes une nuit entière à regarder quelqu’un dormir et tu comprends que ta tolérance au risque vient de changer.`; }
+   c.lien = borne(c.lien + 12); S.moral += 9; S.argent -= 1200;
+   return `Du temps ensemble, un voyage, des choses réparées. ${c.nom} te dit que tu es plus présent qu’avant.`; }},
+
+/* ── ombre ── */
+{id:'entrer_milieu', grp:'Dans l’ombre', nom:'Entrer dans le milieu', desc:'Irréversible sur ton nom',
+ cond:()=> !S.prison && sect()!=='crime' && S.rue>=12 && S.age<55,
+ fait(){ const c = qq('caid'); S.metier='revendeur'; S.rue += 18; S.soupcon += 8; S.anciennete=0;
+   trait('milieu'); note(c, `Il t’a fait entrer dans le réseau en ${S.an}.`);
+   return `${c.nom} te propose un rôle et un territoire. Tu acceptes dans une voiture, en trois minutes, et ces trois minutes tiendront dans tout ce qui suivra.`; }},
+
+{id:'coups', grp:'Dans l’ombre', nom:'Faire quelques coups', desc:'Argent rapide. Soupçon +',
+ cond:()=> !S.prison && (S.rue>=10 || sect()==='crime'),
+ fait(){ const g = 2000 + rnd(6000) + S.rue*120;
+   S.argent += g; S.rue += 5; S.soupcon += 11; S.stats.crimes++;
+   if(chance(.14)) differe(1+rnd(3),'interpellation');
+   return `Quelques opérations discrètes. ${g.toLocaleString('fr-FR')} € en liquide, rangés là où personne ne regarde.`; }},
+
+{id:'developper', grp:'Dans l’ombre', nom:'Développer le réseau', desc:'Revenu durable. Guerre possible',
+ cond:()=> !S.prison && sect()==='crime',
+ fait(){ S.salaireBonus += .22; S.rue += 9; S.soupcon += 9;
+   if(chance(.3)) differe(2+rnd(4),'rivalite');
+   return `Deux points de vente de plus, quatre gamins embauchés, un appartement loué au nom d’une vieille dame. Le chiffre monte.`; }},
+
+{id:'blanchir', grp:'Dans l’ombre', nom:'Blanchir', desc:'−30 % du liquide. Soupçon −−',
+ cond:()=> !S.prison && S.argent >= 20000 && S.soupcon >= 20,
+ fait(){ const c = Math.round(S.argent*0.3); S.argent -= c; S.soupcon -= 22; S.patrimoine += Math.round(c*0.4);
+   trait('blanchiment');
+   return `Un bar, un garage, des factures d’un ami. Trente pour cent partent en frottement ; le reste devient de l’argent qu’on peut montrer.`; }},
+
+{id:'faire_taire', grp:'Dans l’ombre', nom:'Faire taire quelqu’un', desc:'Irréversible',
+ cond:()=> !S.prison && S.rue>=35,
+ fait(){ const cibles = Object.values(S.gens).filter(g=>g.statut==='vivant' && g.rancune>30);
+   const c = cibles.length ? pioche(cibles) : qq('petit');
+   c.statut='mort'; S.stats.morts++; S.rue += 12; S.soupcon += 26; S.moral -= 14;
+   note(c, `Tu l’as fait disparaître en ${S.an}.`);
+   Object.values(S.gens).forEach(g=>{ if(g.statut==='vivant' && g.role==='ami') g.rancune += 20; });
+   differe(2+rnd(5),'enquete_homicide');
+   return `${c.nom} disparaît. Personne ne pose de question devant toi. Beaucoup en posent ailleurs.`; }},
+
+/* ── vie publique ── */
+{id:'militer', grp:'Vie publique', nom:'S’engager localement', desc:'Renom +, réseau +',
+ cond:()=> !S.prison && sect()!=='crime' && !S.mandat,
+ fait(){ S.renom += 4; S.reseau += 6; S.moral += 4;
+   if(S.renom>=30 && S.age>=20 && !S.mandat){ S.mandat='militant'; S.mandatAnc=0;
+     return `Association de quartier, réunions le mardi, dossiers le dimanche. On te propose la présidence, tu dis oui, et tu gardes ton travail — personne ne vit d’une association.`; }
+   return `Réunions publiques, pétitions, un article dans le journal local avec ton nom mal orthographié. Les gens commencent à te reconnaître.`; }},
+
+{id:'se_presenter', grp:'Vie publique', nom:'Se présenter', desc:()=>{
+   const m=MANDATS[SUITE_MANDAT[S.mandat]||'conseiller'];
+   const manque=[]; if(S.age<m.age)manque.push(m.age+' ans'); if(S.renom<m.renom)manque.push('renom '+m.renom);
+   if(S.mandatAnc<m.anc)manque.push((m.anc/4).toFixed(0)+' ans de mandat');
+   return manque.length ? 'Il te manque : '+manque.join(', ') : 'Élection : '+m.nom.toLowerCase(); },
+ cond:()=> !S.prison && !!S.mandat && !!SUITE_MANDAT[S.mandat] && !aTrait('ineligible'),
+ dur:()=>{ const m=MANDATS[SUITE_MANDAT[S.mandat]];
+   return S.age<m.age || S.renom<m.renom || S.mandatAnc<m.anc; },
+ fait(){ const cible=SUITE_MANDAT[S.mandat], m=MANDATS[cible];
+   if(S.age<m.age || S.renom<m.renom || S.mandatAnc<m.anc){ S.mandatAnc+=1; S.renom+=2;
+     return `Ta candidature n’est pas retenue par l’appareil : trop jeune, trop peu connu, ou pas assez ancien. On te dit « la prochaine fois », et on le pense à moitié.`; }
+   const p = Math.min(.62, .18 + (S.renom-m.renom)/130 + S.reseau/320 + (S.argent>40000?.08:0));
+   S.sante-=4; S.moral-=3; S.argent-=Math.min(S.argent>0?S.argent:0, 6000);
+   if(chance(p)){
+     S.mandat=cible; S.mandatAnc=0; S.renom+=10; S.moral+=16; S.stats.elections++;
+     if(cible==='maire'||cible==='depute'){ S.metier='rien'; S.anciennete=0; trait('plein_temps_public'); }
+     return `Élu. ${m.nom}. La soirée est irréelle, le lendemain matin il y a quarante dossiers sur le bureau, et plus personne ne te parle comme avant.`;
+   }
+   S.renom-=4; S.moral-=12; S.mandatAnc+=1;
+   return `Battu. Six mois de campagne, tes économies dedans, et une salle qui se vide en vingt minutes le soir du second tour.`; }},
+
+{id:'mains', grp:'Vie publique', nom:'Serrer des mains', desc:'Renom +. Le métier de base',
+ cond:()=> !S.prison && (!!S.mandat || S.renom>=20),
+ fait(){ S.renom += 5; S.reseau += 4; S.sante -= 2;
+   if(chance(.25)){ const j = qq('journaliste'); note(j, `Il te suit depuis ${S.an}.`);
+     return `Marchés, inaugurations, clubs de troisième âge. ${j.nom}, du journal local, commence à s’intéresser à toi — dans les deux sens du terme.`; }
+   return `Cent quarante mains en trois mois. C’est ridicule, ça marche, et personne n’a trouvé mieux depuis deux siècles.`; }},
+
+{id:'acheter_voix', grp:'Vie publique', nom:'Acheter des soutiens', desc:'25 000 €. Illégal',
+ cond:()=> !S.prison && !!S.mandat && S.argent>=25000,
+ fait(){ S.argent -= 25000; S.renom += 18; S.soupcon += 16; trait('achat_voix'); S.stats.crimes++;
+   differe(4+rnd(6),'enquete_financement');
+   return `Subventions bien orientées, emplois d’été bien distribués, un imprimeur payé deux fois. Personne ne signe rien.`; }},
+
+/* ── détention ── */
+{id:'carreau', grp:'Détention', nom:'Se tenir à carreau', desc:'Remise de peine possible',
+ cond:()=> !!S.prison,
+ fait(){ S.moral -= 3;
+   if(chance(.42)){ S.prison.reste = Math.max(0, S.prison.reste - 2);
+     return `Travail en atelier, aucun incident, un rapport favorable. Six mois de moins.`; }
+   return `Rien. Tu te lèves, tu attends, tu te couches. C’est le métier, ici.`; }},
+
+{id:'contacts_dedans', grp:'Détention', nom:'Se faire des contacts', desc:'Rue +. Ce qui t’attend dehors',
+ cond:()=> !!S.prison,
+ fait(){ S.rue += 11; S.reseau += 6; S.moral += 3;
+   const c = qq('caid'); note(c, `Vous avez fait de la détention ensemble.`);
+   trait('reseau_dedans');
+   return `${c.nom} est dans la même coursive. On mange ensemble, on parle beaucoup, on prévoit — c’est ici que se décident la moitié des dix années suivantes.`; }},
+
+{id:'etudier_dedans', grp:'Détention', nom:'Étudier', desc:'Savoir +. La seule sortie réelle',
+ cond:()=> !!S.prison,
+ fait(){ S.savoir += 9; S.moral += 2;
+   if(S.savoir>=70 && !aTrait('diplome_dedans')){ trait('diplome_dedans'); S.prison.reste = Math.max(0,S.prison.reste-1);
+     return `Tu passes un diplôme derrière les murs. Le greffe le note, le juge d’application des peines aussi.`; }
+   return `Bibliothèque, cours par correspondance, une prof bénévole qui vient le jeudi. Tu apprends plus ici qu’en quinze ans dehors.`; }},
+
+{id:'sport_dedans', grp:'Détention', nom:'S’entretenir', desc:'Santé +',
+ cond:()=> !!S.prison,
+ fait(){ S.sante += 8; S.moral += 4;
+   return `Cour, barres, trois cents pompes par jour. Le corps, c’est la seule chose qu’on te laisse administrer.`; }}
+];
+
+/* ═════════════ ÉVÉNEMENTS ═════════════
+   cond  : conditions d'apparition
+   poids : fréquence relative
+   diff  : ne survient que si un choix passé l'a programmé
+   ═════════════════════════════════════ */
+const EV = {
+
+/* ── travail & argent ── */
+licenciement:{dom:'travail', poids:3, cond:()=> !S.prison && METIERS[S.metier].rang>=1 && sect()!=='crime' && S.anciennete>4,
+  titre:'Plan social', grave:true,
+  texte:()=>`La boîte annonce dix-neuf suppressions de postes. Tu es sur la liste, avec une proposition de départ conventionnel et quinze jours pour signer.`,
+  choix:[
+    {t:'Signer et partir avec l’indemnité.', sub:'+ 9 000 €, sans emploi',
+     fait(){ S.argent+=9000; S.metier='rien'; S.moral-=10; S.anciennete=0;
+       return `Tu signes le mardi. Le vendredi, ton badge ne fonctionne plus. Neuf mille euros, deux ans d’ancienneté effacés.`; }},
+    {t:'Refuser et contester aux prud’hommes.', sub:'Long. Incertain.',
+     fait(){ S.metier='rien'; S.moral-=6; S.anciennete=0; differe(6,'prudhommes');
+       return `Tu prends un avocat. La procédure durera entre dix-huit mois et trois ans, et personne ne t’embauchera pendant que ça dure.`; }}]},
+
+echec_dettes:{diff:true, dom:'argent', grave:true, titre:'Les créanciers',
+  texte:()=>`La liquidation laisse un passif. Le bailleur, l’URSSAF et deux fournisseurs réclament, et l’un d’eux a déjà saisi le tribunal de commerce.`,
+  choix:[
+    {t:'Tout rembourser, même à sec.', sub:'−18 000 €',
+     fait(){ S.argent-=18000; S.renom+=6; trait('honnete');
+       return `Tu paies jusqu’au dernier euro, en te privant pendant deux ans. Deux fournisseurs te recommanderont dix ans plus tard sans que tu saches pourquoi.`; }},
+    {t:'Déposer le bilan et passer à autre chose.', sub:'Interdit de gérer 3 ans',
+     fait(){ trait('faillite'); S.moral-=8; S.renom-=10;
+       return `Liquidation judiciaire. Tu ne dois plus rien, sauf une inscription qui ressortira à chaque demande de crédit pendant dix ans.`; }},
+    {t:'Emprunter au caïd du quartier.', sub:'Il ne demande pas de garantie', risk:true,
+     fait(){ const c=qq('caid'); S.argent+=18000; S.drapeaux.dette_rue=18000; S.rue+=8;
+       note(c,`Tu lui as emprunté 18 000 € en ${S.an}.`); differe(4,'dette_rue');
+       return `${c.nom} sort l’argent d’un sac de sport sans compter. Il ne parle ni d’intérêts ni d’échéance, ce qui est bien pire que s’il l’avait fait.`; }}]},
+
+remboursement:{diff:true, dom:'argent', titre:'Les échéances',
+  texte:()=>`Le différé est terminé. La banque prélève désormais chaque mois, et le prélèvement ne s’adapte pas à tes trimestres difficiles.`,
+  choix:[
+    {t:'Rembourser normalement.', sub:'−' + 1,
+     fait(){ const m=S.drapeaux.dette||10000; S.argent-=Math.round(m*1.16); S.drapeaux.dette=0;
+       return `Tu rembourses ${Math.round(m*1.16).toLocaleString('fr-FR')} € en tout. Le coût de l’argent, c’est ça, et ça n’a rien de scandaleux.`; }},
+    {t:'Laisser filer.', sub:'Fichage bancaire', risk:true,
+     fait(){ S.drapeaux.dette=0; trait('fiche_banque'); S.renom-=6;
+       return `Trois incidents de paiement, puis un fichage à la Banque de France. Plus aucun crédit pendant cinq ans, y compris pour une voiture.`; }}]},
+
+dette_rue:{diff:true, dom:'crime', grave:true, titre:'Il vient pour son argent',
+  texte:()=>`${qq('caid').nom} passe te voir un dimanche matin. Il est aimable, il accepte un café, et il explique qu’il ne veut pas de l’argent.`,
+  choix:[
+    {t:'Payer le double, tout de suite.', sub:'−36 000 €',
+     cond:()=> S.argent>=36000,
+     fait(){ S.argent-=36000; S.drapeaux.dette_rue=0;
+       return `Tu paies trente-six mille pour en avoir emprunté dix-huit. Il compte, sourit, et s’en va. Tu es libre, et beaucoup plus pauvre.`; }},
+    {t:'Travailler pour lui jusqu’à extinction.', sub:'Entrée dans le milieu',
+     fait(){ S.metier='revendeur'; S.rue+=20; S.soupcon+=10; S.drapeaux.dette_rue=0; trait('milieu');
+       return `Tu prends un point de vente et tu rembourses en nature. Dans trois ans, tu ne te souviendras même plus que tout est parti d’un bail commercial.`; }},
+    {t:'Refuser. Il n’a rien signé.', sub:'', risk:true,
+     fait(){ const c=qq('caid'); c.rancune+=70; S.sante-=18; S.moral-=12;
+       note(c,`Tu as refusé de le rembourser.`); differe(2,'represailles');
+       return `Il ne dit rien et s’en va. Onze jours plus tard, on t’attend en bas de chez toi à deux.`; }}]},
+
+represailles:{diff:true, unique:false, dom:'crime', grave:true, titre:'Représailles',
+  texte:()=>`Ta voiture brûle, ta porte est marquée, et ton employeur reçoit un appel anonyme te concernant. Personne ne te menace jamais directement, c’est la méthode.`,
+  choix:[
+    {t:'Porter plainte.', sub:'Ils sauront.',
+     fait(){ S.soupcon+=4; const c=qq('caid'); c.rancune+=20;
+       differe(3, chance(.5)?'represailles':'classement');
+       return `Dépôt de plainte, photos, numéro de procédure. L’enquête n’aboutira pas, et tout le quartier saura que tu y es allé.`; }},
+    {t:'Aller le voir seul et négocier.', sub:'',
+     fait(){ const c=qq('caid'); const m=Math.min(S.argent, 12000); S.argent-=m; c.rancune-=40;
+       note(c,`Tu es venu seul régler la dette.`);
+       return `Tu poses ce que tu as sur la table et tu dis que c’est tout. Il prend, il te sert un verre, c’est fini — parce que tu es venu.`; }},
+    {t:'Déménager. Recommencer ailleurs.', sub:'Tout perdre sauf la paix',
+     fait(){ S.reseau=Math.round(S.reseau*0.4); S.rue=Math.round(S.rue*0.3); S.moral-=8; S.argent-=4000;
+       trait('exil');
+       return `Une autre ville, un autre quartier, personne que tu connais. Tu recommences à zéro, ce qui est une défaite et un soulagement.`; }}]},
+
+classement:{diff:true, unique:false, dom:'police', titre:'Classement sans suite',
+  texte:()=>`Un courrier du parquet : votre plainte a été classée sans suite, faute d’éléments permettant d’identifier l’auteur des faits.`,
+  choix:[{t:'Ranger la lettre.', sub:'',
+    fait(){ S.moral-=5; return `Tu la ranges dans le tiroir avec les autres papiers. C’est la seule réponse que l’institution te donnera sur ce sujet.`; }}]},
+
+heritage_ev:{dom:'argent', poids:1, cond:()=> S.age>=38 && !S.drapeaux.herite,
+  titre:'La succession', texte:()=>{ const m=qq('mere'); m.statut='mort';
+    return `${m.nom} est morte en février. Il reste une maison en indivision, un compte, et des frères et sœurs qui ne sont pas d’accord.`; },
+  choix:[
+    {t:'Vendre et partager équitablement.', sub:'+ 32 000 €',
+     fait(){ S.argent+=32000; S.drapeaux.herite=true; S.moral-=8;
+       return `La maison part en quatre mois. Tu touches trente-deux mille et tu ne remets plus jamais les pieds dans le village.`; }},
+    {t:'Racheter les parts des autres.', sub:'−20 000 €, un bien à toi',
+     cond:()=> S.argent>=20000,
+     fait(){ S.argent-=20000; S.patrimoine+=95000; S.drapeaux.herite=true; trait('proprietaire');
+       return `Tu t’endettes pour garder la maison. C’est financièrement discutable et tu ne l’as jamais regretté une seule fois.`; }},
+    {t:'Tout laisser à tes frères et sœurs.', sub:'Rien. Sauf eux.',
+     fait(){ S.drapeaux.herite=true; S.moral+=6; S.reseau+=8; trait('genereux');
+       Object.values(S.gens).forEach(g=>{ if(g.role==='ami') g.lien=borne(g.lien+15); });
+       return `Tu signes ta renonciation chez le notaire. Ta sœur pleure. Vous vous parlerez toutes les semaines pendant trente ans.`; }}]},
+
+/* ── santé & famille ── */
+accident:{dom:'sante', poids:2, cond:()=> S.sante<70 || S.age>45,
+  titre:'Le corps lâche', grave:true,
+  texte:()=>`Malaise au travail, hospitalisation, trois semaines d’arrêt. Le médecin parle de tension, de sommeil et d’alcool, et il ne parle pas pour ne rien dire.`,
+  choix:[
+    {t:'Changer de vie. Vraiment.', sub:'Santé ++, revenu −',
+     fait(){ S.sante+=22; S.moral+=8; S.salaireBonus=Math.max(0,S.salaireBonus-.15);
+       trait('leve_le_pied');
+       return `Tu lèves le pied pour de bon : moins d’heures, moins d’argent, et une dizaine d’années de plus au compteur — ce qu’aucun tableau ne te montrera jamais.`; }},
+    {t:'Reprendre comme avant.', sub:'Ça recommencera',
+     fait(){ S.sante+=5; differe(6+rnd(8),'accident_2');
+       return `Tu reprends le lundi suivant. Le médecin note « contre avis médical » et tu signes la décharge sans la lire.`; }}]},
+
+accident_2:{diff:true, dom:'sante', grave:true, titre:'La deuxième fois',
+  texte:()=>`Cette fois c’est plus sérieux et c’est l’hôpital qui appelle ta famille. Tu es à l’arrêt pour six mois, et une partie de ce que tu as perdu ne revient pas.`,
+  choix:[{t:'Encaisser.', sub:'',
+    fait(){ S.sante-=18; S.argent-=6000; S.moral-=10;
+      return `Rééducation, mi-temps thérapeutique, un dossier MDPH. Tu apprends la langue administrative de la maladie.`; }}]},
+
+separation:{dom:'famille', poids:2, cond:()=> aTrait('en_couple') && (S.moral<45 || S.soupcon>40 || S.sante<45),
+  titre:'La séparation',
+  texte:()=>{ const c=qq('conjoint'); return `${c.nom} ne supporte plus les horaires, les silences, ou ce que tu ramènes à la maison sans le dire. Le mot « séparation » est posé sur la table un mardi soir.`; },
+  choix:[
+    {t:'Tout arrêter pour sauver ça.', sub:'Revenu −30 %',
+     fait(){ const c=qq('conjoint'); c.lien=borne(c.lien+25); S.moral+=12; S.salaireBonus-=.3;
+       if(sect()==='crime'){ S.metier='employe'; S.rue-=15; trait('sorti_du_milieu'); }
+       note(c,`Tu as changé de vie pour ${'elle ou lui'}.`);
+       return `Tu réduis tout : les heures, les risques, les revenus. C’est la décision la plus coûteuse et la plus rentable de ta vie.`; }},
+    {t:'Laisser partir.', sub:'−',
+     fait(){ const c=qq('conjoint'); c.statut='parti'; trait('en_couple',false); S.moral-=20; S.argent-=8000;
+       note(c,`Vous vous êtes séparés en ${S.an}.`);
+       return `Un déménagement, un avocat, une pension. Tu gardes le canapé et les week-ends sur deux.`; }}]},
+
+enfant_derape:{dom:'famille', poids:2, cond:()=> S.enfant && S.age>=40,
+  titre:'Ton enfant', grave:true,
+  texte:()=>{ const e=S.gens[S.enfant]; return `${e.nom} a seize ans et a été interpellé avec deux autres. Rien de grave encore. La question est ce qui se passe après ce « encore ».`; },
+  choix:[
+    {t:'Être présent. Beaucoup. Trop.', sub:'Moral −, lien ++',
+     fait(){ const e=S.gens[S.enfant]; e.lien=borne(e.lien+20); S.moral-=6; S.salaireBonus-=.1;
+       note(e,`Tu as tout lâché pendant deux ans pour lui.`);
+       return `Tu prends deux ans de recul professionnel. Il t’en veut sur le moment. Il en parlera autrement à trente ans.`; }},
+    {t:'Le placer en internat loin d’ici.', sub:'−14 000 €',
+     cond:()=> S.argent>=14000,
+     fait(){ const e=S.gens[S.enfant]; S.argent-=14000; e.lien-=18; e.rancune+=20;
+       note(e,`Tu l’as envoyé en internat à trois cents kilomètres.`);
+       return `Il part en septembre. Ça marche : il ne traîne plus avec les mêmes. Il ne te raconte plus rien non plus.`; }},
+    {t:'Le mettre au travail avec toi.', sub:'Dans ton monde, quel qu’il soit',
+     fait(){ const e=S.gens[S.enfant]; e.lien+=10;
+       if(sect()==='crime'){ e.rancune+=10; S.rue+=6; trait('fils_dedans'); differe(8+rnd(8),'enfant_milieu'); }
+       note(e,`Tu l’as fait entrer dans ton activité.`);
+       return sect()==='crime'
+         ? `Tu le prends avec toi. Tu te dis que c’est pour le surveiller. Tu sais parfaitement ce que tu viens de faire.`
+         : `Tu le prends en stage, puis en alternance. Il apprend un métier et il apprend surtout à se lever le matin.`; }}]},
+
+enfant_milieu:{diff:true, dom:'famille', grave:true, titre:'Ce que tu lui as transmis',
+  texte:()=>{ const e=S.gens[S.enfant]; return `${e.nom} a monté son propre point de vente, sans t’en parler, avec des gens que tu n’aurais jamais pris. Il a vingt-trois ans et il ne demande plus l’autorisation.`; },
+  choix:[
+    {t:'Le sortir de là par la force.', sub:'Il ne te le pardonnera pas',
+     fait(){ const e=S.gens[S.enfant]; e.rancune+=50; e.lien-=25; S.rue-=8;
+       note(e,`Tu l’as sorti du milieu contre sa volonté.`);
+       return `Tu fais fermer son point, tu rembourses ses fournisseurs, tu l’envoies chez ta sœur. Il ne te parle plus pendant quatre ans.`; }},
+    {t:'L’aider à faire ça correctement.', sub:'',
+     fait(){ const e=S.gens[S.enfant]; e.lien+=15; S.rue+=10; S.soupcon+=10;
+       differe(6+rnd(10),'enfant_tombe');
+       return `Tu lui donnes tes contacts, tes règles et tes précautions. Il apprend vite. C’est bien ça, le problème.`; }}]},
+
+enfant_tombe:{diff:true, dom:'famille', grave:true, titre:'Le prix',
+  texte:()=>{ const e=S.gens[S.enfant]; e.statut = chance(.5)?'mort':'prison';
+    return e.statut==='mort'
+      ? `${e.nom} est mort à vingt-neuf ans, dans une voiture, dans une histoire qui ne le concernait qu’à moitié.`
+      : `${e.nom} prend onze ans. Tu es dans la salle, au troisième rang, et tu entends le énoncé du jugement jusqu’au bout.`; },
+  choix:[{t:'Vivre avec.', sub:'',
+    fait(){ S.moral-=35; S.sante-=10; trait('deuil');
+      return `Il n’y a rien à décider. C’est la seule conséquence de ce jeu qui ne se rattrape avec aucune somme.`; }}]},
+
+/* ── crime & police ── */
+proposition_milieu:{dom:'crime', poids:2, cond:()=> !S.prison && sect()!=='crime' && sect()!=='police' && S.rue>=8 && S.argent<8000,
+  titre:'La proposition',
+  texte:()=>{ const c=qq('caid'); return `${c.nom} a remarqué que tu es à sec. Il propose un transport, une fois, payé six mille euros, sans rien te demander d’autre.`; },
+  choix:[
+    {t:'Accepter. Une seule fois.', sub:'+ 6 000 €. Ça n’est jamais une seule fois.', risk:true,
+     fait(){ const c=qq('caid'); S.argent+=6000; S.rue+=10; S.soupcon+=8; S.stats.crimes++;
+       note(c,`Il t’a testé sur un transport en ${S.an}.`); differe(2+rnd(3),'deuxieme_fois');
+       return `Quatre heures d’autoroute, un parking, un sac qui change de coffre. Six mille euros pour une journée de travail : c’est ça, l’argument.`; }},
+    {t:'Refuser.', sub:'Rien. Et c’est le but.',
+     fait(){ const c=qq('caid'); c.lien-=10; S.stats.refus++; S.moral-=3;
+       note(c,`Tu as refusé son transport.`);
+       return `Tu dis non sans faire de discours. Il hausse les épaules. Le manque d’argent, lui, ne hausse pas les épaules.`; }}]},
+
+deuxieme_fois:{diff:true, dom:'crime', titre:'La deuxième fois',
+  texte:()=>{ const c=qq('caid'); return `${c.nom} rappelle. Cette fois c’est mieux payé, et cette fois il te présente à quelqu’un, ce qui est une autre manière de dire que tu ne repartiras pas en arrière.`; },
+  choix:[
+    {t:'Continuer. Prendre un territoire.', sub:'Entrée définitive',
+     fait(){ S.metier='revendeur'; S.rue+=16; S.soupcon+=8; trait('milieu'); S.anciennete=0;
+       return `Tu prends un point et deux gamins. En six mois, tu gagnes trois fois ton ancien salaire et tu ne peux plus expliquer d’où il vient.`; }},
+    {t:'Arrêter là.', sub:'Il n’insiste pas. Personne n’insiste.',
+     fait(){ const c=qq('caid'); c.lien-=15; S.rue-=4; S.stats.refus++;
+       note(c,`Il a arrêté après le deuxième transport.`);
+       return `Tu ne réponds plus. On ne te force pas : on te raye. Dans ce métier, c’est encore la meilleure sortie.`; }}]},
+
+interpellation:{diff:true, unique:false, dom:'police', grave:true, titre:'Garde à vue',
+  texte:()=>`Six heures du matin, la porte, le chien, les scellés. Quarante-huit heures de garde à vue, un avocat commis d’office et un officier qui connaît déjà la moitié des réponses.`,
+  choix:[
+    {t:'Ne rien dire. Rien du tout.', sub:'Rue +. Procédure longue',
+     fait(){ S.rue+=12; S.soupcon+=10; S.moral-=6;
+       const p = 0.30 + S.soupcon/200 + S.stats.crimes/40;
+       if(chance(p)) differe(2,'proces'); else differe(3,'classement');
+       return `Quarante-huit heures de silence total. Ça se sait vite, et ça vaut plus dans le quartier que n’importe quel argent.`; }},
+    {t:'Donner un nom pour sortir.', sub:'Sortie immédiate. Étiquette définitive.', risk:true,
+     fait(){ const c=qq('caid'); c.rancune+=80; S.rue-=25; S.soupcon-=12; trait('balance');
+       note(c,`Tu as donné son nom en garde à vue.`); differe(2+rnd(4),'represailles');
+       return `Tu sors le soir même. Le procès-verbal circule dans les trois mois : dans ce milieu, tout finit par circuler.`; }},
+    {t:'Charger quelqu’un d’autre, quelqu’un d’innocent.', sub:'Irréversible', risk:true,
+     fait(){ const p=qq('petit'); p.statut='prison'; p.rancune+=90; S.soupcon-=18; S.moral-=16; trait('lache');
+       note(p,`Tu l’as chargé à ta place. Il a pris quatre ans.`); differe(16,'retour_innocent');
+       return `Tu donnes un nom qui n’a rien fait. Il prend quatre ans. Tu rentres chez toi et tu manges avec ta famille le soir même.`; }}]},
+
+proces:{diff:true, unique:false, dom:'police', grave:true, titre:'Le procès',
+  texte:()=>{ const n = 2 + Math.floor(S.stats.crimes/2) + Math.floor(S.soupcon/25) + S.condamnations*2;
+    S.drapeaux.peine = Math.min(60, Math.max(4, n*4));
+    return `Comparution devant le tribunal correctionnel. Le procureur requiert lourd et rappelle chacun de tes antécédents, un par un, à voix haute, dans une salle où ta famille est assise.`; },
+  choix:[
+    {t:'Plaider coupable et reconnaître les faits.', sub:'Peine réduite d’un tiers',
+     fait(){ const p=Math.max(2, Math.round(S.drapeaux.peine*0.66));
+       condamne('Trafic de stupéfiants en bande organisée', p);
+       return `Tu reconnais tout. Le président te remercie presque. ${(p/4).toFixed(1)} années fermes.`; }},
+    {t:'Tout nier.', sub:'Quitte ou double',
+     fait(){ if(chance(.22)){ S.soupcon=10; S.rue+=10;
+         return `Vice de procédure sur la géolocalisation. Relaxe. Tu sors libre du palais, et personne ne t’explique jamais pourquoi.`; }
+       const p=Math.round(S.drapeaux.peine*1.2); condamne('Trafic de stupéfiants en bande organisée', p);
+       return `Le tribunal ne te croit pas une seule seconde. ${(p/4).toFixed(1)} années fermes, mandat de dépôt à l’audience.`; }},
+    {t:'Payer le meilleur pénaliste de la région.', sub:'−45 000 €',
+     cond:()=> S.argent>=45000,
+     fait(){ S.argent-=45000;
+       if(chance(.5)){ S.soupcon=15; S.rue+=6;
+         return `Il démonte l’enquête pendant trois audiences. Relaxe partielle, le reste en sursis. Quarante-cinq mille euros bien dépensés.`; }
+       const p=Math.round(S.drapeaux.peine*0.7); condamne('Trafic de stupéfiants', p);
+       return `Il obtient une réduction réelle, pas un miracle. ${(p/4).toFixed(1)} années fermes.`; }}]},
+
+enquete_homicide:{diff:true, dom:'police', grave:true, titre:'Brigade criminelle',
+  texte:()=>`Ce n’est plus les stups. Deux officiers de la criminelle reprennent une disparition de plusieurs années, avec des moyens, du temps, et une téléphonie qu’on n’effaçait pas à l’époque.`,
+  choix:[
+    {t:'Faire disparaître les derniers liens.', sub:'Irréversible', risk:true,
+     fait(){ S.soupcon+=15; S.stats.morts++; S.moral-=12;
+       if(chance(.45)) differe(2,'proces_assises'); else { S.soupcon-=25;
+         return `Un témoin déménage à l’étranger, un autre se rétracte. Le dossier retourne au placard pour dix ans.`; }
+       return `Tu colmates, et chaque colmatage laisse une trace de plus.`; }},
+    {t:'Ne rien faire. Attendre.', sub:'',
+     fait(){ if(chance(.5)) differe(3+rnd(4),'proces_assises');
+       return `Tu ne bouges pas, tu ne parles à personne, tu changes juste de téléphone. C’est souvent la meilleure stratégie et c’est insupportable à vivre.`; }},
+    {t:'Se rendre et tout raconter.', sub:'Coopération',
+     fait(){ condamne('Homicide volontaire — coopération', 44); trait('repenti_partiel');
+       return `Tu prends un avocat et tu y vas de toi-même. Onze ans. C’est énorme et c’est la moitié de ce que tu aurais pris.`; }}]},
+
+proces_assises:{diff:true, dom:'police', grave:true, titre:'Cour d’assises',
+  texte:()=>`Trois semaines d’audience, une cour, des jurés tirés au sort, et la famille de la victime au premier rang, tous les jours, à te regarder.`,
+  choix:[
+    {t:'Nier jusqu’au bout.', sub:'',
+     fait(){ if(chance(.15)){ S.soupcon=20; return `Acquitté au bénéfice du doute. La salle hurle. Tu sors par une porte dérobée et tu ne dors pas cette nuit-là.`; }
+       condamne('Homicide volontaire', 72); return `Dix-huit ans de réclusion criminelle.`; }},
+    {t:'Reconnaître et demander pardon.', sub:'',
+     fait(){ condamne('Homicide volontaire', 52); trait('repenti_partiel');
+       return `Tu parles quarante minutes, sans avocat, à la fin. Treize ans. La mère de la victime ne te regarde pas une seule fois.`; }}]},
+
+rivalite:{diff:true, dom:'crime', grave:true, titre:'L’autre équipe',
+  texte:()=>`Une équipe voisine t’a pris deux points de vente et a mis un de tes gamins à l’hôpital. Tout le monde attend ta réponse, y compris les tiens.`,
+  choix:[
+    {t:'Riposter fort et vite.', sub:'Rue ++. Soupçon ++', risk:true,
+     fait(){ S.rue+=18; S.soupcon+=22; S.salaireBonus+=.1; S.stats.crimes++;
+       if(chance(.35)) differe(1+rnd(3),'interpellation');
+       if(chance(.3)) differe(2,'blesse');
+       return `Trois nuits, six voitures, deux blessés. Tu récupères tes points et le quartier retient la leçon. La police aussi.`; }},
+    {t:'Négocier un partage.', sub:'Revenu −, paix',
+     fait(){ S.salaireBonus-=.12; S.rue-=4;
+       return `Une réunion dans un restaurant fermé, une frontière décidée en vingt minutes. Tes hommes trouvent ça faible. Personne ne meurt.`; }},
+    {t:'Vendre l’autre équipe à la police.', sub:'Efficace. Et traçable.', risk:true,
+     fait(){ S.soupcon-=10; S.rue-=20; trait('indic'); S.salaireBonus+=.15;
+       differe(4+rnd(6),'indic_grille');
+       return `Un contact, deux informations précises, une descente qui ne te concerne pas. Tu récupères tout leur marché en un mois.`; }}]},
+
+indic_grille:{diff:true, dom:'crime', grave:true, titre:'Grillé',
+  texte:()=>`Une procédure a fuité et ton nom figure dans un procès-verbal de renseignement. Dans le milieu, ce document a fait le tour en trois semaines.`,
+  choix:[
+    {t:'Partir à l’étranger immédiatement.', sub:'Tout laisser',
+     fait(){ S.argent=Math.round(S.argent*0.5); S.rue=5; S.reseau=Math.round(S.reseau*0.3);
+       S.metier='rien'; trait('exil'); S.moral-=14;
+       return `Espagne, puis plus loin. Tu gardes la moitié du liquide et rien d’autre. Tu es vivant, ce qui n’était pas acquis.`; }},
+    {t:'Rester et affronter.', sub:'', risk:true,
+     fait(){ if(chance(.55)){ S.mort={cause:'Règlement de comptes', an:S.an};
+         return `Ils ne préviennent pas.`; }
+       S.rue+=10; S.sante-=25; S.moral-=15;
+       return `Deux tentatives en six mois. Tu survis à la seconde de justesse et tu ne marches plus jamais sans regarder derrière.`; }}]},
+
+blesse:{diff:true, dom:'crime', titre:'Touché',
+  texte:()=>`Tu prends deux balles dans un parking. Une ressort, l’autre non. Quatre semaines d’hôpital, un rapport de police, et un dossier qui s’épaissit.`,
+  choix:[{t:'Ne pas porter plainte.', sub:'',
+    fait(){ S.sante-=26; S.rue+=8; S.soupcon+=6;
+      return `Tu déclares un accident. Personne ne te croit, tout le monde s’en accommode, et la balle restée dedans te fera mal tous les hivers.`; }}]},
+
+/* ── politique ── */
+enveloppe:{dom:'politique', poids:4, unique:false, cond:()=> !S.prison && elu(),
+  titre:'L’enveloppe', grave:true,
+  texte:()=>{ const p=qq('promoteur'); return `${p.nom} veut le terrain des anciens entrepôts, en zone non constructible. Il propose 80 000 € en liquide et le financement de ta prochaine campagne. Personne d’autre n’est dans la pièce.`; },
+  choix:[
+    {t:'Accepter et faire passer la révision du plan.', sub:'+ 80 000 €. Traçable un jour.', risk:true,
+     fait(){ const p=qq('promoteur'); S.argent+=80000; S.soupcon+=20; S.renom+=6; trait('corrompu'); S.stats.crimes++;
+       note(p,`Tu as vendu une révision du PLU pour 80 000 € en ${S.an}.`);
+       differe(6+rnd(10),'enquete_pnf');
+       return `Le conseil municipal vote la révision à l’unanimité moins deux. Les entrepôts tombent en dix-huit mois. Personne ne trouve ça anormal — pour l’instant.`; }},
+    {t:'Refuser et ne rien dire.', sub:'Il financera ton adversaire.',
+     fait(){ const p=qq('promoteur'); p.rancune+=40; S.stats.refus++;
+       note(p,`Tu as refusé son enveloppe.`); differe(4+rnd(4),'adversaire_finance');
+       return `Tu refuses calmement, sans l’insulter, parce qu’on ne sait jamais. Il n’insiste pas : il ira voir quelqu’un d’autre, et cette personne-là gagnera peut-être contre toi.`; }},
+    {t:'Refuser et le signaler au procureur.', sub:'Courageux. Coûteux.', gain:true,
+     fait(){ const p=qq('promoteur'); p.rancune+=90; S.renom+=16; S.reseau-=15; trait('incorruptible');
+       note(p,`Tu l’as signalé au parquet.`); differe(3,'signalement_suites');
+       return `Article 40 du code de procédure pénale : tout fonctionnaire ayant connaissance d’un délit doit le signaler. Tu es le premier de ce département à l’appliquer depuis des années.`; }}]},
+
+signalement_suites:{diff:true, dom:'politique', titre:'Les suites du signalement',
+  texte:()=>`L’enquête aboutit : le promoteur est mis en examen. Tu es cité comme témoin, salué dans la presse nationale pendant trois jours, et lâché localement pendant dix ans.`,
+  choix:[
+    {t:'Assumer et continuer.', sub:'Renom ++, réseau −−',
+     fait(){ S.renom+=20; S.reseau-=20; S.moral+=10; trait('integre');
+       return `Deux entreprises quittent la commune, un adjoint démissionne, ton conseil municipal se vide. Tu passes pour incontrôlable, ce qui est le mot local pour honnête.`; }},
+    {t:'Se retirer de la vie publique.', sub:'',
+     fait(){ S.mandat=null; S.renom-=10; S.moral-=5;
+       return `Tu ne te représentes pas. Tu retrouves tes soirées, tes week-ends, et une amertume qui met sept ans à passer.`; }}]},
+
+adversaire_finance:{diff:true, dom:'politique', titre:'La campagne d’en face',
+  texte:()=>`Ton adversaire aux municipales a trois fois ton budget, une agence de communication et un dossier sur chacun de tes votes depuis huit ans.`,
+  choix:[
+    {t:'Faire campagne sur le terrain, sans moyens.', sub:'',
+     fait(){ const p=.30+S.renom/160+S.reseau/260; S.sante-=6;
+       if(chance(p)){ S.renom+=14; S.stats.elections++;
+         return `Quatre cents portes par semaine pendant trois mois. Tu gagnes de six cents voix. Le budget ne fait pas tout, mais il a bien failli.`; }
+       S.mandat = S.mandat==='depute' ? 'maire' : (S.mandat==='maire'?'conseiller':null);
+       if(aTrait('plein_temps_public') && !S.mandat) S.metier='rien';
+       S.renom-=12; S.moral-=16;
+       return `Tu perds de mille deux cents voix. Le soir même, la salle se vide en vingt minutes.`; }},
+    {t:'Trouver de l’argent, peu importe où.', sub:'', risk:true,
+     fait(){ S.soupcon+=18; S.renom+=12; trait('financement_douteux'); S.stats.crimes++;
+       differe(5+rnd(8),'enquete_financement');
+       return `Des prestations surfacturées, deux entreprises amies, un imprimeur généreux. Tu gagnes. La comptabilité de campagne est un document public.`; }}]},
+
+enquete_pnf:{diff:true, dom:'politique', grave:true, titre:'Le parquet national financier',
+  texte:()=>`Perquisition à la mairie et à ton domicile à six heures. Ils saisissent onze années de messagerie et une comptabilité qu’un promoteur avait gardée, lui, très soigneusement.`,
+  choix:[
+    {t:'Nier en bloc.', sub:'',
+     fait(){ if(chance(.25)){ S.soupcon-=20; return `Faute de preuve du pacte de corruption, le dossier est requalifié puis enterré. Tu restes en poste, définitivement marqué.`; }
+       condamne('Corruption passive et prise illégale d’intérêts', 16); S.renom-=40;
+       return `Quatre ans dont deux ferme, cinq ans d’inéligibilité, et ta photo à la une du quotidien régional pendant une semaine.`; }},
+    {t:'Reconnaître et rendre l’argent.', sub:'',
+     fait(){ S.argent-=80000; condamne('Corruption passive', 8); S.renom-=22; trait('repenti_partiel');
+       return `Tu restitues, tu reconnais, tu démissionnes avant le jugement. Deux ans dont un ferme. Le tribunal note ta coopération.`; }},
+    {t:'Faire porter ça à ton directeur de cabinet.', sub:'Irréversible', risk:true,
+     fait(){ const e=qq('elu'); e.statut='prison'; e.rancune+=95; S.soupcon-=15; S.renom-=8; trait('lache');
+       note(e,`Tu lui as fait porter ta corruption.`); differe(4+rnd(6),'retour_cabinet');
+       return `Il n’avait fait que rédiger les notes. Il prend dix-huit mois et perd sa carrière. Tu restes maire.`; }}]},
+
+enquete_financement:{diff:true, dom:'politique', titre:'Comptes de campagne',
+  texte:()=>`La Commission nationale des comptes de campagne rejette tes comptes et transmet au parquet. Le rapport fait vingt-deux pages et il est en ligne.`,
+  choix:[
+    {t:'Régulariser et payer l’amende.', sub:'−30 000 €',
+     cond:()=> S.argent>=30000,
+     fait(){ S.argent-=30000; S.renom-=10; S.soupcon-=10;
+       return `Tu régularises tout et tu paies. Inéligibilité évitée de justesse, réputation entamée durablement.`; }},
+    {t:'Contester.', sub:'',
+     fait(){ if(chance(.35)){ S.soupcon-=8; return `Le tribunal administratif te donne raison sur la forme. Tu gardes ton mandat et tu perds deux ans de tranquillité.`; }
+       S.mandat=null; if(aTrait('plein_temps_public')) S.metier='rien';
+       trait('ineligible'); S.renom-=25;
+       return `Inéligibilité d’un an et démission d’office. Ton adjoint termine le mandat à ta place.`; }}]},
+
+retour_cabinet:{diff:true, dom:'politique', grave:true, titre:'Il est sorti',
+  texte:()=>{ const e=Object.values(S.gens).find(g=>g.role==='elu'&&g.rancune>80) || qq('elu');
+    return `${e.nom} a purgé sa peine. Il a écrit un livre de cent quatre-vingts pages, avec des dates, des notes de service et des copies d’écran. Un éditeur parisien le sort en septembre.`; },
+  choix:[
+    {t:'Le racheter avant publication.', sub:'−60 000 €',
+     cond:()=> S.argent>=60000,
+     fait(){ S.argent-=60000; S.soupcon+=6;
+       return `L’éditeur renonce, le manuscrit circule quand même en photocopie. Tu as acheté du temps, pas du silence.`; }},
+    {t:'Le laisser paraître et démissionner avant.', sub:'',
+     fait(){ S.mandat=null; if(aTrait('plein_temps_public')) S.metier='rien'; S.renom-=20; S.moral-=10; S.soupcon-=10;
+       return `Tu pars « pour raisons personnelles » trois semaines avant la sortie. Ça n’abuse personne et ça évite le pire.`; }},
+    {t:'Attaquer en diffamation.', sub:'', risk:true,
+     fait(){ if(chance(.3)){ S.renom+=8; return `Il n’avait pas toutes ses preuves. Le livre est retiré, tu es relaxé, et personne ne lit jamais les rectificatifs.`; }
+       S.renom-=30; differe(2,'enquete_pnf');
+       return `Le procès rouvre publiquement tout le dossier et le parquet s’en saisit à nouveau. Tu as toi-même relancé l’affaire.`; }}]},
+
+retour_innocent:{diff:true, dom:'crime', grave:true, titre:'Celui que tu as chargé',
+  texte:()=>{ const p=Object.values(S.gens).find(g=>g.role==='petit'&&g.rancune>80) || qq('petit');
+    p.statut='vivant';
+    return `${p.nom} est sorti il y a six mois. Il a fait quatre ans pour toi, il a trente ans, aucun métier, et il sait exactement ce qui s’est passé.`; },
+  choix:[
+    {t:'Le dédommager. Beaucoup.', sub:'−50 000 €',
+     cond:()=> S.argent>=50000,
+     fait(){ const p=Object.values(S.gens).find(g=>g.role==='petit') ; S.argent-=50000; if(p){p.rancune-=60; note(p,`Tu l’as dédommagé à sa sortie.`);}
+       return `Cinquante mille euros et un appartement loué au nom de sa mère. Il prend l’argent. Il ne te pardonne pas — il n’est plus dangereux, c’est différent.`; }},
+    {t:'Ne rien faire.', sub:'', risk:true,
+     fait(){ differe(2+rnd(4), chance(.5)?'interpellation':'represailles');
+       return `Tu changes de numéro et tu évites le quartier. Un homme à qui on a pris quatre ans a beaucoup de temps libre et une seule idée.`; }}]},
+
+/* ── police (carrière) ── */
+bavure:{dom:'police', poids:3, cond:()=> !S.prison && sect()==='police',
+  titre:'L’interpellation qui dérape', grave:true,
+  texte:()=>`Un collègue frappe un homme menotté, au sol, devant trois témoins et une caméra de commerce. Le procès-verbal que tu dois signer ne mentionne pas cet épisode.`,
+  choix:[
+    {t:'Signer.', sub:'Carrière protégée',
+     fait(){ S.reseau+=8; S.moral-=14; trait('couvert_bavure'); S.soupcon+=6;
+       differe(4+rnd(6),'video_bavure');
+       return `Tu signes. Le collègue te serre la main. Tu penses à cette signature plus souvent que tu ne l’aurais cru.`; }},
+    {t:'Refuser de signer et rédiger le tien.', sub:'Réseau −−', gain:true,
+     fait(){ S.reseau-=22; S.renom+=10; S.moral+=6; trait('integre'); S.stats.refus++;
+       return `Tu écris ce que tu as vu. L’IGPN est saisie. À partir de ce jour, tu manges seul et on ne t’appelle plus en renfort avec le même empressement.`; }},
+    {t:'Signer, et garder une copie de la vidéo.', sub:'Une assurance',
+     fait(){ S.reseau+=6; S.moral-=6; trait('dossier_video');
+       return `Tu signes et tu récupères discrètement l’enregistrement du commerçant. Tu ne sais pas encore à quoi ça servira. C’est le principe.`; }}]},
+
+video_bavure:{diff:true, dom:'police', grave:true, titre:'La vidéo sort',
+  texte:()=>`La caméra du commerçant ressort sur les réseaux quatre ans plus tard. Ton procès-verbal, lui, dit autre chose, et il est signé de ta main.`,
+  choix:[
+    {t:'Reconnaître le faux.', sub:'Carrière finie. Peine légère.',
+     fait(){ S.metier='rien'; S.renom-=14; trait('revoque'); S.moral+=4;
+       return `Tu reconnais avoir signé un procès-verbal mensonger. Révocation, six mois avec sursis, et une paix relative.`; }},
+    {t:'Maintenir ta version.', sub:'', risk:true,
+     fait(){ if(chance(.4)){ S.soupcon+=10; return `Le parquet n’engage pas de poursuites contre toi. Tu restes en poste, sous une surveillance qui ne se relâchera plus.`; }
+       condamne('Faux en écriture publique', 6); S.renom-=25;
+       return `Faux en écriture publique par personne dépositaire de l’autorité publique. Dix-huit mois dont six ferme.`; }}]},
+
+corruption_flic:{dom:'police', poids:2, cond:()=> !S.prison && sect()==='police' && METIERS[S.metier].rang>=3,
+  titre:'L’autre côté', grave:true,
+  texte:()=>{ const c=qq('caid'); return `${c.nom} te fait passer un message par un intermédiaire : 4 000 € par mois pour que certaines surveillances soient mal programmées. Il connaît ton crédit immobilier au centime.`; },
+  choix:[
+    {t:'Accepter.', sub:'+ 4 000 €/mois', risk:true,
+     fait(){ S.salaireBonus+=.7; S.soupcon+=14; trait('ripou'); S.stats.crimes++;
+       differe(6+rnd(10),'igpn');
+       return `Rien à signer, rien à dire, juste des horaires à décaler. C’est l’argent le plus facile que tu aies jamais gagné.`; }},
+    {t:'Refuser et monter un dossier contre lui.', sub:'', gain:true,
+     fait(){ const c=qq('caid'); c.rancune+=60; S.renom+=10; S.stats.refus++;
+       note(c,`Tu as refusé son argent et tu as ouvert un dossier.`); differe(4,'coup_de_filet');
+       return `Tu refuses et tu ouvres une procédure. Ta hiérarchie te soutient mollement : ce genre d’affaire fait perdre plus qu’elle ne rapporte.`; }}]},
+
+coup_de_filet:{diff:true, dom:'police', titre:'Le coup de filet',
+  texte:()=>`Dix-huit mois d’enquête, vingt-trois interpellations simultanées, cent dix kilos et deux millions en liquide. C’est la plus grosse affaire du département depuis dix ans.`,
+  choix:[
+    {t:'Prendre la promotion qui va avec.', sub:'',
+     fait(){ const s=PROMO[S.metier]; if(s){S.metier=s; S.anciennete=0;} S.renom+=18; S.moral+=12;
+       return `Citation, promotion, une photo avec le préfet. Tu as fait, une fois dans ta vie, exactement le métier que tu croyais avoir choisi.`; }}]},
+
+igpn:{diff:true, dom:'police', grave:true, titre:'IGPN',
+  texte:()=>`La police des polices travaille sur toi depuis huit mois : téléphonie, comptes, achats en liquide. Ils convoquent le lundi à neuf heures.`,
+  choix:[
+    {t:'Tout reconnaître.', sub:'',
+     fait(){ condamne('Corruption passive par personne dépositaire de l’autorité publique', 12); S.metier='detenu';
+       return `Trois ans dont un ferme, révocation, perte des droits civiques. L’administration ne pardonne jamais ça.`; }},
+    {t:'Nier et faire jouer les soutiens.', sub:'', risk:true,
+     fait(){ if(chance(.3)){ S.soupcon-=20; S.reseau-=10; return `Classement pour insuffisance de charges. Tu es muté à huit cents kilomètres, sur un poste sans responsabilité.`; }
+       condamne('Corruption passive par personne dépositaire de l’autorité publique', 20); S.renom-=30;
+       return `Cinq ans dont deux ferme, aggravée par la qualité de policier. Tu feras ta détention en isolement, évidemment.`; }}]},
+
+/* ── vie ordinaire ── */
+promotion_surprise:{dom:'travail', poids:3, cond:()=> !S.prison && METIERS[S.metier].rang>=2 && S.anciennete>=6 && sect()!=='crime',
+  titre:'On pense à toi',
+  texte:()=>`On te propose un poste à responsabilité dans une autre ville. Plus de salaire, plus d’heures, et tout le monde que tu connais reste ici.`,
+  choix:[
+    {t:'Partir.', sub:'Revenu ++, réseau −',
+     fait(){ const s=PROMO[S.metier]; if(s){S.metier=s;S.anciennete=0;} S.reseau-=14; S.moral-=5; S.salaireBonus+=.1;
+       const c=qq('conjoint',false); if(c){ c.lien-=15; note(c,`Tu as imposé un déménagement en ${S.an}.`); }
+       return `Tu prends le poste. Meilleure paie, plus de responsabilités, et une ville où tu ne connais personne un dimanche après-midi.`; }},
+    {t:'Rester ici.', sub:'',
+     fait(){ S.reseau+=6; S.moral+=6; S.anciennete+=2;
+       return `Tu refuses. On ne te le proposera pas deux fois, et tu dînes chez tes amis le samedi suivant.`; }}]},
+
+burn:{dom:'travail', poids:2, cond:()=> !S.prison && S.moral<40 && METIERS[S.metier].rang>=2,
+  titre:'Épuisement', grave:true,
+  texte:()=>`Tu pleures dans ta voiture sur le parking avant d’entrer, deux matins de suite. Le médecin propose un arrêt de trois mois et tu passes une semaine à ne pas le prendre.`,
+  choix:[
+    {t:'Prendre l’arrêt.', sub:'Moral ++, revenu −',
+     fait(){ S.moral+=24; S.sante+=8; S.argent-=Math.round(revenu()*.3); S.salaireBonus-=.05;
+       return `Trois mois. Les deux premières semaines sont pires. Après, tu recommences à dormir, et tu te demandes comment tu as tenu si longtemps.`; }},
+    {t:'Tenir.', sub:'', risk:true,
+     fait(){ S.moral-=10; S.sante-=12; differe(3+rnd(5),'accident');
+       return `Tu tiens. C’est ce qu’on attend de toi, c’est ce que tu attends de toi, et le corps tient un compte séparé.`; }}]},
+
+reconversion:{dom:'travail', poids:2, cond:()=> !S.prison && S.age>=32 && S.savoir>=55 && sect()!=='crime',
+  titre:'Tout changer',
+  texte:()=>`Une formation longue, un métier différent, dix-huit mois sans revenu et un projet que tu portes depuis des années sans jamais le dire à voix haute.`,
+  choix:[
+    {t:'Se lancer.', sub:'−15 000 € et 18 mois',
+     cond:()=> S.argent>=15000,
+     fait(){ S.argent-=15000; S.savoir+=18; S.metier='rien'; S.moral+=14; trait('reconverti');
+       differe(6,'reconversion_fin');
+       return `Tu démissionnes en octobre. Les trois premiers mois sont euphoriques. Les six suivants le sont beaucoup moins.`; }},
+    {t:'Laisser tomber l’idée.', sub:'',
+     fait(){ S.moral-=8;
+       return `Tu refermes le dossier. Il ressortira tous les deux ou trois ans, un peu plus jauni à chaque fois.`; }}]},
+
+reconversion_fin:{diff:true, dom:'travail', titre:'Après la formation',
+  texte:()=>`Diplôme en poche, quarante ans passés, et un marché du travail qui trouve ton parcours « atypique » — un mot qui veut dire deux choses opposées selon l’employeur.`,
+  choix:[{t:'Chercher dans le nouveau métier.', sub:'',
+    fait(){ if(chance(.55+S.reseau/300)){ S.metier='cadre'; S.anciennete=0; S.moral+=18; S.salaireBonus+=.1;
+        return `Tu trouves au bout de cinq mois. Tu gagnes un peu moins qu’avant, et tu te lèves différemment.`; }
+      S.metier='interim'; S.moral-=12;
+      return `Rien dans le nouveau métier. Tu reprends de l’intérim en attendant, et « en attendant » dure deux ans.`; }}]},
+
+nouvelle_rencontre:{dom:'famille', poids:2, cond:()=> !S.prison && !aTrait('en_couple') && S.age>=24 && S.moral>40,
+  titre:'Quelqu’un',
+  texte:()=>`Quelqu’un que tu n’attendais pas, au mauvais moment, comme toujours. Il ou elle sait ce que tu fais dans la vie — enfin, la version que tu racontes.`,
+  choix:[
+    {t:'Y aller franchement, et tout dire.', sub:'',
+     fait(){ const c=creeGens('conjoint'); c.lien=70; trait('en_couple'); S.moral+=18;
+       note(c,`Tu lui as dit la vérité sur ta vie dès le début.`);
+       if(sect()==='crime'){ c.lien-=10; differe(8+rnd(8),'ultimatum'); }
+       return `Tu racontes tout, y compris ce qui ne se raconte pas. C’est un risque énorme et ça fonde quelque chose de solide.`; }},
+    {t:'Y aller, mais cacher la moitié.', sub:'',
+     fait(){ const c=creeGens('conjoint'); c.lien=62; trait('en_couple'); S.moral+=14; trait('double_vie');
+       differe(6+rnd(8),'decouverte');
+       return `Tu donnes une version présentable. Elle tient très bien, pendant un temps très précis.`; }},
+    {t:'Laisser passer.', sub:'',
+     fait(){ S.moral-=6;
+       return `Tu ne rappelles pas. C’est prudent. Tu y repenses pendant des années, ce qui est la définition d’une mauvaise décision prudente.`; }}]},
+
+decouverte:{diff:true, dom:'famille', titre:'Elle a trouvé',
+  texte:()=>{ const c=qq('conjoint'); return `${c.nom} a trouvé le deuxième téléphone, ou les liasses, ou le jugement. Peu importe lequel : c’est trouvé.`; },
+  choix:[
+    {t:'Tout arrêter, sincèrement.', sub:'Revenu −−',
+     fait(){ const c=qq('conjoint'); c.lien+=10; S.salaireBonus-=.35; S.rue-=12;
+       if(sect()==='crime'){ S.metier='employe'; trait('sorti_du_milieu'); }
+       return `Tu arrêtes pour de bon. Le niveau de vie s’effondre et personne, dans ta maison, ne le regrette.`; }},
+    {t:'Promettre d’arrêter. Continuer.', sub:'', risk:true,
+     fait(){ const c=qq('conjoint'); c.rancune+=40; trait('double_vie');
+       differe(4+rnd(6),'separation_dure');
+       return `Tu promets. Tu ne changes rien, sauf les cachettes. Ça tient deux ans et ça coûte beaucoup plus cher à la fin.`; }}]},
+
+separation_dure:{diff:true, dom:'famille', grave:true, titre:'Elle part avec le dossier',
+  texte:()=>{ const c=qq('conjoint'); c.statut='parti';
+    return `${c.nom} part et emmène l’enfant. Son avocat produit des relevés, des photos et un récit très précis de tes activités devant le juge aux affaires familiales.`; },
+  choix:[
+    {t:'Céder sur tout pour éviter le pénal.', sub:'−40 000 €',
+     fait(){ S.argent-=40000; trait('en_couple',false); S.moral-=22;
+       if(S.enfant){ S.gens[S.enfant].lien-=20; }
+       return `Tu signes tout : la maison, la pension, la garde. Le dossier ne quitte pas le juge aux affaires familiales.`; }},
+    {t:'Se battre pour la garde.', sub:'', risk:true,
+     fait(){ trait('en_couple',false); S.moral-=14; S.soupcon+=18;
+       if(S.enfant) S.gens[S.enfant].lien-=10;
+       differe(2,'proces');
+       return `Tu contestes. Les pièces du dossier familial partent au parquet, parce que c’est exactement ce qui arrive quand on en fait un procès.`; }}]},
+
+ultimatum:{diff:true, dom:'famille', titre:'L’ultimatum',
+  texte:()=>{ const c=qq('conjoint'); return `${c.nom} pose la question une seule fois, calmement, un dimanche : « Tu arrêtes, ou je pars. » Il n’y aura pas de deuxième discussion.`; },
+  choix:[
+    {t:'Arrêter.', sub:'Tout perdre sauf ça',
+     fait(){ const c=qq('conjoint'); c.lien+=25; S.salaireBonus=0; S.rue-=20; S.metier='employe';
+       trait('sorti_du_milieu'); S.moral+=10;
+       return `Tu passes la main en trois mois, proprement, en laissant de l’argent derrière toi pour que personne ne te cherche. Tu gagnes quatre fois moins.`; }},
+    {t:'Ne pas arrêter.', sub:'',
+     fait(){ const c=qq('conjoint'); c.statut='parti'; trait('en_couple',false); S.moral-=24;
+       note(c,`Tu as choisi le milieu contre elle.`);
+       return `Elle part en trois semaines, sans scène. Tu gardes tout le reste, et tu découvres assez vite ce que « tout le reste » pèse.`; }}]},
+
+prudhommes:{diff:true, dom:'travail', titre:'Conseil de prud’hommes',
+  texte:()=>`Trente-deux mois de procédure. L’audience dure quarante minutes et le délibéré tombe six semaines plus tard.`,
+  choix:[{t:'Attendre le jugement.', sub:'',
+    fait(){ if(chance(.55)){ S.argent+=22000; S.moral+=10;
+        return `Licenciement sans cause réelle et sérieuse. Vingt-deux mille euros de dommages et intérêts. Trois ans pour ça.`; }
+      S.moral-=12;
+      return `Débouté. Tu paies tes frais d’avocat et tu as perdu trois ans à espérer un jugement au lieu de chercher autre chose.`; }}]}
+};
+
+/* ═════════════ DÉTENTION & APRÈS ═════════════ */
+Object.assign(EV, {
+
+prison_arrivee:{diff:true, dom:'prison', grave:true, titre:'Écrou',
+  texte:()=>`Fouille intégrale, paquetage, cellule de trois pour deux. Le surveillant annonce ton reliquat de peine comme on annonce un horaire de train.`,
+  choix:[
+    {t:'Se faire respecter tout de suite.', sub:'Rue +. Quartier disciplinaire.',
+     fait(){ S.rue+=14; S.sante-=8; S.prison.reste+=1;
+       return `Une altercation dès la deuxième semaine, quinze jours de mitard, et une place dans la hiérarchie de la coursive.`; }},
+    {t:'Se faire oublier.', sub:'', 
+     fait(){ S.moral-=6;
+       return `Tu ne parles à personne pendant six mois. C’est la stratégie la plus efficace et celle qui abîme le plus.`; }},
+    {t:'Demander le quartier des arrivants et un suivi.', sub:'Santé, moral',
+     fait(){ S.moral+=8; S.sante+=4; S.rue-=5;
+       return `Psychologue, service pénitentiaire d’insertion, atelier. Tu passes pour un type qui « joue le jeu », avec ce que ça implique des deux côtés.`; }}]},
+
+prison_offre:{diff:true, unique:false, dom:'prison', cond:()=> !!S.prison, titre:'Une offre en détention',
+  texte:()=>{ const c=qq('caid'); return `${c.nom} propose de faire entrer des téléphones par un surveillant retourné. Tu prends les risques, il prend la moitié, et ta famille touche chaque mois dehors.`; },
+  choix:[
+    {t:'Accepter.', sub:'+ argent dehors. Peine +', risk:true,
+     fait(){ S.argent+=14000; S.rue+=12; if(chance(.4)){ S.prison.reste+=4;
+         return `Ça marche six mois, puis une fouille. Un an de plus et le régime le plus strict.`; }
+       return `Ta famille reçoit un mandat tous les mois pendant deux ans. Personne ne se fait prendre.`; }},
+    {t:'Refuser.', sub:'',
+     fait(){ const c=qq('caid'); c.lien-=15; S.stats.refus++; S.prison.reste=Math.max(0,S.prison.reste-1);
+       return `Tu refuses. Ça te coûte des alliés à l’intérieur et ça t’économise probablement deux ans.`; }}]},
+
+prison_visite:{diff:true, unique:false, dom:'prison', cond:()=> !!S.prison, titre:'Parloir',
+  texte:()=>{ const c=qq('conjoint',false)||qq('mere');
+    return `${c.nom} vient depuis le début, toutes les deux semaines, quatre heures de train aller-retour pour quarante-cinq minutes derrière une table fixée au sol.`; },
+  choix:[
+    {t:'Lui demander de continuer.', sub:'Moral ++, pour toi',
+     fait(){ const c=qq('conjoint',false)||qq('mere'); c.lien-=8; S.moral+=16;
+       note(c,`${S.nom} lui a demandé de continuer à venir pendant toute la peine.`);
+       return `Elle continue. Pendant des années. C’est ce qui te tient debout et ça lui coûte une partie de sa vie à elle.`; }},
+    {t:'Lui demander d’arrêter de venir.', sub:'Moral −−, pour elle',
+     fait(){ const c=qq('conjoint',false)||qq('mere'); c.lien+=18; S.moral-=18;
+       note(c,`${S.nom} lui a demandé d’arrêter les parloirs, pour qu’elle vive.`);
+       return `Tu lui dis de refaire sa vie. Elle pleure, elle refuse, puis elle espace, puis elle ne vient plus. Tu as eu raison et tu le paies toutes les nuits.`; }}]},
+
+sortie_prison:{diff:true, dom:'prison', grave:true, titre:'Sortie',
+  texte:()=>{ const ans=(S.drapeaux.peine_faite/4).toFixed(0);
+    return `Porte, sas, trottoir. ${ans} ans. Tu as un sac, 300 € de pécule, un téléphone qui ne sert plus à rien et une ville qui a changé de commerces.
+    <p>Deux personnes t’attendent sur le parking : ta famille dans une voiture, et quelqu’un d’autre dans une autre.</p>`; },
+  choix:[
+    {t:'Monter dans la voiture de ta famille.', sub:'Repartir de zéro. Vraiment de zéro.', gain:true,
+     fait(){ S.metier='rien'; S.rue=Math.round(S.rue*0.35); S.moral+=14; trait('repenti');
+       Object.values(S.gens).forEach(g=>{ if(g.role==='caid') g.lien-=20; });
+       differe(2+rnd(4),'sollicitation'); differe(1,'refus_emploi');
+       return `Tu montes avec les tiens. Le premier repas dure quatre heures. Le lendemain matin, il faut un travail, un logement et un compte en banque — et tu as un casier.`; }},
+    {t:'Monter dans l’autre voiture.', sub:'Ils ont gardé ta place.',
+     fait(){ const c=qq('caid'); S.metier='revendeur'; S.rue+=14; S.soupcon+=10; S.anciennete=0;
+       note(c,`Il t’attendait à la sortie de détention.`);
+       return `Ils t’ont gardé une place et de l’argent. Tu reprends en une semaine, avec des méthodes de l’ancien temps et une police qui a beaucoup progressé.`; }},
+    {t:'Ne monter dans aucune. Partir loin.', sub:'Tout quitter',
+     fait(){ S.metier='rien'; S.rue=5; S.reseau=Math.round(S.reseau*0.3); S.moral+=6; trait('exil'); trait('repenti');
+       S.argent+=300; differe(2,'refus_emploi');
+       return `Tu marches jusqu’à la gare. Une autre région, un prénom qu’on ne connaît pas, et personne à qui rendre de comptes — ni dans un sens ni dans l’autre.`; }}]},
+
+refus_emploi:{diff:true, unique:false, dom:'apres', cond:()=> aTrait('detenu'), titre:'Bulletin n° 3',
+  texte:()=>`L’employeur était enthousiaste jusqu’à l’extrait de casier. Le ton change en une phrase, puis on te dit qu’on te rappellera.`,
+  choix:[
+    {t:'Insister. Expliquer. Encore.', sub:'',
+     fait(){ S.moral-=8;
+       if(chance(.3+S.savoir/300)){ S.metier='ouvrier'; S.anciennete=0; S.moral+=16; trait('embauche_apres');
+         return `Le dixième dit oui. Un seul suffit. Tu ne seras jamais en retard une seule fois en huit ans.`; }
+       differe(2,'sollicitation');
+       return `Tu expliques à chaque fois. À chaque fois, la même gêne polie. Au bout du quinzième, tu commences à comprendre pourquoi les gens replongent.`; }},
+    {t:'Demander une réhabilitation judiciaire.', sub:'Long. Efficace.',
+     fait(){ S.savoir+=4; differe(8,'rehabilitation');
+       return `Requête auprès du procureur, cinq ans après la peine. C’est long, c’est gratuit, et à la fin le casier est effacé.`; }},
+    {t:'Arrêter de chercher.', sub:'', risk:true,
+     fait(){ S.moral-=12; S.rue+=6; differe(1+rnd(2),'sollicitation');
+       return `Tu arrêtes. L’allocation tombe, elle ne suffit pas, et le téléphone, lui, sonne encore.`; }}]},
+
+rehabilitation:{diff:true, dom:'apres', titre:'Réhabilitation',
+  texte:()=>`Le tribunal prononce ta réhabilitation judiciaire. Le bulletin n° 2 est vierge, la mention disparaît, et administrativement tu redeviens quelqu’un sans passé.`,
+  choix:[{t:'Reprendre une vie normale.', sub:'', gain:true,
+    fait(){ trait('detenu',false); trait('rehabilite'); S.moral+=18;
+      return `Ça n’efface rien de ce que tu as fait. Ça efface ce que l’administration en dit, et c’est déjà une deuxième vie.`; }}]},
+
+sollicitation:{diff:true, unique:false, dom:'apres', cond:()=> aTrait('detenu'), titre:'L’ancienne vie appelle',
+  texte:()=>{ const c=qq('caid'); return `${c.nom} passe « par hasard ». Il ne propose rien de précis. Il dit qu’il y a de la place, que ce n’est plus comme avant, et que ta femme mérite mieux qu’un T2.`; },
+  choix:[
+    {t:'Refuser.', sub:'Encore. Il reviendra.', gain:true,
+     fait(){ const c=qq('caid'); S.stats.refus++; S.moral-=4; c.lien-=8;
+       note(c,`Refus n° ${S.stats.refus} en ${S.an}.`);
+       if(S.stats.refus>=4 && !aTrait('sorti_pour_de_bon')){ trait('sorti_pour_de_bon'); S.moral+=20;
+         return `Tu dis non pour la quatrième fois. Cette fois, il ne revient pas : dans ce milieu aussi, on finit par comprendre.`; }
+       differe(3+rnd(5),'sollicitation');
+       return `Tu dis non, poliment, et tu rentres chez toi. Ça ne se fête pas, ça ne se raconte pas, et c’est la chose la plus difficile que tu feras ce mois-ci.`; }},
+    {t:'Accepter « juste une fois ».', sub:'', risk:true,
+     fait(){ S.argent+=12000; S.rue+=14; S.soupcon+=14; S.stats.crimes++;
+       differe(2+rnd(3), chance(.5)?'interpellation':'deuxieme_fois');
+       const c=qq('conjoint',false); if(c){ c.rancune+=25; note(c,`Tu as replongé après la prison.`); }
+       return `Douze mille euros en trois semaines, après deux ans à chercher un emploi à 1 400 €. C’est ça, l’argument, et il est très bon.`; }},
+    {t:'Le renvoyer, sèchement, devant témoins.', sub:'Rue −−', 
+     fait(){ const c=qq('caid'); c.rancune+=30; S.rue-=18; S.stats.refus++; trait('rupture_nette');
+       note(c,`Tu l’as humilié devant du monde à ta sortie.`);
+       return `Tu lui parles fort, dans la rue, devant six personnes. Il perd la face et toi tu perds toute protection.`; }}]},
+
+assoc_reinsertion:{dom:'apres', poids:3, cond:()=> aTrait('repenti') && S.age>=35 && !aTrait('educateur'),
+  titre:'On te demande de témoigner',
+  texte:()=>`Une association demande à d’anciens détenus de parler devant des classes de troisième. Trois heures, aucune rémunération, et ton histoire racontée à voix haute à des gens de quinze ans.`,
+  choix:[
+    {t:'Accepter.', sub:'Renom +. Moral ++', gain:true,
+     fait(){ S.renom+=14; S.moral+=20; S.reseau+=8; trait('educateur');
+       differe(8,'metier_educateur');
+       return `Tu bafouilles la première fois. À la quatrième, un gamin vient te voir à la fin et te dit que son père est dedans. Tu comprends à quoi tu sers.`; }},
+    {t:'Refuser. Ce n’est pas un spectacle.', sub:'',
+     fait(){ S.moral-=2;
+       return `Tu refuses. Ta vie n’est pas un support pédagogique et personne n’a à te demander de la raconter pour se rassurer.`; }}]},
+
+metier_educateur:{diff:true, dom:'apres', titre:'Un métier',
+  texte:()=>`L’association te propose un vrai contrat : médiateur, puis éducateur, avec une validation des acquis. Mille sept cents euros par mois.`,
+  choix:[
+    {t:'Accepter.', sub:'1 700 €/mois. Et un sens.', gain:true,
+     fait(){ S.metier='employe'; S.salaireBonus=-.3; S.moral+=18; S.renom+=10; trait('educateur_pro');
+       return `Tu gagnes en un mois ce que tu gagnais en deux jours il y a quinze ans. C’est la première fois que tu dis ton métier sans mentir.`; }},
+    {t:'Refuser. C’est trop peu.', sub:'',
+     fait(){ S.moral-=6; if(S.rue>25) differe(2,'sollicitation');
+       return `Mille sept cents euros. Tu calcules, tu compares, et le calcul te ramène exactement là où tu ne voulais plus aller.`; }}]},
+
+/* ── grand âge ── */
+bilan_tardif:{dom:'age', poids:3, cond:()=> S.age>=60 && !aTrait('bilan'),
+  titre:'Soixante ans',
+  texte:()=>`Un anniversaire, une salle louée, et la liste de ceux qui ne sont pas venus : les morts, les fâchés, et ceux qui ont simplement cessé de répondre.`,
+  choix:[
+    {t:'Reprendre contact avec ceux que tu as perdus.', sub:'',
+     fait(){ trait('bilan'); let n=0;
+       Object.values(S.gens).forEach(g=>{ if(g.statut==='vivant' && g.rancune>20 && chance(.4)){ g.rancune-=30; g.lien+=15; n++; } });
+       S.moral+=14;
+       return n ? `Tu passes ${n} coups de fil très difficiles. ${n===1?'Une personne répond':'Plusieurs répondent'}, et c’est plus simple que tu ne l’imaginais.`
+         : `Tu appelles. Personne ne rappelle. Certaines portes se ferment pour de bon et il n’y a rien à négocier.`; }},
+    {t:'Mettre de l’ordre dans les affaires.', sub:'Patrimoine +',
+     fait(){ trait('bilan'); S.patrimoine+=Math.round(S.argent*0.5); S.argent=Math.round(S.argent*0.5);
+       return `Testament, donation, comptes clarifiés. Tes enfants ne se déchireront pas, ce qui est le seul cadeau de succession qui compte.`; }}]},
+
+vieillesse:{dom:'age', poids:4, cond:()=> S.age>=68,
+  titre:'Le corps, encore',
+  texte:()=>`Le cardiologue parle d’intervention. Ce n’est pas une urgence, dit-il, ce qui dans sa bouche signifie que c’en est presque une.`,
+  choix:[
+    {t:'Se faire opérer.', sub:'Risque court, gain long',
+     fait(){ if(chance(.12)){ S.mort={cause:'Complications post-opératoires', an:S.an}; return `L’intervention se passe mal.`; }
+       S.sante+=18; return `Six semaines difficiles, puis tu remarches, tu remanges, tu redors. Tu gagnes des années que personne ne comptera.`; }},
+    {t:'Refuser l’opération.', sub:'',
+     fait(){ S.sante-=12; S.moral+=4;
+       return `Tu refuses. Tu préfères dix bonnes années à quinze passées à l’hôpital, et c’est un choix parfaitement défendable.`; }}]}
+});
+
+EV.precarite = {diff:true, unique:false, dom:'argent', grave:true, titre:'À découvert',
+  texte:()=>`Découvert maximal atteint, deux prélèvements rejetés, une lettre de la banque. Tu comptes en jours et tu manges moins bien depuis trois mois.`,
+  choix:[
+    {t:'Aller aux aides sociales et tout déclarer.', sub:'Lent, humiliant, efficace',
+     fait(){ S.argent += 2600; S.moral -= 6; S.drapeaux.precarite=false;
+       return `Quatre rendez-vous, onze justificatifs, deux mois d’attente. Ça remet la tête hors de l’eau et ça coûte quelque chose qu’aucun tableau ne mesure.`; }},
+    {t:'Emprunter à un proche.', sub:'Le lien y passera peut-être',
+     fait(){ const g = qq('ami'); S.argent += 5000; S.drapeaux.precarite=false; g.lien -= 12;
+       note(g, `Tu lui as emprunté 5 000 € en ${S.an}.`);
+       return `${g.nom} sort l’argent sans poser de question. C’est exactement pour ça que c’est difficile à demander et long à réparer.`; }},
+    {t:'Prendre le premier travail venu.', sub:'N’importe lequel',
+     fait(){ S.metier='interim'; S.anciennete=0; S.moral-=4; S.drapeaux.precarite=false; S.savoir-=2;
+       return `Manutention de nuit, contrats d’une semaine, deux heures de transport. Ça paie le mois et ça ne construit rien.`; }},
+    {t:'Trouver de l’argent autrement.', sub:'', risk:true,
+     fait(){ S.argent += 4500; S.rue += 10; S.soupcon += 12; S.stats.crimes++; S.drapeaux.precarite=false;
+       if(chance(.2)) differe(1+rnd(3),'interpellation');
+       return `Tu ne demandes à personne. Quatre mille cinq cents euros en trois semaines, et un seuil franchi qu’on ne défranchit pas.`; }}]};
+
+/* ═════════════ MOTEUR ═════════════ */
+const $ = i => document.getElementById(i);
+let phase = 'titre';
+const POOL = Object.keys(EV).filter(k=> !EV[k].diff);
+
+function sauve(){ try{ localStorage.setItem('unevie', JSON.stringify(S)); }catch(e){} }
+function charge(){ try{ const b=localStorage.getItem('unevie'); return b?JSON.parse(b):null; }catch(e){ return null; } }
+
+function coutVie(){
+  // Un train de vie n'est pas une constante : il suit les revenus, et c'est
+  // exactement pour ça que gagner plus n'enrichit presque personne.
+  let c = 1900 + Math.round(revenu() * 0.52);
+  if(aTrait('en_couple')) c += 800;
+  if(S.enfant) c += 1000;
+  if(aTrait('leve_le_pied')) c -= 500;
+  if(METIERS[S.metier].rang >= 5) c += Math.round(revenu()*0.12);
+  return c;
+}
+
+function avanceTemps(n){
+  for(let i=0;i<n;i++){
+    S.tour++; S.sais = (S.sais+1)%4;
+    if(S.sais===0){ S.age++; S.an++; S.anciennete++; if(S.mandat) S.mandatAnc++; S.patrimoine = Math.round(S.patrimoine*1.028); }
+    if(S.prison){
+      S.prison.reste--;
+      if(S.sais===0){ S.moral -= 5; S.sante -= 3; S.argent -= 1800; S.reseau -= 2; }
+      if(S.prison.reste<=0){
+        S.drapeaux.peine_faite = S.prison.total; S.prison=null; S.metier='rien';
+        S.file.push({du:S.tour, ev:'sortie_prison', cause:null});
+      }
+    } else {
+      S.argent += revenu() - coutVie();
+      // On ne peut pas dépenser un argent qu'on n'a pas : sous le découvert
+      // maximal, ce n'est plus la trésorerie qui encaisse, c'est la vie.
+      if(S.argent < -7000){
+        S.argent = -7000; S.moral -= 3; S.sante -= 1;
+        if(!S.drapeaux.precarite){ S.drapeaux.precarite = true;
+          S.file.push({du:S.tour, ev:'precarite', cause:null}); }
+      }
+      S.soupcon = borne(S.soupcon - 1.5);
+      S.moral = borne(S.moral - 1);
+      if(S.age>52) S.sante = borne(S.sante - 0.7);
+      if(S.age>68) S.sante = borne(S.sante - 1.2);
+    }
+  }
+  if(!S.prison && S.age>=64 && ['civil','public','police','affaires'].includes(sect()) && S.metier!=='retraite' && chance(.5)){
+    const pension = Math.round(METIERS[S.metier].rev*0.52);
+    S.drapeaux.pension = pension; S.metier='retraite'; S.salaireBonus=0;
+    journalise(`Départ à la retraite (${pension.toLocaleString('fr-FR')} € par trimestre).`,'neutre');
+  }
+  if(S.metier==='retraite') S.argent += S.drapeaux.pension || 3600;
+}
+
+function verifieMort(){
+  if(S.mort) return true;
+  if(S.sante<=0){ S.mort={cause:'Santé', an:S.an}; return true; }
+  if(S.moral<=2){ S.sante -= 2; if(chance(.03)){ S.mort={cause:'Il n’a pas tenu', an:S.an}; return true; } }
+  // Gompertz : ~0,1 %/an à 30 ans, 0,5 % à 50, 3 % à 70, 12 % à 85.
+  const annuel = 0.00008 * Math.exp(0.085 * S.age);
+  const risque = (annuel/4) * (1 + (65-Math.min(65,S.sante))/40);
+  if(chance(risque)){
+    S.mort={cause: S.age>74?'Vieillesse':'Maladie', an:S.an}; return true;
+  }
+  return false;
+}
+
+function tirageEvenement(){
+  const i = S.file.findIndex(e => e.du <= S.tour);
+  if(i>=0){ const e = S.file.splice(i,1)[0];
+    const def = EV[e.ev];
+    const dejaVu = def && def.unique!==false && S.drapeaux['ev_'+e.ev];
+    if(def && !dejaVu && (!def.cond || def.cond())){
+      S.drapeaux['ev_'+e.ev] = true;
+      return {id:e.ev, cause:e.cause};
+    }
+    return null;
+  }
+  if(S.prison){
+    const pp = ['prison_offre','prison_visite'];
+    if(chance(.5)) return {id: pioche(pp), cause:null};
+    return null;
+  }
+  if(!chance(0.46)) return null;
+  const cands = [];
+  for(const id of POOL){
+    const d = EV[id];
+    if(d.cond && !d.cond()) continue;
+    if(d.unique!==false && S.drapeaux['ev_'+id]) continue;
+    for(let k=0;k<(d.poids||2);k++) cands.push(id);
+  }
+  if(!cands.length) return null;
+  const id = pioche(cands);
+  S.drapeaux['ev_'+id] = true;
+  return {id, cause:null};
+}
+
+/* ═════════════ RENDU ═════════════ */
+const el = (t,c,h)=>{ const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e; };
+const CLES = ['argent','sante','moral','savoir','reseau','renom','rue','soupcon'];
+const NOMS_CLES = {argent:'€',sante:'Santé',moral:'Moral',savoir:'Savoir',reseau:'Réseau',
+  renom:'Renom',rue:'Rue',soupcon:'Soupçon'};
+const JAUGES = [['sante','Santé','vert'],['moral','Moral','bleu'],['savoir','Savoir',''],
+  ['reseau','Réseau',''],['renom','Renom','or'],['rue','Rue','rouge']];
+
+function clampAll(){ ['sante','moral','savoir','reseau','renom','rue','soupcon'].forEach(k=> S[k]=borne(Math.round(S[k]))); }
+
+function majHaut(){
+  $('haut').hidden = false; $('pied').hidden = false;
+  $('h-nom').textContent = S.nom + (S.generation>1 ? ' · '+S.generation+'ᵉ génération' : '');
+  $('h-poste').textContent = S.prison
+    ? `Détenu — reste ${(S.prison.reste/4).toFixed(1)} an(s)`
+    : METIERS[S.metier].nom + (S.mandat ? ' · ' + MANDATS[S.mandat].nom : '');
+  const f = $('h-fric');
+  f.textContent = (S.argent<0?'−':'') + Math.abs(Math.round(S.argent)).toLocaleString('fr-FR') + ' €';
+  f.classList.toggle('dette', S.argent<0);
+  $('h-date').textContent = `${SAISONS[S.sais]} ${S.an} · ${S.age} ans`;
+  const g = $('h-jauges'); g.innerHTML='';
+  JAUGES.forEach(([k,n,c])=>{
+    const d = el('div','j');
+    d.appendChild(el('div','t',n));
+    d.appendChild(el('div','n',String(Math.round(S[k]))));
+    const r = el('div','r'); r.appendChild(el('div','f '+c)); 
+    r.firstChild.style.width = borne(S[k])+'%';
+    d.appendChild(r); g.appendChild(d);
+  });
+  const p = $('pied-info');
+  const bits = [`Soupçon <b>${Math.round(S.soupcon)}</b>`];
+  if(S.condamnations) bits.push(`Casier <b>${S.condamnations}</b>`);
+  if(S.patrimoine>0) bits.push(`Patrimoine <b>${Math.round(S.patrimoine).toLocaleString('fr-FR')} €</b>`);
+  if(S.drapeaux.dette) bits.push(`Crédit en cours`);
+  p.innerHTML = bits.join(' · ');
+  $('pied-btn').hidden = true;
+}
+
+function deltasHTML(av){
+  const box = el('div','deltas'); let n=0;
+  CLES.forEach(k=>{
+    const d = Math.round(S[k]-av[k]); if(!d) return; n++;
+    const txt = k==='argent' ? (d>0?'+':'−')+Math.abs(d).toLocaleString('fr-FR')+' €'
+                             : NOMS_CLES[k]+' '+(d>0?'+':'−')+Math.abs(d);
+    const bon = (k==='soupcon') ? d<0 : d>0;
+    box.appendChild(el('span','d '+(bon?'p':'m'), txt));
+  });
+  return n ? box : null;
+}
+
+/* ── vue principale ── */
+let vueActive = 'jeu';
+function rendre(){
+  clampAll(); majHaut(); sauve();
+  const v = $('vue'); v.innerHTML='';
+  if(vueActive==='jeu') return vueJeu(v);
+  if(vueActive==='vie') return vueVie(v);
+  if(vueActive==='gens') return vueGens(v);
+  return vueDossier(v);
+}
+
+function vueJeu(v){
+  if(S.mort) return ecranMort();
+  const c = el('div','carte fade');
+  c.appendChild(el('div','lab', S.prison ? `Année de détention` : `${SAISONS[S.sais]} ${S.an} — que fais-tu de ce trimestre ?`));
+  c.appendChild(el('div','titre-evt', S.prison ? 'Dedans'
+    : (S.mandat ? MANDATS[S.mandat].nom : METIERS[S.metier].nom)));
+  const dispo = ACTIONS.filter(a=> a.cond());
+  const grps = [...new Set(dispo.map(a=>a.grp))];
+  grps.forEach(gr=>{
+    const g = el('div','grp'); g.appendChild(el('h4',null,gr));
+    const box = el('div','acts');
+    dispo.filter(a=>a.grp===gr).forEach(a=>{
+      const b = el('button','act'); b.type='button';
+      const d = typeof a.desc==='function' ? a.desc() : a.desc;
+      b.innerHTML = `<b>${a.nom}</b><span>${d}</span>`;
+      if(a.dur && a.dur()) b.classList.add('attente');
+      b.addEventListener('click', ()=>faireAction(a));
+      box.appendChild(b);
+    });
+    g.appendChild(box); c.appendChild(g);
+  });
+  v.appendChild(c);
+}
+
+function faireAction(a){
+  const av = {}; CLES.forEach(k=>av[k]=S[k]);
+  acteCourant = S.actes.length;
+  S.actes.push({an:S.an, label:a.nom});
+  const txt = a.fait();
+  clampAll();
+  journalise(a.nom, 'action');
+  const v = $('vue'); v.innerHTML='';
+  const c = el('div','carte fade');
+  c.appendChild(el('div','lab', `${SAISONS[S.sais]} ${S.an}`));
+  c.appendChild(el('div','titre-evt', a.nom));
+  c.appendChild(el('div','recit','<p>'+txt+'</p>'));
+  const d = deltasHTML(av); if(d) c.appendChild(d);
+  const btn = el('button','cta plein', 'Continuer'); btn.type='button';
+  btn.addEventListener('click', finDeTour);
+  c.appendChild(btn);
+  v.appendChild(c);
+  majHaut(); sauve();
+}
+
+function finDeTour(){
+  avanceTemps(S.prison ? 4 : 1);
+  if(verifieMort()) return ecranMort();
+  const pick = tirageEvenement();
+  if(pick) return montrerEvenement(pick);
+  vueActive='jeu'; majNav(); rendre();
+}
+
+function montrerEvenement(pick){
+  const d = EV[pick.id];
+  S.drapeaux['ev_'+pick.id] = true;
+  const v = $('vue'); v.innerHTML='';
+  const c = el('div','carte evt fade' + (d.grave?' grave':''));
+  c.appendChild(el('div','lab', (d.grave?'⚠ ':'') + `${SAISONS[S.sais]} ${S.an} · ${S.age} ans`));
+  c.appendChild(el('div','titre-evt', d.titre));
+  c.appendChild(el('div','recit','<p>'+d.texte()+'</p>'));
+  if(pick.cause!=null && S.actes[pick.cause]){
+    const a = S.actes[pick.cause];
+    c.appendChild(el('div','cause', `Ceci découle de ton choix de <b>${a.an}</b> :<br><b>« ${a.label} »</b>`));
+  }
+  const opts = el('div','opts');
+  d.choix.forEach(ch=>{
+    if(ch.cond && !ch.cond()) return;
+    const b = el('button','opt'+(ch.risk?' risk':'')+(ch.gain?' gain':'')); b.type='button';
+    b.innerHTML = ch.t + (ch.sub && ch.sub!=='' ? `<span class="sub">${ch.sub}</span>` : '');
+    b.addEventListener('click', ()=>resoudreEv(d, ch, pick));
+    opts.appendChild(b);
+  });
+  c.appendChild(opts);
+  v.appendChild(c);
+  majHaut(); sauve();
+  window.scrollTo({top:0});
+}
+
+function resoudreEv(d, ch, pick){
+  const av = {}; CLES.forEach(k=>av[k]=S[k]);
+  acteCourant = S.actes.length;
+  S.actes.push({an:S.an, label:ch.t.replace(/<[^>]+>/g,'')});
+  const txt = ch.fait();
+  clampAll();
+  journalise(`${d.titre} — ${ch.t.replace(/<[^>]+>/g,'')}`, d.grave?'grave':'imp', pick.cause);
+  if(S.prison && S.metier==='detenu' && !S.drapeaux['ev_prison_arrivee']){
+    S.file.push({du:S.tour, ev:'prison_arrivee', cause:acteCourant});
+  }
+  const v = $('vue'); v.innerHTML='';
+  const c = el('div','carte fade');
+  c.appendChild(el('div','lab', `${SAISONS[S.sais]} ${S.an}`));
+  c.appendChild(el('div','titre-evt', d.titre));
+  c.appendChild(el('div','recit','<p>'+txt+'</p>'));
+  const dl = deltasHTML(av); if(dl) c.appendChild(dl);
+  const btn = el('button','cta plein','Continuer'); btn.type='button';
+  btn.addEventListener('click', ()=>{
+    if(verifieMort()) return ecranMort();
+    const suite = tirageEvenement();
+    if(suite && suite.cause!=null) return montrerEvenement(suite);
+    if(suite) S.file.push({du:S.tour+1, ev:suite.id, cause:null});
+    vueActive='jeu'; majNav(); rendre();
+  });
+  c.appendChild(btn);
+  v.appendChild(c);
+  majHaut(); sauve();
+  window.scrollTo({top:0});
+}
+
+/* ── panneaux ── */
+function vueVie(v){
+  const c = el('div','carte fade');
+  c.appendChild(el('div','lab','Chronologie'));
+  c.appendChild(el('div','titre-evt','Ce que tu as fait'));
+  if(!S.journal.length){ c.appendChild(el('p','vide','Rien encore.')); v.appendChild(c); return; }
+  const liste = S.journal.slice().reverse().slice(0,90);
+  liste.forEach(j=>{
+    const a = el('div','an'+(j.type==='grave'?' grave':(j.type==='imp'?' imp':'')));
+    a.appendChild(el('div','q', `${SAISONS[j.sais]} ${j.an}${j.age?' · '+j.age+' ans':''}`));
+    a.appendChild(el('div','w', j.txt));
+    if(j.cause!=null && S.actes[j.cause])
+      a.appendChild(el('div','lk', `↳ conséquence de ton choix de ${S.actes[j.cause].an} : « ${S.actes[j.cause].label} »`));
+    c.appendChild(a);
+  });
+  v.appendChild(c);
+}
+
+function vueGens(v){
+  const c = el('div','carte fade');
+  c.appendChild(el('div','lab','Entourage'));
+  c.appendChild(el('div','titre-evt','Les gens'));
+  const g = Object.values(S.gens);
+  if(!g.length){ c.appendChild(el('p','vide','Tu n’as encore croisé personne qui compte.')); v.appendChild(c); return; }
+  g.forEach(p=>{
+    const l = el('div','ligne');
+    const d = el('div','g');
+    d.appendChild(el('div','nm', p.nom));
+    d.appendChild(el('div','ds', p.desc + ' · rencontré en ' + p.rencontre));
+    const bar = el('div','memo');
+    bar.appendChild(el('li',null,`Lien ${Math.round(p.lien)} · Rancune ${Math.round(p.rancune)}`));
+    p.memoire.forEach(m=> bar.appendChild(el('li',null,m)));
+    d.appendChild(bar);
+    l.appendChild(d);
+    const st = p.statut==='mort' ? 'puce mort' : (p.statut==='vivant' ? 'puce ok' : 'puce att');
+    const lib = {vivant:'Vivant', mort:'Mort', prison:'Détenu', parti:'Parti'}[p.statut];
+    l.appendChild(el('span',st,lib));
+    c.appendChild(l);
+  });
+  v.appendChild(c);
+}
+
+function vueDossier(v){
+  const c = el('div','carte fade');
+  c.appendChild(el('div','lab','État civil et judiciaire'));
+  c.appendChild(el('div','titre-evt', S.nom));
+  const info = [
+    ['Âge', S.age+' ans'], ['Métier', METIERS[S.metier].nom],
+    ['Mandat', S.mandat ? MANDATS[S.mandat].nom : '—'],
+    ['Origine', {populaire:'Quartier populaire',moyenne:'Classe moyenne',aisee:'Famille aisée'}[S.origine]],
+    ['Liquide', Math.round(S.argent).toLocaleString('fr-FR')+' €'],
+    ['Patrimoine', Math.round(S.patrimoine).toLocaleString('fr-FR')+' €'],
+    ['Actes délictueux', S.stats.crimes], ['Refus assumés', S.stats.refus]
+  ];
+  info.forEach(([k,val])=>{
+    const l = el('div','ligne');
+    l.appendChild(el('div','ds',k));
+    l.appendChild(el('span','puce', String(val)));
+    c.appendChild(l);
+  });
+  v.appendChild(c);
+
+  const t = el('div','carte fade');
+  t.appendChild(el('div','lab','Ce que tu es devenu'));
+  const LIB_TRAITS = {milieu:'Est entré dans le milieu', detenu:'A fait de la prison',
+    repenti:'S’est rangé à sa sortie', corrompu:'A vendu une décision publique',
+    incorruptible:'A refusé et signalé', integre:'Intègre — et isolé',
+    balance:'A donné un nom en garde à vue', lache:'A fait porter sa faute à un autre',
+    indic:'A travaillé avec la police contre les siens', ripou:'Policier corrompu',
+    entrepreneur:'A monté son affaire', faillite:'A déposé le bilan',
+    parent:'Parent', en_couple:'En couple', exil:'A tout quitté pour repartir ailleurs',
+    rehabilite:'Casier effacé — réhabilitation judiciaire', educateur_pro:'Éducateur',
+    sorti_pour_de_bon:'A refusé assez de fois pour qu’on cesse de demander',
+    joueur:'Joue', proprietaire:'Propriétaire', deuil:'A perdu son enfant',
+    sorti_du_milieu:'A quitté le milieu', achat_voix:'A acheté des soutiens',
+    double_vie:'Mène une double vie', fiche_banque:'Fiché Banque de France',
+    revoque:'Révoqué de la fonction publique', ineligible:'Déclaré inéligible',
+    diplome_dedans:'A passé un diplôme en détention', honnete:'A payé toutes ses dettes',
+    genereux:'A renoncé à un héritage pour sa famille', reconverti:'S’est reconverti'};
+  const ks = Object.keys(S.traits).filter(k=>LIB_TRAITS[k]);
+  if(!ks.length) t.appendChild(el('p','vide','Rien de marquant pour l’instant.'));
+  ks.forEach(k=>{
+    const l = el('div','ligne');
+    l.appendChild(el('div','ds', LIB_TRAITS[k]));
+    l.appendChild(el('span','puce', String(S.traits[k])));
+    t.appendChild(l);
+  });
+  v.appendChild(t);
+
+  if(S.casier.length){
+    const j = el('div','carte fade');
+    j.appendChild(el('div','lab','Casier judiciaire'));
+    S.casier.forEach(cd=>{
+      const l = el('div','ligne');
+      const d = el('div','g');
+      d.appendChild(el('div','nm', cd.motif));
+      d.appendChild(el('div','ds', 'Condamnation de '+cd.an));
+      l.appendChild(d);
+      l.appendChild(el('span','puce mort', (cd.peine/4).toFixed(1)+' ans'));
+      j.appendChild(l);
+    });
+    if(aTrait('rehabilite')) j.appendChild(el('div','tampon','Réhabilité'));
+    else if(S.casier.length) j.appendChild(el('div','tampon','Bulletin n° 2 non vierge'));
+    v.appendChild(j);
+  }
+}
+
+/* ── mort & génération suivante ── */
+function ecranMort(){
+  $('pied').hidden = true;
+  const v = $('vue'); v.innerHTML='';
+  const c = el('div','ecran fade');
+  c.appendChild(el('div','lab', `${S.an} · ${S.age} ans`));
+  c.appendChild(el('h1',null, S.nom));
+  c.appendChild(el('p','chapo', S.mort.cause));
+
+  const b = el('div','bilan');
+  const enfant = S.enfant && S.gens[S.enfant] ? S.gens[S.enfant] : null;
+  const morts = Object.values(S.gens).filter(g=>g.statut==='mort').length;
+  [['Années vécues', S.age], ['Patrimoine laissé', Math.round(S.patrimoine+Math.max(0,S.argent)).toLocaleString('fr-FR')+' €'],
+   ['Années de prison', (S.casier.reduce((a,x)=>a+x.peine,0)/4).toFixed(1)],
+   ['Fois où tu as dit non', S.stats.refus],
+   ['Proches enterrés', morts], ['Métier final', S.mandat ? MANDATS[S.mandat].nom : METIERS[S.metier].nom]
+  ].forEach(([k,val])=>{
+    const d = document.createElement('div');
+    d.appendChild(el('div','lab',k)); d.appendChild(el('div','v',String(val)));
+    b.appendChild(d);
+  });
+  c.appendChild(b);
+
+  const juge = el('div','carte');
+  juge.appendChild(el('div','lab','Ce qui restera'));
+  const phrases = [];
+  if(aTrait('incorruptible')||aTrait('integre')) phrases.push(`On se souviendra que tu as refusé quelque chose que presque personne ne refuse.`);
+  if(aTrait('corrompu')) phrases.push(`Ton nom apparaît dans un jugement que n’importe qui peut lire.`);
+  if(S.stats.morts) phrases.push(`${S.stats.morts} personne(s) ne sont pas mortes de vieillesse à cause de toi.`);
+  if(aTrait('repenti')&&aTrait('detenu')) phrases.push(`Tu es sorti, tu as tenu, et c’est plus rare que tout le reste.`);
+  if(aTrait('educateur_pro')) phrases.push(`Des gamins de quinze ans se souviennent d’une phrase que tu as dite.`);
+  if(S.patrimoine>200000) phrases.push(`Tu laisses de quoi changer la vie de quelqu’un.`);
+  if(!phrases.length) phrases.push(`Une vie ordinaire, ce qui est la chose la plus difficile à réussir.`);
+  juge.appendChild(el('div','recit','<p>'+phrases.join(' ')+'</p>'));
+  c.appendChild(juge);
+
+  if(enfant && enfant.statut!=='mort'){
+    const btn = el('button','cta plein', `Continuer avec ${enfant.nom}`); btn.type='button';
+    btn.addEventListener('click', ()=>{
+      const h = {generation:S.generation+1,
+        argent: Math.round((S.patrimoine + Math.max(0,S.argent)) * (enfant.lien>55?0.6:0.25)),
+        reseau: Math.round(S.reseau*0.3), renom: Math.round(S.renom*0.35), lien:enfant.lien};
+      const nom = enfant.nom;
+      S = nouvelleVie(S.origine, nom, h);
+      if(h.lien<40) S.moral -= 18;
+      S.journal.push({an:S.an, sais:0, txt:`Tu hérites de ${h.argent.toLocaleString('fr-FR')} € et d’un nom que les gens connaissent déjà.`, type:'imp'});
+      vueActive='jeu'; majNav(); rendre();
+    });
+    c.appendChild(btn);
+  }
+  const re = el('button','cta','Nouvelle vie'); re.type='button';
+  re.addEventListener('click', ()=>{ try{localStorage.removeItem('unevie');}catch(e){} ecranTitre(null); });
+  c.appendChild(re);
+  v.appendChild(c);
+  $('haut').hidden = false; majHaut(); $('pied').hidden = true;
+  window.scrollTo({top:0});
+}
+
+/* ── titre ── */
+function ecranTitre(reprise){
+  $('haut').hidden = true; $('pied').hidden = true;
+  phase='titre';
+  const v = $('vue'); v.innerHTML='';
+  const c = el('div','ecran fade');
+  c.appendChild(el('div','lab','Simulateur de trajectoire · 18 ans → la fin'));
+  c.appendChild(el('h1',null,'Une <em>Vie</em>'));
+  c.appendChild(el('p','chapo','Tu peux être n’importe qui. Tout ce que tu choisis reste, revient, et se paie — parfois trente ans plus tard.'));
+
+  if(reprise){
+    const k = el('button','cta plein', `Reprendre — ${reprise.nom}, ${reprise.age} ans`); k.type='button';
+    k.addEventListener('click', ()=>{ S=reprise; vueActive='jeu'; majNav(); rendre(); });
+    c.appendChild(k);
+  }
+
+  const box = el('div','carte');
+  box.appendChild(el('div','lab','D’où tu pars'));
+  box.appendChild(el('div','recit','<p>Le point de départ ne décide de rien. Il décide seulement de ce qui sera facile.</p>'));
+  const opts = el('div','opts');
+  [['populaire','Quartier populaire','300 € · Savoir 25 · Rue 22 — peu de filet, beaucoup de portes fermées et une porte ouverte'],
+   ['moyenne','Classe moyenne','2 500 € · Savoir 45 · Réseau 30 — la trajectoire par défaut'],
+   ['aisee','Famille aisée','15 000 € · Savoir 60 · Réseau 55 — tu as le droit à plusieurs erreurs']
+  ].forEach(([id,nom,desc])=>{
+    const b = el('button','opt'); b.type='button';
+    b.innerHTML = nom + `<span class="sub">${desc}</span>`;
+    b.addEventListener('click', ()=>{
+      S = nouvelleVie(id);
+      creeGens('mere'); creeGens('ami');
+      if(id==='populaire') creeGens('caid');
+      vueActive='jeu'; majNav(); rendre();
+    });
+    opts.appendChild(b);
+  });
+  box.appendChild(opts);
+  c.appendChild(box);
+
+  const r = el('div','carte');
+  r.appendChild(el('div','lab','Comment ça marche'));
+  const ul = el('div','recit', `<p><b>Chaque trimestre, tu choisis une action.</b> Travailler, te former, voir du monde, entrer dans le milieu, te présenter à une élection. C’est toi qui ouvres les portes.</p>
+    <p><b>Puis la vie répond.</b> Les événements dépendent de ce que tu es devenu : un maire reçoit des enveloppes, un revendeur reçoit des convocations, un père reçoit un appel du collège.</p>
+    <p><b>Rien ne se referme.</b> La prison n’est pas une fin : tu en sors, avec un casier qui bloque les embauches et d’anciens amis qui reviennent te proposer la seule chose que tu saches faire.</p>
+    <p><b>Et quand tu meurs, tu continues avec ton enfant</b> — qui hérite de ton argent, de ton nom, et de ce que tu lui as fait.</p>`);
+  r.appendChild(ul);
+  c.appendChild(r);
+  v.appendChild(c);
+}
+
+/* ── navigation ── */
+function majNav(){
+  document.querySelectorAll('.nav button').forEach(b=>
+    b.setAttribute('aria-current', String(b.dataset.vue===vueActive)));
+}
+document.querySelectorAll('.nav button').forEach(b=>{
+  b.addEventListener('click', ()=>{ vueActive=b.dataset.vue; majNav(); rendre(); });
+});
+
+function demarre(etat){
+  if(etat && etat.nom){ S=etat; vueActive='jeu'; majNav(); rendre(); return; }
+  const sv = charge();
+  ecranTitre(sv && sv.nom && !sv.mort ? sv : null);
+}
+window.claude?.hot?.snapshot?.(()=>S);
+if(window.claude?.hot?.ready) window.claude.hot.ready(demarre);
+else demarre(window.claude?.hot?.data ?? null);
+</script>
