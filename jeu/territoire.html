@@ -1,0 +1,1342 @@
+<title>Territoire</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --nuit:#0B0D10; --panneau:#15181D; --creux:#1D2127; --trait:#2B3038; --trait2:#3A414B;
+    --texte:#ECE9E3; --gris:#93999F; --pale:#6C737B;
+    --ambre:#E8A13A; --ambre-clair:#F6C46E; --sang:#C7503F; --vert:#5FA86B; --bleu:#5B87C4;
+    --ui:"Bricolage Grotesque",system-ui,sans-serif;
+    --data:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--nuit);color:var(--texte);
+    font-family:var(--ui);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  #scene{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+  .mono{font-family:var(--data);font-variant-numeric:tabular-nums}
+  .lab{font-family:var(--data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--pale)}
+
+  /* ── bandeau du haut ── */
+  #hud{position:fixed;top:0;left:0;right:0;z-index:10;padding:8px 10px calc(8px + env(safe-area-inset-top)) 10px;
+    padding-top:calc(8px + env(safe-area-inset-top));
+    background:linear-gradient(180deg,rgba(11,13,16,.94) 60%,rgba(11,13,16,0));pointer-events:none}
+  .hud-in{max-width:760px;margin:0 auto;display:flex;gap:8px;align-items:flex-start}
+  .bloc{background:rgba(21,24,29,.9);border:1px solid var(--trait);border-radius:5px;padding:6px 9px;
+    pointer-events:auto;backdrop-filter:blur(6px)}
+  .bloc .v{font-family:var(--data);font-size:14.5px;font-weight:600;line-height:1.15;font-variant-numeric:tabular-nums}
+  .bloc .v.or{color:var(--ambre)} .bloc .v.rouge{color:var(--sang)}
+  #role{flex:1;min-width:0}
+  #role .n{font-weight:800;font-size:14px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barres{display:flex;gap:9px;margin-top:5px}
+  .bar{flex:1;min-width:0}
+  .bar .t{font-family:var(--data);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--pale);
+    display:flex;justify-content:space-between;gap:4px}
+  .bar .t b{color:var(--texte);font-weight:400}
+  .bar .r{height:3px;background:var(--creux);border-radius:2px;margin-top:2px;overflow:hidden}
+  .bar .f{height:100%;transition:width .5s ease;border-radius:2px}
+
+  /* ── barre du bas ── */
+  #dock{position:fixed;left:0;right:0;bottom:0;z-index:10;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+    background:linear-gradient(0deg,rgba(11,13,16,.95) 55%,rgba(11,13,16,0));pointer-events:none}
+  .dock-in{max-width:760px;margin:0 auto;display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+  .tool{pointer-events:auto;background:rgba(21,24,29,.92);border:1px solid var(--trait);border-radius:5px;
+    padding:9px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;
+    transition:border-color .15s,background .15s;backdrop-filter:blur(6px)}
+  .tool:hover,.tool:focus-visible{border-color:var(--ambre);outline:none}
+  .tool[aria-pressed="true"]{background:var(--ambre);border-color:var(--ambre);color:#17140C}
+  .tool .k{font-family:var(--data);font-size:9px;color:var(--pale);letter-spacing:.08em}
+  .tool[aria-pressed="true"] .k{color:#5A4716}
+  .tool[disabled]{opacity:.4}
+
+  /* ── étiquette flottante sur la cible ── */
+  #cible{position:fixed;z-index:9;transform:translate(-50%,-100%);pointer-events:none;
+    background:rgba(21,24,29,.95);border:1px solid var(--trait2);border-radius:5px;padding:6px 9px;
+    font-size:12.5px;font-weight:600;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+  #cible .s{display:block;font-family:var(--data);font-size:9.5px;color:var(--gris);font-weight:400;margin-top:2px}
+
+  /* ── panneau modal ── */
+  #voile{position:fixed;inset:0;z-index:30;background:rgba(6,7,9,.72);display:flex;
+    align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+  #modal{width:100%;max-width:560px;max-height:86vh;overflow-y:auto;background:var(--panneau);
+    border:1px solid var(--trait);border-bottom:0;border-radius:12px 12px 0 0;
+    padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+  @media (min-width:620px){ #voile{align-items:center} #modal{border-radius:12px;border-bottom:1px solid var(--trait)} }
+  #modal h2{font-size:22px;font-weight:800;letter-spacing:-.015em;margin:6px 0 3px;text-wrap:balance}
+  #modal .sous{color:var(--gris);font-size:13.5px;line-height:1.5;margin:0}
+  .recit{font-size:14.5px;line-height:1.6;color:var(--texte);margin:12px 0 0}
+  .recit em{color:var(--gris);font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+  .opt{display:block;width:100%;text-align:left;background:var(--creux);border:1px solid var(--trait);
+    border-radius:6px;padding:11px 13px;font-size:14px;line-height:1.4;transition:background .15s,border-color .15s}
+  .opt:hover,.opt:focus-visible{background:#252A32;border-color:var(--trait2);outline:none}
+  .opt .s{display:block;font-family:var(--data);font-size:10px;letter-spacing:.05em;color:var(--pale);margin-top:4px}
+  .opt.cher .s{color:var(--sang)} .opt.gain .s{color:var(--vert)}
+  .opt[disabled]{opacity:.42;cursor:not-allowed}
+  .opt .ic{float:right;font-family:var(--data);font-size:11px;color:var(--ambre);font-variant-numeric:tabular-nums}
+  .fermer{width:100%;margin-top:12px;padding:11px;border:1px solid var(--trait2);border-radius:6px;
+    font-family:var(--data);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;text-align:center}
+  .fermer:hover{background:var(--creux)}
+  .deltas{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+  .d{font-family:var(--data);font-size:10.5px;padding:3px 7px;border-radius:3px;background:var(--creux);color:var(--gris)}
+  .d.p{color:var(--vert)} .d.m{color:var(--sang)}
+  .grille{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+  @media (max-width:430px){.grille{grid-template-columns:1fr}}
+  .fiche{background:var(--creux);border:1px solid var(--trait);border-radius:6px;padding:10px}
+  .fiche .k{font-family:var(--data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--pale)}
+  .fiche .v{font-family:var(--data);font-size:16px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+
+  /* ── écran titre ── */
+  #titre{position:fixed;inset:0;z-index:40;background:var(--nuit);overflow-y:auto;
+    padding:0 18px;padding-block:calc(40px + env(safe-area-inset-top)) 40px}
+  #titre .in{max-width:520px;margin:0 auto}
+  #titre h1{font-size:clamp(52px,17vw,86px);font-weight:800;letter-spacing:-.045em;line-height:.9;margin:14px 0 0}
+  #titre .ch{color:var(--gris);font-size:16.5px;line-height:1.55;margin:14px 0 0;max-width:36ch}
+  .role-c{display:flex;flex-direction:column;gap:9px;margin-top:22px}
+  .role-b{text-align:left;background:var(--panneau);border:1px solid var(--trait);border-radius:8px;padding:14px;
+    transition:border-color .15s,background .15s}
+  .role-b:hover,.role-b:focus-visible{border-color:var(--ambre);background:var(--creux);outline:none}
+  .role-b b{display:block;font-size:17px;font-weight:800;letter-spacing:-.01em}
+  .role-b span{display:block;font-size:13.5px;color:var(--gris);margin-top:4px;line-height:1.5}
+  .role-b .st{display:flex;gap:12px;margin-top:9px;font-family:var(--data);font-size:10px;color:var(--pale)}
+  .aide{margin-top:20px;border-top:1px solid var(--trait);padding-top:14px;
+    font-size:13px;color:var(--gris);line-height:1.6}
+  .aide b{color:var(--texte);font-weight:600}
+  .charge{position:fixed;inset:0;display:grid;place-items:center;z-index:50;background:var(--nuit);
+    font-family:var(--data);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pale)}
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+
+<canvas id="scene"></canvas>
+
+<div id="hud" hidden>
+  <div class="hud-in">
+    <div class="bloc" id="role">
+      <div class="n" id="r-nom">—</div>
+      <div class="barres" id="r-barres"></div>
+    </div>
+    <div class="bloc">
+      <div class="lab">Trésorerie</div>
+      <div class="v or" id="r-argent">0 €</div>
+    </div>
+    <div class="bloc">
+      <div class="lab" id="r-date-lab">Semaine</div>
+      <div class="v" id="r-date">1</div>
+    </div>
+  </div>
+</div>
+
+<div id="cible" hidden></div>
+
+<div id="dock" hidden>
+  <div class="dock-in">
+    <button class="tool" id="t-action" type="button">Interagir <span class="k">espace</span></button>
+    <button class="tool" id="t-build" type="button" aria-pressed="false">Construire <span class="k">B</span></button>
+    <button class="tool" id="t-passer" type="button">Semaine suivante <span class="k">↵</span></button>
+    <button class="tool" id="t-carte" type="button">Territoire <span class="k">T</span></button>
+  </div>
+</div>
+
+<div id="voile" hidden><div id="modal"></div></div>
+<div id="titre"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   TERRITOIRE — ville isométrique jouable
+   Rendu Canvas 2D, aucune image : tout est dessiné par le code.
+   ═══════════════════════════════════════════════════════════════ */
+const cv = document.getElementById('scene');
+const cx = cv.getContext('2d');
+const N = 30;                 // ville N×N
+const TW = 64, TH = 32;       // taille d'une tuile en projection isométrique
+const rnd = n => Math.floor(Math.random()*n);
+const pioche = a => a[rnd(a.length)];
+const chance = p => Math.random() < p;
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,t) => a + (b-a)*t;
+
+/* ── couleurs ── */
+function hex(c){ return [parseInt(c.slice(1,3),16), parseInt(c.slice(3,5),16), parseInt(c.slice(5,7),16)]; }
+function rgb(a){ return `rgb(${a[0]|0},${a[1]|0},${a[2]|0})`; }
+function ombre(c, k){ const a = typeof c==='string'?hex(c):c; return rgb(a.map(v=>clamp(v*k,0,255))); }
+function melange(c1, c2, t){ const a=hex(c1), b=hex(c2); return rgb(a.map((v,i)=>lerp(v,b[i],t))); }
+
+/* ── catalogue des bâtiments ─────────────────────────────────── */
+const B = {
+  immeuble:  {nom:'Immeuble',            col:'#9A8E7C', hMin:34, hMax:96, taxe:70},
+  maison:    {nom:'Maison',              col:'#B5A288', hMin:20, hMax:34, taxe:40},
+  commerce:  {nom:'Commerce',            col:'#8C7F6E', hMin:24, hMax:40, taxe:110},
+  bureau:    {nom:'Tour de bureaux',     col:'#77808A', hMin:80, hMax:150, taxe:260},
+  mairie:    {nom:'Hôtel de ville',      col:'#C8BFA6', hMin:70, hMax:70, taxe:0, cle:true},
+  commissariat:{nom:'Commissariat',      col:'#4E6A8C', hMin:46, hMax:46, taxe:0, cle:true},
+  tribunal:  {nom:'Palais de justice',   col:'#BEB6A0', hMin:62, hMax:62, taxe:0, cle:true},
+  banque:    {nom:'Banque',              col:'#A0937B', hMin:54, hMax:54, taxe:220, cle:true},
+  bar:       {nom:'Bar du Phare',        col:'#8A5F44', hMin:28, hMax:28, taxe:60, cle:true},
+  entrepot:  {nom:'Entrepôt du port',    col:'#6E6A62', hMin:36, hMax:36, taxe:90, cle:true},
+  chantier:  {nom:'Terrain vague',       col:'#5C564C', hMin:0,  hMax:0,  taxe:0, vide:true},
+  parc:      {nom:'Square',              col:'#4C7247', hMin:0,  hMax:0,  taxe:0, vert:true},
+
+  // constructions du maire
+  ecole:     {nom:'École',       col:'#C3B189', hMin:40, hMax:56, cout:60000, taxe:0,
+              camp:'ville', effets:{popularite:9, crimin:-4}, desc:'Fait baisser la délinquance du quartier sur la durée.'},
+  logements: {nom:'Logements sociaux', col:'#A9987F', hMin:64, hMax:110, cout:90000, taxe:180,
+              camp:'ville', effets:{popularite:11, crimin:2}, desc:'Beaucoup de loyers, beaucoup de monde, beaucoup de problèmes.'},
+  clinique:  {nom:'Centre de santé', col:'#CFC7B4', hMin:44, hMax:60, cout:75000, taxe:60,
+              camp:'ville', effets:{popularite:13}, desc:'Ce que les gens réclament en premier et remarquent en dernier.'},
+  poste_police:{nom:'Poste de police', col:'#44607F', hMin:34, hMax:44, cout:55000, taxe:0,
+              camp:'ville', effets:{crimin:-14, popularite:-3}, desc:'Écrase la criminalité autour. Le quartier n’aime pas ça.'},
+  parc_neuf: {nom:'Parc', col:'#4C7247', hMin:0, hMax:0, cout:28000, taxe:0, vert:true,
+              camp:'ville', effets:{popularite:7}, desc:'Peu cher, visible, apprécié. La base du métier.'},
+
+  // constructions du parrain
+  planque:   {nom:'Planque', col:'#5E5347', hMin:26, hMax:40, cout:22000, revenu:900,
+              camp:'gang', effets:{emprise:8, chaleur:2}, desc:'Un point de repli. Fait baisser le risque en cas de descente.'},
+  laverie:   {nom:'Laverie', col:'#6D6355', hMin:30, hMax:44, cout:48000, revenu:1600,
+              camp:'gang', effets:{emprise:5}, blanchit:true, desc:'Blanchit une part du liquide chaque semaine.'},
+  atelier:   {nom:'Atelier', col:'#57504A', hMin:32, hMax:48, cout:65000, revenu:3400,
+              camp:'gang', effets:{emprise:11, chaleur:7}, desc:'Le cœur du chiffre. Et la première cible d’une descente.'},
+  salle:     {nom:'Salle de sport', col:'#6A5B4E', hMin:34, hMax:50, cout:36000, revenu:700,
+              camp:'gang', effets:{emprise:9, loyaute:8}, desc:'Recrute et fidélise. Là où les gamins viennent d’abord.'},
+  qg:        {nom:'Quartier général', col:'#7A5B3C', hMin:56, hMax:110, cout:0, revenu:0, cle:true,
+              camp:'gang', desc:'Ton QG. Chaque niveau étend ton emprise et protège tes hommes.'}
+};
+
+/* ── rôles ── */
+const ROLES = {
+  maire:{
+    nom:'Maire', titre:'Hôtel de ville',
+    argent:180000, base:'mairie',
+    barres:[['popularite','Popularité','var(--vert)'],['crimin','Criminalité','var(--sang)'],['budget','Budget','var(--bleu)']],
+    peut:['ecole','logements','clinique','poste_police','parc_neuf'],
+    but:'Tenir la ville : faire monter la popularité avant les élections, sans laisser la criminalité te manger.'
+  },
+  parrain:{
+    nom:'Parrain', titre:'Quartier général',
+    argent:45000, base:'qg',
+    barres:[['emprise','Emprise','var(--ambre)'],['chaleur','Chaleur','var(--sang)'],['loyaute','Équipe','var(--vert)']],
+    peut:['planque','laverie','atelier','salle'],
+    but:'Prendre la ville bloc par bloc, sans faire monter la chaleur assez haut pour qu’on vienne te chercher.'
+  }
+};
+
+/* ── état ─────────────────────────────────────────────────────── */
+let S = null;
+function nouvelEtat(role){
+  return {
+    role, argent: ROLES[role].argent,
+    jour:0, semaine:1, heure:8,
+    popularite: 42, crimin: 38, budget: 55,
+    emprise: 6, chaleur: 8, loyaute: 55,
+    batis: [], journal: [], evFile: [], fini:null,
+    stats:{construits:0, semaines:0}
+  };
+}
+
+/* ── monde ────────────────────────────────────────────────────── */
+let grille = [];
+const estRoute = (x,y) => (x%4===0 || y%4===0);
+const dansMonde = (x,y) => x>=0 && y>=0 && x<N && y<N;
+function T(x,y){ return dansMonde(x,y) ? grille[y*N+x] : null; }
+
+function genereVille(){
+  grille = new Array(N*N);
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    let sol = 'terre', b = null;
+    if(y >= N-2) sol = 'eau';
+    else if(estRoute(x,y)) sol = 'route';
+    grille[y*N+x] = {x, y, sol, b, ctrl:0, eclat: Math.random()};
+  }
+  // un square au milieu d'un pâté
+  const px = 13, py = 13;
+  for(let y=py;y<py+3;y++) for(let x=px;x<px+3;x++){ const t=T(x,y); if(t&&t.sol==='terre'){ t.sol='herbe'; t.b=bat('parc'); } }
+
+  // remplissage des lots
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    const t = T(x,y);
+    if(!t || t.sol!=='terre' || t.b) continue;
+    const bordDuPort = y >= N-5;
+    const centre = Math.abs(x-15)+Math.abs(y-13) < 9;
+    let type;
+    if(chance(.10)) type = 'chantier';
+    else if(bordDuPort) type = chance(.5)?'entrepot':'commerce';
+    else if(centre) type = chance(.30)?'bureau':(chance(.5)?'immeuble':'commerce');
+    else type = chance(.55)?'immeuble':(chance(.6)?'maison':'commerce');
+    t.b = bat(type);
+  }
+  // bâtiments singuliers, posés au bord d'une rue
+  const poser = (type, x, y) => { const t=T(x,y); if(t){ t.sol='terre'; t.b=bat(type); } return t; };
+  poser('mairie', 14, 10); poser('commissariat', 6, 18); poser('tribunal', 22, 6);
+  poser('banque', 17, 17); poser('bar', 9, 9); poser('entrepot', 25, 25);
+  // quelques friches groupées, pour avoir où construire
+  for(let i=0;i<26;i++){
+    const x = 1+rnd(N-2), y = 1+rnd(N-6);
+    const t = T(x,y);
+    if(t && t.sol==='terre' && t.b && !B[t.b.t].cle) t.b = bat('chantier');
+  }
+}
+let _id = 0;
+function bat(type, niv){
+  const d = B[type];
+  const n = niv || 1;
+  const h = d.hMin===d.hMax ? d.hMin : d.hMin + rnd(Math.max(1, d.hMax-d.hMin));
+  return {id:++_id, t:type, niv:n, h, teinte:(Math.random()*0.16)-0.08,
+          prop: d.camp || 'neutre', fenetres: Math.random()<.85, occupe:Math.random()};
+}
+function hauteur(b){ return b.h * (1 + (b.niv-1)*0.42); }
+
+/* ── projection isométrique ───────────────────────────────────── */
+const cam = {x:0, y:0, z:1, cible:{x:0,y:0}};
+function iso(x, y){ return {sx:(x-y)*TW/2, sy:(x+y)*TH/2}; }
+function versEcran(x, y){
+  const p = iso(x,y);
+  return {x:(p.sx - cam.x)*cam.z + cv.width/(2*DPR), y:(p.sy - cam.y)*cam.z + cv.height/(2*DPR)};
+}
+function versTuile(ex, ey){
+  const sx = (ex - cv.width/(2*DPR))/cam.z + cam.x;
+  const sy = (ey - cv.height/(2*DPR))/cam.z + cam.y;
+  const x = (sy/(TH/2) + sx/(TW/2))/2;
+  const y = (sy/(TH/2) - sx/(TW/2))/2;
+  return {x:Math.floor(x), y:Math.floor(y), fx:x, fy:y};
+}
+
+/* ── canevas ──────────────────────────────────────────────────── */
+let DPR = 1;
+function redim(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = Math.floor(innerWidth * DPR);
+  cv.height = Math.floor(innerHeight * DPR);
+  cx.setTransform(DPR,0,0,DPR,0,0);
+  cx.imageSmoothingEnabled = false;
+}
+addEventListener('resize', redim);
+
+/* ── lumière du jour ──────────────────────────────────────────── */
+function lumiere(){
+  const h = S ? S.heure : 12;
+  if(h < 5 || h >= 21) return 0.14;
+  if(h < 7)  return lerp(0.14, 1, (h-5)/2);
+  if(h < 18) return 1;
+  return lerp(1, 0.14, (h-18)/3);
+}
+function couleurCiel(){
+  const l = lumiere();
+  if(l > .92) return ['#8FA8BE','#C6CFD4'];
+  if(l > .5)  return ['#5C6E88','#C08A5E'];
+  if(l > .2)  return ['#2A3450','#6B4B55'];
+  return ['#0A0E16','#161C2A'];
+}
+
+/* ── primitives ───────────────────────────────────────────────── */
+function centre(x, y){ return versEcran(x+0.5, y+0.5); }
+function diamant(p, k){
+  const w = TW*cam.z/2*(k||1), h = TH*cam.z/2*(k||1);
+  cx.beginPath();
+  cx.moveTo(p.x, p.y-h); cx.lineTo(p.x+w, p.y); cx.lineTo(p.x, p.y+h); cx.lineTo(p.x-w, p.y);
+  cx.closePath();
+}
+function poly(pts){
+  cx.beginPath(); cx.moveTo(pts[0].x, pts[0].y);
+  for(let i=1;i<pts.length;i++) cx.lineTo(pts[i].x, pts[i].y);
+  cx.closePath();
+}
+
+/* ── sol ──────────────────────────────────────────────────────── */
+function dessineSol(t){
+  const p = centre(t.x, t.y), l = lumiere();
+  let base;
+  if(t.sol === 'route')      base = '#2F343A';
+  else if(t.sol === 'eau')   base = '#1E465F';
+  else if(t.sol === 'herbe') base = '#3E5E3C';
+  else                       base = '#4A443C';
+  let c = melange(base, '#000000', (1-l)*0.55);
+  if(t.sol === 'eau'){
+    const on = Math.sin(tempsTotal*1.1 + t.x*0.7 + t.y*0.9)*0.5+0.5;
+    c = melange(c, '#6FA8C4', on*0.14*l + 0.03);
+  } else {
+    c = melange(c, '#FFFFFF', t.eclat*0.045);
+  }
+  diamant(p); cx.fillStyle = c; cx.fill();
+
+  if(t.sol === 'route'){
+    // marquage central : uniquement sur les axes, pas aux carrefours
+    const carrefour = (t.x%4===0 && t.y%4===0);
+    if(!carrefour){
+      const horiz = (t.y%4===0);
+      const w = TW*cam.z/2, h = TH*cam.z/2;
+      cx.strokeStyle = `rgba(226,214,180,${0.16 + l*0.16})`;
+      cx.lineWidth = Math.max(1, 1.3*cam.z);
+      cx.setLineDash([6*cam.z, 7*cam.z]);
+      cx.beginPath();
+      if(horiz){ cx.moveTo(p.x-w, p.y); cx.lineTo(p.x+w, p.y); }
+      else     { cx.moveTo(p.x, p.y-h); cx.lineTo(p.x, p.y+h); }
+      cx.stroke(); cx.setLineDash([]);
+    }
+  }
+  if(t.sol === 'herbe' && t.b && B[t.b.t].vert){
+    // arbres du square
+    const n = 1 + ((t.x*7+t.y*13)%3);
+    for(let i=0;i<n;i++){
+      const a = (t.x*31+t.y*17+i*53)%100/100;
+      const q = {x:p.x + (a-0.5)*TW*cam.z*0.5, y:p.y + ((a*3)%1-0.5)*TH*cam.z*0.5};
+      const hh = (9 + (a*9))*cam.z;
+      cx.fillStyle = melange('#3A2A1E','#000',(1-l)*0.5);
+      cx.fillRect(q.x-0.8*cam.z, q.y-hh, 1.8*cam.z, hh);
+      cx.fillStyle = melange('#4F7A46','#000',(1-l)*0.55);
+      cx.beginPath(); cx.arc(q.x, q.y-hh-3*cam.z, 6.5*cam.z, 0, 7); cx.fill();
+    }
+  }
+}
+
+/* ── bâtiment ─────────────────────────────────────────────────── */
+function dessineBati(t){
+  const b = t.b; if(!b || B[b.t].vert) return;
+  const d = B[b.t], l = lumiere(), p = centre(t.x, t.y);
+  if(d.vide){                        // terrain vague : palissade
+    const w = TW*cam.z/2, h = TH*cam.z/2;
+    diamant(p); cx.fillStyle = melange('#4A443C','#000',(1-l)*0.55); cx.fill();
+    cx.strokeStyle = `rgba(210,180,120,${0.20+l*0.2})`; cx.lineWidth = Math.max(1,1.2*cam.z);
+    cx.beginPath();
+    cx.moveTo(p.x-w*.8, p.y-h*.1); cx.lineTo(p.x, p.y-h*.8);
+    cx.lineTo(p.x+w*.8, p.y-h*.1); cx.stroke();
+    return;
+  }
+  const H = hauteur(b) * cam.z;
+  const w = TW*cam.z/2, hh = TH*cam.z/2;
+  const L = {x:p.x-w, y:p.y}, Bo = {x:p.x, y:p.y+hh}, R = {x:p.x+w, y:p.y}, Tp = {x:p.x, y:p.y-hh};
+  const up = q => ({x:q.x, y:q.y-H});
+
+  let col = melange(d.col, b.teinte>0?'#FFFFFF':'#000000', Math.abs(b.teinte));
+  if(b.prop === 'gang')       col = melange(col, '#7A4A2E', 0.26);
+  else if(b.prop === 'ville') col = melange(col, '#3E6A8E', 0.20);
+  const jour = k => melange(melange(col,'#000000',(1-l)*0.62), '#FFE0B0', l*0.05*k);
+
+  // ombre portée au sol
+  cx.save();
+  poly([{x:L.x+6*cam.z,y:L.y+3*cam.z}, {x:Bo.x+6*cam.z,y:Bo.y+3*cam.z},
+        {x:R.x+6*cam.z,y:R.y+3*cam.z}, {x:Tp.x+6*cam.z,y:Tp.y+3*cam.z}]);
+  cx.fillStyle = 'rgba(0,0,0,.24)'; cx.fill(); cx.restore();
+
+  // face gauche (sombre), face droite (moyenne), toit (clair)
+  poly([L, Bo, up(Bo), up(L)]); cx.fillStyle = ombre(jour(0.4), 0.62); cx.fill();
+  poly([Bo, R, up(R), up(Bo)]); cx.fillStyle = ombre(jour(1.0), 0.86); cx.fill();
+  poly([up(L), up(Bo), up(R), up(Tp)]); cx.fillStyle = jour(1.3); cx.fill();
+
+  // fenêtres
+  if(b.fenetres && H > 16*cam.z){
+    const rangs = Math.max(1, Math.floor(hauteur(b)/17));
+    const cols = 2;
+    const allume = 1 - l;
+    for(const [A, Z, k] of [[L, Bo, 0.62], [Bo, R, 0.86]]){
+      for(let r=0;r<rangs;r++){
+        for(let c=0;c<cols;c++){
+          const u0 = 0.20 + c*0.38, u1 = u0 + 0.24;
+          const v0 = (r+0.30)/rangs, v1 = (r+0.72)/rangs;
+          const P = (u,v)=>({x:A.x+(Z.x-A.x)*u, y:A.y+(Z.y-A.y)*u - H*v});
+          const vit = ((t.x*17 + t.y*31 + r*13 + c*7 + b.id) % 10) / 10;
+          const on = allume > 0.35 && vit < (0.30 + b.occupe*0.45);
+          poly([P(u0,v0), P(u1,v0), P(u1,v1), P(u0,v1)]);
+          cx.fillStyle = on ? `rgba(255,206,122,${0.55+allume*0.4})`
+                            : ombre(melange(col,'#0E1116',0.55), k);
+          cx.fill();
+        }
+      }
+    }
+  }
+  // enseigne des lieux singuliers
+  if(d.cle){
+    const q = up(Tp);
+    cx.fillStyle = b.prop==='gang' ? '#C7503F' : (b.prop==='ville' ? '#5B87C4' : '#E8A13A');
+    cx.fillRect(q.x-2*cam.z, q.y-9*cam.z, 4*cam.z, 9*cam.z);
+    cx.globalAlpha = 0.55 + Math.sin(tempsTotal*2.4 + b.id)*0.25;
+    cx.beginPath(); cx.arc(q.x, q.y-10*cam.z, 2.6*cam.z, 0, 7); cx.fill();
+    cx.globalAlpha = 1;
+  }
+  // niveaux supérieurs : superstructure sur le toit
+  if(b.niv >= 2){
+    const q = up(p), s = 0.42;
+    const w2 = w*s, h2 = hh*s, H2 = 10*cam.z*(b.niv-1);
+    const L2={x:q.x-w2,y:q.y}, B2={x:q.x,y:q.y+h2}, R2={x:q.x+w2,y:q.y}, T2={x:q.x,y:q.y-h2};
+    const u2 = o => ({x:o.x, y:o.y-H2});
+    poly([L2,B2,u2(B2),u2(L2)]); cx.fillStyle = ombre(jour(0.4),0.55); cx.fill();
+    poly([B2,R2,u2(R2),u2(B2)]); cx.fillStyle = ombre(jour(1),0.78); cx.fill();
+    poly([u2(L2),u2(B2),u2(R2),u2(T2)]); cx.fillStyle = jour(1.4); cx.fill();
+  }
+  // contour
+  poly([L, Bo, R, up(R), up(Tp), up(L)]);
+  cx.strokeStyle = `rgba(8,10,13,${0.32+(1-l)*0.3})`; cx.lineWidth = Math.max(1, cam.z); cx.stroke();
+}
+
+/* ── personnages et véhicules ─────────────────────────────────── */
+function dessinePerso(e, principal){
+  const p = versEcran(e.x+0.5, e.y+0.5), l = lumiere();
+  const s = cam.z;
+  cx.save();
+  cx.fillStyle = 'rgba(0,0,0,.30)';
+  cx.beginPath(); cx.ellipse(p.x, p.y+1*s, 4.5*s, 2.2*s, 0, 0, 7); cx.fill();
+  const c1 = melange(e.col, '#000', (1-l)*0.45);
+  const balance = principal && e.chemin.length ? Math.sin(tempsTotal*11)*1.1*s : 0;
+  cx.fillStyle = c1;
+  cx.fillRect(p.x-2.4*s, p.y-11*s, 4.8*s, 8*s);            // corps
+  cx.fillStyle = melange('#C8A183','#000',(1-l)*0.4);
+  cx.beginPath(); cx.arc(p.x, p.y-13.4*s, 2.6*s, 0, 7); cx.fill();   // tête
+  cx.fillStyle = ombre(c1, .7);
+  cx.fillRect(p.x-2.2*s+balance, p.y-3.4*s, 1.9*s, 3.6*s);
+  cx.fillRect(p.x+0.4*s-balance, p.y-3.4*s, 1.9*s, 3.6*s);
+  if(principal){
+    cx.strokeStyle = `rgba(232,161,58,${0.5+Math.sin(tempsTotal*3)*0.2})`;
+    cx.lineWidth = 1.4*s;
+    cx.beginPath(); cx.ellipse(p.x, p.y+1*s, 8*s, 4*s, 0, 0, 7); cx.stroke();
+  }
+  cx.restore();
+}
+function dessineVoiture(v){
+  const p = versEcran(v.x+0.5, v.y+0.5), l = lumiere(), s = cam.z;
+  cx.save();
+  cx.fillStyle = 'rgba(0,0,0,.3)';
+  cx.beginPath(); cx.ellipse(p.x, p.y+2*s, 9*s, 4*s, 0, 0, 7); cx.fill();
+  const c = melange(v.col, '#000', (1-l)*0.5);
+  const horiz = Math.abs(v.dx) > Math.abs(v.dy);
+  const w = (horiz?13:9)*s, h = (horiz?7:11)*s;
+  cx.fillStyle = c; cx.fillRect(p.x-w/2, p.y-h/2-4*s, w, h);
+  cx.fillStyle = ombre(c, 1.25); cx.fillRect(p.x-w/2+1.5*s, p.y-h/2-7*s, w-3*s, 3.5*s);
+  if(lumiere() < .45){
+    cx.fillStyle = 'rgba(255,228,160,.85)';
+    cx.fillRect(p.x + (v.dx>0? w/2-2*s : -w/2), p.y-3*s, 2*s, 2*s);
+  }
+  cx.restore();
+}
+
+/* ── scène ────────────────────────────────────────────────────── */
+let tempsTotal = 0;
+function dessine(){
+  const W = cv.width/DPR, Hs = cv.height/DPR;
+  const [c1, c2] = couleurCiel();
+  const g = cx.createLinearGradient(0,0,0,Hs);
+  g.addColorStop(0, c1); g.addColorStop(1, c2);
+  cx.fillStyle = g; cx.fillRect(0,0,W,Hs);
+
+  // tuiles visibles
+  const marge = 3;
+  const coins = [versTuile(0,0), versTuile(W,0), versTuile(0,Hs), versTuile(W,Hs)];
+  const x0 = clamp(Math.min(...coins.map(c=>c.x))-marge, 0, N-1);
+  const x1 = clamp(Math.max(...coins.map(c=>c.x))+marge, 0, N-1);
+  const y0 = clamp(Math.min(...coins.map(c=>c.y))-marge, 0, N-1);
+  const y1 = clamp(Math.max(...coins.map(c=>c.y))+marge, 0, N-1);
+
+  for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++) dessineSol(T(x,y));
+
+  // surbrillance de la tuile visée
+  if(survol && dansMonde(survol.x, survol.y)){
+    diamant(centre(survol.x, survol.y), 0.97);
+    cx.fillStyle = modeBuild ? 'rgba(232,161,58,.24)' : 'rgba(236,233,227,.13)';
+    cx.fill();
+    cx.strokeStyle = modeBuild ? 'rgba(232,161,58,.85)' : 'rgba(236,233,227,.5)';
+    cx.lineWidth = 1.6*cam.z; cx.stroke();
+  }
+
+  // objets hauts, triés en profondeur
+  const hauts = [];
+  for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){
+    const t = T(x,y);
+    if(t.b && !B[t.b.t].vert) hauts.push({d:x+y, f:()=>dessineBati(t)});
+  }
+  for(const e of pietons) if(e.x>=x0-2&&e.x<=x1+2&&e.y>=y0-2&&e.y<=y1+2)
+    hauts.push({d:e.x+e.y+0.5, f:()=>dessinePerso(e,false)});
+  for(const v of voitures) hauts.push({d:v.x+v.y+0.5, f:()=>dessineVoiture(v)});
+  hauts.push({d:joueur.x+joueur.y+0.55, f:()=>dessinePerso(joueur,true)});
+  hauts.sort((a,b)=>a.d-b.d);
+  for(const o of hauts) o.f();
+
+  // voile de nuit
+  const l = lumiere();
+  if(l < 1){
+    cx.fillStyle = `rgba(10,14,30,${(1-l)*0.34})`;
+    cx.fillRect(0,0,W,Hs);
+  }
+}
+
+/* ── entités ──────────────────────────────────────────────────── */
+const joueur = {x:12.5, y:12.5, col:'#E8A13A', chemin:[], v:3.4};
+const pietons = [], voitures = [];
+let survol = null, modeBuild = false;
+
+function tuilesRoute(){
+  const r = [];
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){ const t=T(x,y); if(t.sol==='route') r.push(t); }
+  return r;
+}
+function peuplerVille(){
+  pietons.length = 0; voitures.length = 0;
+  const routes = tuilesRoute();
+  const cols = ['#6E7B8A','#8A7361','#5F6E5C','#7A5F6E','#4F5F72','#8A8272'];
+  for(let i=0;i<34;i++){
+    const t = pioche(routes);
+    pietons.push({x:t.x, y:t.y, col:pioche(cols), chemin:[], v:1.1+Math.random()*0.7});
+  }
+  for(let i=0;i<14;i++){
+    const t = pioche(routes);
+    const horiz = t.y%4===0;
+    voitures.push({x:t.x, y:t.y, dx:horiz?(chance(.5)?1:-1):0, dy:horiz?0:(chance(.5)?1:-1),
+                   col:pioche(['#8C4038','#39506B','#5E5E62','#7C6A45','#3F5E4A','#9A9086']),
+                   v:1.9+Math.random()*1.6});
+  }
+}
+/* parcours le plus court entre deux tuiles de rue */
+function chemin(dep, arr){
+  if(!dep || !arr || arr.sol!=='route') return [];
+  const vu = new Int32Array(N*N).fill(-1);
+  const file = [dep]; vu[dep.y*N+dep.x] = dep.y*N+dep.x;
+  let tete = 0;
+  while(tete < file.length){
+    const t = file[tete++];
+    if(t === arr) break;
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const n = T(t.x+dx, t.y+dy);
+      if(!n || n.sol!=='route' || vu[n.y*N+n.x] !== -1) continue;
+      vu[n.y*N+n.x] = t.y*N+t.x;
+      file.push(n);
+    }
+  }
+  if(vu[arr.y*N+arr.x] === -1) return [];
+  const ch = []; let c = arr;
+  while(c !== dep){ ch.unshift(c); const p = vu[c.y*N+c.x]; c = grille[p]; if(!c) break; }
+  return ch;
+}
+function avanceEntite(e, dt){
+  if(!e.chemin.length) return false;
+  const c = e.chemin[0];
+  const dx = c.x - e.x, dy = c.y - e.y;
+  const d = Math.hypot(dx, dy);
+  if(d < 0.06){ e.x = c.x; e.y = c.y; e.chemin.shift(); return true; }
+  e.x += dx/d * e.v * dt; e.y += dy/d * e.v * dt;
+  return true;
+}
+function erre(e){
+  if(e.chemin.length) return;
+  const t = T(Math.round(e.x), Math.round(e.y));
+  const opts = [];
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const n = T(Math.round(e.x)+dx, Math.round(e.y)+dy);
+    if(n && n.sol==='route') opts.push(n);
+  }
+  if(opts.length) e.chemin.push(pioche(opts));
+  else if(t) e.chemin.push(t);
+}
+function avanceVoiture(v, dt){
+  v.x += v.dx*v.v*dt; v.y += v.dy*v.v*dt;
+  const tx = Math.round(v.x), ty = Math.round(v.y);
+  const devant = T(Math.round(v.x+v.dx*0.6), Math.round(v.y+v.dy*0.6));
+  if(!devant || devant.sol!=='route'){
+    const opts = [];
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      if(dx===-v.dx && dy===-v.dy) continue;
+      const n = T(tx+dx, ty+dy);
+      if(n && n.sol==='route') opts.push([dx,dy]);
+    }
+    const c = opts.length ? pioche(opts) : [-v.dx, -v.dy];
+    v.x = tx; v.y = ty; v.dx = c[0]; v.dy = c[1];
+  }
+}
+
+/* ── entrées ──────────────────────────────────────────────────── */
+let presse = false, depart = null, bouge = false, pointeurs = new Map(), pincee = null;
+cv.addEventListener('pointerdown', e=>{
+  cv.setPointerCapture(e.pointerId);
+  pointeurs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if(pointeurs.size === 2){
+    const [a,b] = [...pointeurs.values()];
+    pincee = {d:Math.hypot(a.x-b.x, a.y-b.y), z:cam.z};
+  }
+  presse = true; bouge = false; depart = {x:e.clientX, y:e.clientY, cx:cam.x, cy:cam.y};
+});
+cv.addEventListener('pointermove', e=>{
+  if(pointeurs.has(e.pointerId)) pointeurs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if(pincee && pointeurs.size === 2){
+    const [a,b] = [...pointeurs.values()];
+    cam.z = clamp(pincee.z * (Math.hypot(a.x-b.x, a.y-b.y)/pincee.d), 0.45, 2.4);
+    bouge = true; return;
+  }
+  if(presse && depart){
+    const dx = e.clientX-depart.x, dy = e.clientY-depart.y;
+    if(Math.abs(dx)+Math.abs(dy) > 9) bouge = true;
+    if(bouge){ cam.x = depart.cx - dx/cam.z; cam.y = depart.cy - dy/cam.z; suivi = false; }
+  }
+  survol = versTuile(e.clientX, e.clientY);
+  majCible(e.clientX, e.clientY);
+});
+function finPointeur(e){
+  pointeurs.delete(e.pointerId);
+  if(pointeurs.size < 2) pincee = null;
+  if(!presse) return;
+  presse = false;
+  if(bouge) return;
+  const t0 = versTuile(e.clientX, e.clientY);
+  const t = T(t0.x, t0.y);
+  if(!t) return;
+  if(modeBuild){ tapBuild(t); return; }
+  if(t.sol === 'route'){
+    const dep = T(Math.round(joueur.x), Math.round(joueur.y));
+    const ch = chemin(dep, t);
+    if(ch.length){ joueur.chemin = ch; suivi = true; }
+  } else if(t.b){
+    const acces = routeVoisine(t);
+    if(acces){
+      const ch = chemin(T(Math.round(joueur.x), Math.round(joueur.y)), acces);
+      joueur.chemin = ch; suivi = true; cibleBati = t;
+    }
+  }
+}
+cv.addEventListener('pointerup', finPointeur);
+cv.addEventListener('pointercancel', finPointeur);
+cv.addEventListener('wheel', e=>{ e.preventDefault();
+  cam.z = clamp(cam.z * (e.deltaY > 0 ? 0.9 : 1.1), 0.45, 2.4); }, {passive:false});
+addEventListener('keydown', e=>{
+  if(e.key === ' '){ e.preventDefault(); interagir(); }
+  if(e.key === 'b' || e.key === 'B') basculeBuild();
+  if(e.key === 'Enter') semaineSuivante();
+  if(e.key === 't' || e.key === 'T') ouvreTerritoire();
+  if(e.key === 'Escape') ferme();
+});
+
+function routeVoisine(t){
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const n = T(t.x+dx, t.y+dy);
+    if(n && n.sol==='route') return n;
+  }
+  return null;
+}
+function batiDevant(){
+  const jx = Math.round(joueur.x), jy = Math.round(joueur.y);
+  let meilleur = null, dmin = 9;
+  for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+    const t = T(jx+dx, jy+dy);
+    if(!t || !t.b || t.sol==='route') continue;
+    const d = Math.abs(dx)+Math.abs(dy);
+    if(d < dmin){ dmin = d; meilleur = t; }
+  }
+  return meilleur;
+}
+let cibleBati = null, suivi = true;
+
+/* ── étiquette de survol ──────────────────────────────────────── */
+const elCible = document.getElementById('cible');
+function majCible(px, py){
+  if(!S){ elCible.hidden = true; return; }
+  const t0 = versTuile(px, py), t = T(t0.x, t0.y);
+  if(!t || !t.b || B[t.b.t].vert){ elCible.hidden = true; return; }
+  const d = B[t.b.t];
+  const sous = d.vide ? 'Terrain constructible'
+    : (t.b.prop==='gang' ? 'À toi — niveau '+t.b.niv
+    : (t.b.prop==='ville' ? 'Équipement public — niveau '+t.b.niv
+    : (d.taxe ? d.taxe+' € de taxes/semaine' : 'Bâtiment public')));
+  elCible.innerHTML = `${d.nom}<span class="s">${sous}</span>`;
+  elCible.hidden = false;
+  elCible.style.left = px+'px';
+  elCible.style.top = (py-14)+'px';
+}
+
+/* ── panneau modal ────────────────────────────────────────────── */
+const voile = document.getElementById('voile'), modal = document.getElementById('modal');
+let ouvert = false;
+function ferme(){ ouvert = false; voile.hidden = true; }
+function ouvre(o){
+  ouvert = true; voile.hidden = false; modal.innerHTML = '';
+  const h = document.createElement('div');
+  h.innerHTML = `<div class="lab">${o.lab||''}</div><h2>${o.titre}</h2>` +
+    (o.sous ? `<p class="sous">${o.sous}</p>` : '') +
+    (o.recit ? `<p class="recit">${o.recit}</p>` : '');
+  modal.appendChild(h);
+  if(o.fiches){
+    const g = document.createElement('div'); g.className = 'grille';
+    o.fiches.forEach(([k,v])=>{ const d=document.createElement('div'); d.className='fiche';
+      d.innerHTML = `<div class="k">${k}</div><div class="v">${v}</div>`; g.appendChild(d); });
+    modal.appendChild(g);
+  }
+  if(o.corps) modal.appendChild(o.corps);
+  if(o.opts && o.opts.length){
+    const box = document.createElement('div'); box.className = 'opts';
+    o.opts.forEach(op=>{
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt ' + (op.cls||'');
+      b.innerHTML = (op.ic ? `<span class="ic">${op.ic}</span>` : '') + op.t +
+        (op.s ? `<span class="s">${op.s}</span>` : '');
+      if(op.dis) b.disabled = true;
+      else b.addEventListener('click', ()=>op.fait());
+      box.appendChild(b);
+    });
+    modal.appendChild(box);
+  }
+  const f = document.createElement('button');
+  f.type = 'button'; f.className = 'fermer'; f.textContent = o.ferme || 'Fermer';
+  f.addEventListener('click', o.surFerme || ferme);
+  modal.appendChild(f);
+  modal.scrollTop = 0;
+}
+function resultat(titre, texte, av){
+  const d = document.createElement('div'); d.className = 'deltas';
+  const noms = {argent:'€', popularite:'Popularité', crimin:'Criminalité', budget:'Budget',
+                emprise:'Emprise', chaleur:'Chaleur', loyaute:'Équipe'};
+  let n = 0;
+  for(const k in noms){
+    const delta = Math.round(S[k] - av[k]); if(!delta) continue; n++;
+    const txt = k==='argent' ? (delta>0?'+':'−') + Math.abs(delta).toLocaleString('fr-FR') + ' €'
+                             : noms[k] + ' ' + (delta>0?'+':'−') + Math.abs(delta);
+    const bon = (k==='crimin' || k==='chaleur') ? delta<0 : delta>0;
+    const s = document.createElement('span'); s.className = 'd ' + (bon?'p':'m'); s.textContent = txt;
+    d.appendChild(s);
+  }
+  ouvre({titre, recit:texte, corps: n?d:null, ferme:'Continuer'});
+  majHUD();
+}
+const snap = () => ({argent:S.argent, popularite:S.popularite, crimin:S.crimin, budget:S.budget,
+                     emprise:S.emprise, chaleur:S.chaleur, loyaute:S.loyaute});
+function borne100(){ for(const k of ['popularite','crimin','budget','emprise','chaleur','loyaute'])
+  S[k] = clamp(Math.round(S[k]), 0, 100); }
+
+/* ── interagir avec le bâtiment devant soi ────────────────────── */
+function interagir(){
+  if(ouvert || !S || S.fini) return;
+  const t = cibleBati && proche(cibleBati) ? cibleBati : batiDevant();
+  cibleBati = null;
+  if(!t){ ouvre({titre:'Personne devant toi', sous:'Approche-toi d’un bâtiment : touche-le, ton personnage ira jusqu’à la porte.'}); return; }
+  const d = B[t.b.t], maire = S.role === 'maire';
+  if(d.vide){ paletteConstruction(t); return; }
+  const opts = [];
+  const heure2 = () => { S.heure += 2; };
+
+  if(t.b.t === 'mairie' && maire) opts.push(
+    {t:'Réunir le conseil municipal', s:'Débloque du budget · 2 h', fait(){ const a=snap();
+      S.budget += 9; S.popularite -= 2; heure2();
+      resultat('Conseil municipal', `Trois heures de séance pour voter une délibération que tout le monde avait lue. Le budget d’investissement passe, l’opposition fait un communiqué.`, a); }},
+    {t:'Recevoir les habitants', s:'Popularité + · 2 h', fait(){ const a=snap();
+      S.popularite += 5; S.budget -= 2; heure2();
+      resultat('Permanence', `Vingt-deux rendez-vous de dix minutes : un permis de construire, une cage d’escalier, un chien qui aboie. Rien de stratégique, et c’est exactement ce qui fait les réélections.`, a); }});
+
+  if(t.b.t === 'commissariat') opts.push(maire
+    ? {t:'Financer une brigade de nuit', s:'−35 000 € · criminalité −', cls:'cher', ic:'35 000 €',
+       dis:S.argent<35000, fait(){ const a=snap(); S.argent-=35000; S.crimin-=11; S.popularite+=3; heure2();
+        resultat('Brigade de nuit', `Six agents de plus entre 22 h et 6 h. La délinquance visible baisse en trois semaines, et se déplace de deux quartiers.`, a); }}
+    : {t:'Arroser un gradé', s:'−28 000 € · chaleur −−', cls:'cher', ic:'28 000 €',
+       dis:S.argent<28000, fait(){ const a=snap(); S.argent-=28000; S.chaleur-=18; heure2();
+        resultat('Arrangement', `Rien d’écrit, rien de dit devant témoin. Certaines surveillances seront mal programmées pendant deux mois.`, a);
+        if(chance(.22)) programme(3,'igpn'); }});
+
+  if(t.b.t === 'tribunal') opts.push(maire
+    ? {t:'Consulter le procureur', s:'Criminalité − · 2 h', fait(){ const a=snap(); S.crimin-=5; heure2();
+       resultat('Parquet', `Une heure de courtoisie institutionnelle. Il te dit ce qu’il peut, c’est-à-dire pas grand-chose, mais il le dit à toi et pas à un autre.`, a); }}
+    : {t:'Acheter le contenu d’un dossier', s:'−45 000 € · chaleur −', cls:'cher', ic:'45 000 €',
+       dis:S.argent<45000, fait(){ const a=snap(); S.argent-=45000; S.chaleur-=12; heure2();
+       resultat('Le dossier', `Un greffier endetté, une clé USB, quarante minutes de lecture. Tu sais désormais qui a parlé et ce qui est déjà écrit.`, a); }});
+
+  if(t.b.t === 'banque'){
+    opts.push({t:'Emprunter 80 000 €', s:'Remboursé 6 400 €/semaine pendant 15 semaines', ic:'+80 000 €',
+      dis:!!S.pret, fait(){ const a=snap(); S.argent+=80000; S.pret={reste:15, montant:6400}; heure2();
+      resultat('Crédit accordé', `Le conseiller ne pose pas beaucoup de questions : ta garantie, ce sont les murs que tu possèdes déjà.`, a); }});
+    if(!maire) opts.push({t:'Blanchir 40 000 € de liquide', s:'−30 % de frais · chaleur −',
+      dis:!compte('laverie'), ic:'−12 000 €',
+      fait(){ const a=snap(); S.argent-=12000; S.chaleur-=9; heure2();
+      resultat('Blanchiment', `Les recettes des laveries absorbent le liquide sur trois mois. Trente pour cent partent en frottement — c’est le tarif, partout.`, a); }});
+  }
+
+  if(t.b.t === 'bar') opts.push(maire
+    ? {t:'Faire le tour des tables', s:'Popularité + · 2 h', fait(){ const a=snap(); S.popularite+=4; heure2();
+       resultat('Au comptoir', `Deux cafés, onze mains serrées, une conversation sur les poubelles du jeudi. Tu repars avec une remarque utile et trois voix.`, a); }}
+    : {t:'Recruter des jeunes', s:'Équipe + · chaleur +', fait(){ const a=snap(); S.loyaute+=8; S.chaleur+=3; heure2();
+       resultat('Recrutement', `Quatre gamins du quartier, dix-sept à vingt ans, qui veulent surtout qu’on les prenne au sérieux. C’est la ressource la moins chère et la plus dangereuse.`, a); }});
+
+  if(t.b.t === 'entrepot' && !maire) opts.push(
+    {t:'Monter une opération', s:'+ argent · chaleur ++', cls:'gain',
+     fait(){ const a=snap(); const g = 14000 + rnd(22000) + S.emprise*400;
+       S.argent+=g; S.chaleur+=11; S.emprise+=3; heure2();
+       resultat('Opération', `Un camion, deux heures, quatre hommes. ${g.toLocaleString('fr-FR')} € qui ne passeront par aucun compte.`, a);
+       if(chance(.18)) programme(2,'descente'); }});
+
+  if(t.b.t === 'qg') opts.push(
+    {t:'Améliorer le quartier général', s:`Niveau ${t.b.niv} → ${t.b.niv+1} · ${(70000*t.b.niv).toLocaleString('fr-FR')} €`,
+     ic:(70000*t.b.niv).toLocaleString('fr-FR')+' €', dis: t.b.niv>=3 || S.argent < 70000*t.b.niv,
+     fait(){ const a=snap(); S.argent -= 70000*t.b.niv; t.b.niv++; S.emprise+=10; S.loyaute+=8; S.chaleur+=4;
+       resultat('Travaux au QG', `Étage supplémentaire, caméras, une pièce sans fenêtre et une sortie que personne ne connaît. Le bâtiment se voit de trois rues.`, a); }},
+    {t:'Réunir l’équipe', s:'Équipe + · 2 h', fait(){ const a=snap(); S.loyaute+=7; S.argent-=4000; heure2();
+       resultat('Réunion', `Tu paies à manger, tu écoutes les plaintes, tu tranches deux différends. C’est quatre-vingts pour cent du métier de patron.`, a); }});
+
+  if(['immeuble','maison','commerce','bureau'].includes(t.b.t)) opts.push(maire
+    ? {t:'Visite de terrain', s:'Popularité + · 2 h', fait(){ const a=snap(); S.popularite+=3; heure2();
+       resultat('Visite', `Une cage d’escalier, un ascenseur en panne depuis onze mois, une dame qui te montre une photo de la même panne en 2019. Tu promets une date.`, a); }}
+    : {t:'Mettre sous protection', s:'+ argent · emprise + · chaleur +',
+       fait(){ const a=snap(); const g = 2200 + rnd(3600);
+        S.argent+=g; S.emprise+=2; S.chaleur+=4; S.crimin+=1; t.b.prop='gang'; heure2();
+        resultat('Protection', `Personne ne discute le montant. ${g.toLocaleString('fr-FR')} € par mois, et un commerçant qui salue le premier à partir d’aujourd’hui.`, a); }});
+
+  if(t.b.prop === (maire?'ville':'gang') && !d.cle) opts.push(
+    {t:'Agrandir ce bâtiment', s:`Niveau ${t.b.niv} → ${t.b.niv+1} · ${coutNiveau(t.b).toLocaleString('fr-FR')} €`,
+     ic:coutNiveau(t.b).toLocaleString('fr-FR')+' €', dis:t.b.niv>=3 || S.argent<coutNiveau(t.b),
+     fait(){ const a=snap(); S.argent-=coutNiveau(t.b); t.b.niv++;
+       const ef = B[t.b.t].effets || {};
+       for(const k in ef) S[k] = (S[k]||0) + ef[k]*0.6;
+       resultat('Agrandissement', `Les travaux durent six semaines. ${B[t.b.t].nom} passe au niveau ${t.b.niv} : plus haut, plus visible, plus rentable.`, a); }});
+
+  ouvre({lab:'Devant toi', titre:B[t.b.t].nom,
+    sous: d.desc || (t.b.prop==='gang' ? 'Sous ton contrôle.' : t.b.prop==='ville' ? 'Équipement public.' : 'Bâtiment ordinaire de la ville.'),
+    opts: opts.length ? opts : [{t:'Rien à faire ici', s:'Ce bâtiment ne te concerne pas', dis:true}]});
+}
+function proche(t){ return Math.abs(t.x - joueur.x) <= 1.6 && Math.abs(t.y - joueur.y) <= 1.6; }
+function coutNiveau(b){ const d = B[b.t]; return Math.round((d.cout || 40000) * 0.7 * b.niv); }
+function compte(type){ let n=0; for(const t of grille) if(t.b && t.b.t===type) n++; return n; }
+
+/* ── construction ─────────────────────────────────────────────── */
+const elBuild = document.getElementById('t-build');
+function basculeBuild(){
+  if(!S || S.fini || ouvert) return;
+  modeBuild = !modeBuild;
+  elBuild.setAttribute('aria-pressed', String(modeBuild));
+  if(modeBuild) ouvre({lab:'Mode construction', titre:'Choisis un terrain',
+    sous:'Les terrains vagues sont hachurés de jaune. Touche celui que tu veux bâtir. Touche un de tes bâtiments pour l’agrandir.',
+    ferme:'Compris'});
+}
+function tapBuild(t){
+  if(!S || S.fini || !t.b) return;
+  if(B[t.b.t].vide) return paletteConstruction(t);
+  if(t.b.prop === (S.role==='maire'?'ville':'gang')){
+    const c = coutNiveau(t.b);
+    return ouvre({lab:'Ton bâtiment', titre:B[t.b.t].nom, sous:`Niveau ${t.b.niv} sur 3.`,
+      opts:[{t:'Agrandir', s:c.toLocaleString('fr-FR')+' €', ic:'niveau '+(t.b.niv+1),
+        dis:t.b.niv>=3 || S.argent<c, fait(){ const a=snap(); S.argent-=c; t.b.niv++;
+          const ef=B[t.b.t].effets||{}; for(const k in ef) S[k]=(S[k]||0)+ef[k]*0.6;
+          resultat('Agrandissement', `Six semaines de travaux. Le bâtiment passe au niveau ${t.b.niv}.`, a); }}]});
+  }
+  ouvre({titre:B[t.b.t].nom, sous:'Ce terrain ne t’appartient pas. Tu ne peux bâtir que sur un terrain vague.'});
+}
+function paletteConstruction(t){
+  if(!S || S.fini) return;
+  const peut = ROLES[S.role].peut;
+  ouvre({lab:`Terrain vague · ${t.x},${t.y}`, titre:'Construire ici',
+    sous:'Ce que tu bâtis reste dans la ville, se voit depuis la rue, et produit chaque semaine.',
+    opts: peut.map(k=>{
+      const d = B[k];
+      const ef = Object.entries(d.effets||{}).map(([a,b])=>`${a} ${b>0?'+':''}${b}`).join(' · ');
+      return {t:d.nom, ic:d.cout.toLocaleString('fr-FR')+' €',
+        s:(d.revenu?`+${d.revenu.toLocaleString('fr-FR')} €/sem · `:'') + ef + ' — ' + d.desc,
+        cls: S.argent < d.cout ? 'cher' : 'gain', dis: S.argent < d.cout,
+        fait(){
+          const a = snap();
+          S.argent -= d.cout;
+          t.b = bat(k); t.b.prop = d.camp;
+          if(d.vert) t.sol = 'herbe';
+          const ef2 = d.effets || {};
+          for(const key in ef2) S[key] = (S[key]||0) + ef2[key];
+          S.stats.construits++;
+          borne100();
+          resultat('Chantier livré', `${d.nom} sort de terre en quelques semaines. ${d.desc}`, a);
+        }};
+    })});
+}
+
+/* ── semaine, économie ────────────────────────────────────────── */
+function programme(n, ev){ S.evFile.push({du:S.semaine + n, ev}); }
+function revenus(){
+  let r = 0, dep = 0, det = [];
+  if(S.role === 'maire'){
+    let taxes = 0, equip = 0;
+    for(const t of grille){
+      if(!t.b) continue;
+      const d = B[t.b.t];
+      if(t.b.prop === 'gang') continue;
+      if(d.taxe) taxes += d.taxe * t.b.niv;
+      if(d.camp === 'ville') equip += 1400 * t.b.niv;
+    }
+    taxes = Math.round(taxes * (1 + S.popularite/260) * (1 - S.crimin/320));
+    r = taxes; dep = equip;
+    det = [['Impôts locaux', taxes], ['Fonctionnement des équipements', -equip]];
+  } else {
+    let prod = 0;
+    for(const t of grille){
+      if(!t.b || t.b.prop !== 'gang') continue;
+      const d = B[t.b.t];
+      if(d.revenu) prod += d.revenu * t.b.niv;
+      if(t.b.t === 'immeuble' || t.b.t === 'commerce' || t.b.t === 'bureau' || t.b.t === 'maison') prod += 600;
+    }
+    prod = Math.round(prod * (1 + S.emprise/150) * (0.55 + S.loyaute/160));
+    const salaires = Math.round(prod * 0.30);
+    r = prod; dep = salaires;
+    det = [['Produit des activités', prod], ['Parts de l’équipe', -salaires]];
+  }
+  if(S.pret){ dep += S.pret.montant; det.push(['Échéance du prêt', -S.pret.montant]); }
+  return {r, dep, net:r-dep, det};
+}
+function semaineSuivante(){
+  if(ouvert || !S || S.fini) return;
+  const a = snap();
+  const {net, det} = revenus();
+  S.argent += net;
+  S.semaine++; S.stats.semaines++; S.jour = 0; S.heure = 8;
+  if(S.pret && --S.pret.reste <= 0) S.pret = null;
+
+  if(S.role === 'maire'){
+    S.popularite -= 1.1;
+    S.crimin += 1.4;
+    for(const t of grille) if(t.b && t.b.prop==='ville'){
+      const ef = B[t.b.t].effets || {};
+      S.crimin += (ef.crimin || 0) * 0.10 * t.b.niv;
+      S.popularite += (ef.popularite || 0) * 0.05 * t.b.niv;
+    }
+    S.budget += (S.argent > 120000 ? 1.5 : -1.5);
+  } else {
+    S.chaleur += 0.9 + compte('atelier')*0.8 - compte('planque')*0.5;
+    S.loyaute -= 1.0;
+    S.emprise += 0.4 * compte('salle');
+  }
+  borne100();
+
+  const ev = S.evFile.findIndex(e => e.du <= S.semaine);
+  if(ev >= 0){ const e = S.evFile.splice(ev,1)[0]; borne100(); majHUD(); return lanceEvenement(e.ev); }
+  if(verifieFin()) return;
+  if(chance(0.42)) { majHUD(); return lanceEvenement(choisitEvenement()); }
+
+  const corps = document.createElement('div'); corps.className = 'grille';
+  det.forEach(([k,v])=>{ const d=document.createElement('div'); d.className='fiche';
+    d.innerHTML = `<div class="k">${k}</div><div class="v" style="color:${v<0?'var(--sang)':'var(--vert)'}">${v>0?'+':'−'}${Math.abs(v).toLocaleString('fr-FR')} €</div>`;
+    corps.appendChild(d); });
+  ouvre({lab:'Semaine '+S.semaine, titre: net>=0 ? 'Semaine bénéficiaire' : 'Semaine déficitaire',
+    sous: `Solde de la semaine : ${net>=0?'+':'−'}${Math.abs(net).toLocaleString('fr-FR')} €.`,
+    corps, ferme:'Continuer'});
+  majHUD();
+}
+
+/* ── événements ───────────────────────────────────────────────── */
+const EVENTS = {
+  descente:{titre:'Descente de police', cond:()=>S.role==='parrain',
+    txt:()=>`Six heures du matin, trois véhicules, un chien. Ils entrent dans ${compte('atelier')?'un atelier':'une planque'} et repartent avec des scellés.`,
+    opts:()=>[
+      {t:'Tout assumer, ne donner personne', s:'Équipe ++ · chaleur +', fait(){ const a=snap();
+        S.loyaute+=12; S.chaleur+=8; S.argent-=22000;
+        resultat('Silence', `Deux hommes passent quarante-huit heures en garde à vue et ne disent rien. Tu paies les avocats le jour même, et toute l’équipe le voit.`, a); }},
+      {t:'Sacrifier un atelier pour calmer le jeu', s:'Chaleur −− · emprise −',
+        dis:!compte('atelier'), fait(){ const a=snap();
+        for(const t of grille) if(t.b && t.b.t==='atelier'){ t.b = bat('chantier'); break; }
+        S.chaleur-=22; S.emprise-=8;
+        resultat('On lâche du lest', `Tu laisses tomber un atelier et tu fais disparaître ce qui reste. La pression retombe d’un cran pendant quelques mois.`, a); }},
+      {t:'Payer pour étouffer la procédure', s:'−60 000 € · chaleur −', cls:'cher', ic:'60 000 €',
+        dis:S.argent<60000, fait(){ const a=snap(); S.argent-=60000; S.chaleur-=14;
+        resultat('Procédure creuse', `Un vice de forme apparaît au bon endroit. Ça coûte le prix d’un appartement et ça achète deux ans.`, a);
+        if(chance(.3)) programme(4,'igpn'); }}]},
+
+  igpn:{titre:'La police des polices', cond:()=>S.role==='parrain',
+    txt:()=>`L’inspection générale remonte la chaîne de tes arrangements. Le gradé que tu payais a été entendu pendant onze heures.`,
+    opts:()=>[
+      {t:'Couper tout contact et attendre', s:'Chaleur + · gratuit', fait(){ const a=snap();
+        S.chaleur+=12;
+        resultat('Rupture', `Plus un appel, plus un versement, plus un signe. Il ne parlera peut-être pas. Peut-être.`, a); }},
+      {t:'Le faire partir à l’étranger', s:'−90 000 €', cls:'cher', ic:'90 000 €', dis:S.argent<90000,
+        fait(){ const a=snap(); S.argent-=90000; S.chaleur-=16;
+        resultat('Départ', `Billets, appartement, six mois d’avance. Un témoin qui n’est pas là ne témoigne pas.`, a); }}]},
+
+  election:{titre:'Élections municipales', cond:()=>S.role==='maire',
+    txt:()=>`Le mandat arrive à son terme. La ville va dire si elle te garde. Ta popularité est à ${Math.round(S.popularite)} sur 100, et l’opposition fait campagne sur la criminalité, à ${Math.round(S.crimin)}.`,
+    opts:()=>[
+      {t:'Faire campagne sur ton bilan', s:'Honnête. Risqué.', fait(){
+        const score = S.popularite - S.crimin*0.45 + 12;
+        finElection(score); }},
+      {t:'Dépenser 120 000 € en communication', s:'Popularité +14', cls:'cher', ic:'120 000 €',
+        dis:S.argent<120000, fait(){ S.argent-=120000; S.popularite+=14; borne100();
+        finElection(S.popularite - S.crimin*0.45 + 12); }},
+      {t:'Arroser les associations de quartier', s:'Popularité +22 · illégal', cls:'cher', ic:'70 000 €',
+        dis:S.argent<70000, fait(){ S.argent-=70000; S.popularite+=22; borne100();
+        programme(6,'pnf'); finElection(S.popularite - S.crimin*0.45 + 12); }}]},
+
+  pnf:{titre:'Parquet national financier', cond:()=>S.role==='maire',
+    txt:()=>`Les comptes de campagne sont épluchés. Les subventions versées juste avant le scrutin intéressent beaucoup une juge d’instruction.`,
+    opts:()=>[
+      {t:'Tout reconnaître et rembourser', s:'−100 000 € · popularité −', cls:'cher', ic:'100 000 €',
+        dis:S.argent<100000, fait(){ const a=snap(); S.argent-=100000; S.popularite-=16;
+        resultat('Régularisation', `Tu restitues et tu démissionnes de tes fonctions départementales. Le mandat de maire tient, de justesse.`, a); }},
+      {t:'Nier', s:'Quitte ou double', fait(){ const a=snap();
+        if(chance(.35)){ S.popularite-=6;
+          resultat('Classement', `Faute de preuve du pacte, le dossier s’enlise puis disparaît. Trois ans de nuits blanches pour rien.`, a); }
+        else fin('condamne'); }}]},
+
+  incendie:{titre:'Incendie',
+    txt:()=>`Un immeuble brûle dans la nuit. Trois blessés, quarante relogements, les caméras arrivent avant les pompiers.`,
+    opts:()=>[
+      {t:'Reloger tout le monde aux frais de la ville', s:'−45 000 € · popularité ++', cls:'cher',
+        ic:'45 000 €', dis:S.argent<45000, fait(){ const a=snap(); S.argent-=45000;
+        S.popularite+=12; resultat('Relogement', `Gymnase la première nuit, hôtels ensuite, appartements en trois semaines. Les gens n’oublient pas qui était là à deux heures du matin.`, a); }},
+      {t:'Laisser la préfecture gérer', s:'Gratuit · popularité −', fait(){ const a=snap();
+        S.popularite-=9; resultat('Transfert', `Tu renvoies la presse vers les services de l’État. C’est juridiquement exact et politiquement désastreux.`, a); }}]},
+
+  rival:{titre:'L’autre équipe', cond:()=>S.role==='parrain',
+    txt:()=>`Une équipe voisine s’installe sur trois de tes rues et a mis un de tes gamins à l’hôpital. Tout le monde attend ta réponse.`,
+    opts:()=>[
+      {t:'Riposter', s:'Emprise + · chaleur ++', fait(){ const a=snap();
+        S.emprise+=12; S.chaleur+=16; S.loyaute+=6;
+        resultat('Riposte', `Trois nuits, six voitures, deux blessés dont un des tiens. Tes rues reviennent, et la police comprend qu’il se passe quelque chose.`, a);
+        if(chance(.3)) programme(2,'descente'); }},
+      {t:'Partager le territoire', s:'Emprise − · paix', fait(){ const a=snap();
+        S.emprise-=6; S.chaleur-=4; S.loyaute-=4;
+        resultat('Frontière', `Un restaurant fermé, quinze minutes, une frontière décidée sur une nappe. Tes hommes trouvent ça faible. Personne ne meurt.`, a); }}]},
+
+  manif:{titre:'Manifestation', cond:()=>S.role==='maire',
+    txt:()=>`Six cents personnes devant l’hôtel de ville contre un projet que tu as voté. Le cortège est calme, les pancartes sont drôles, et la presse nationale est là.`,
+    opts:()=>[
+      {t:'Sortir et parler au porte-parole', s:'Popularité +', fait(){ const a=snap(); S.popularite+=7;
+        resultat('Face à eux', `Tu sors sans service d’ordre. Tu prends quarante minutes de reproches en direct et tu ne concèdes presque rien — mais tu es sorti.`, a); }},
+      {t:'Retirer le projet', s:'Popularité ++ · budget −', fait(){ const a=snap();
+        S.popularite+=13; S.budget-=10; S.argent-=30000;
+        resultat('Retrait', `Tu retires. Les études sont perdues, l’opposition crie à la faiblesse, et la place se vide en vingt minutes.`, a); }},
+      {t:'Ne rien faire', s:'Popularité −', fait(){ const a=snap(); S.popularite-=6;
+        resultat('Volets fermés', `Tu ne sors pas. La photo des fenêtres closes de la mairie fait le tour des réseaux pendant quatre jours.`, a); }}]},
+
+  subvention:{titre:'Dotation de l’État', cond:()=>S.role==='maire',
+    txt:()=>`La préfecture débloque une enveloppe pour la rénovation urbaine. Deux cent mille euros, fléchés, à consommer dans l’année.`,
+    opts:()=>[
+      {t:'Accepter et construire du logement', s:'+200 000 € · à dépenser', cls:'gain', ic:'+200 000 €',
+        fait(){ const a=snap(); S.argent+=200000; S.budget+=8;
+        resultat('Dotation', `Deux cent mille euros sur le compte de la commune. Le fléchage est strict : si tu ne bâtis pas, tu rends.`, a); }}]},
+
+  promoteur:{titre:'Un promoteur passe te voir', cond:()=>S.role==='maire',
+    txt:()=>`Il veut le foncier du port, en zone non constructible. Quatre-vingt mille euros en liquide, et le financement de ta prochaine campagne.`,
+    opts:()=>[
+      {t:'Accepter', s:'+80 000 € · popularité −', cls:'gain', ic:'+80 000 €', fait(){ const a=snap();
+        S.argent+=80000; S.popularite-=5; programme(5+rnd(6),'pnf');
+        resultat('Révision du plan', `Le conseil vote à l’unanimité moins deux. Les entrepôts tombent en dix-huit mois et personne ne trouve ça anormal — pour l’instant.`, a); }},
+      {t:'Refuser', s:'Rien. Et c’est le but.', fait(){ const a=snap(); S.popularite+=3;
+        resultat('Refus', `Tu refuses calmement, sans l’insulter, parce qu’on ne sait jamais. Il ira financer quelqu’un d’autre, et ce quelqu’un se présentera contre toi.`, a); }},
+      {t:'Le signaler au procureur', s:'Popularité ++ · budget −', cls:'gain', fait(){ const a=snap();
+        S.popularite+=15; S.budget-=8;
+        resultat('Article 40', `Tout élu ayant connaissance d’un délit doit le signaler. Tu es le premier du département à le faire depuis des années. Deux entreprises quittent la commune dans le mois.`, a); }}]},
+
+  balance:{titre:'Quelqu’un parle', cond:()=>S.role==='parrain',
+    txt:()=>`Un de tes hommes a été entendu trois fois en un mois. Il dit qu’il n’a rien dit. Son frère vient de sortir sans poursuites.`,
+    opts:()=>[
+      {t:'Le mettre au vert, loin, avec de l’argent', s:'−40 000 € · équipe +', cls:'cher',
+        ic:'40 000 €', dis:S.argent<40000, fait(){ const a=snap(); S.argent-=40000; S.loyaute+=8; S.chaleur-=5;
+        resultat('Mise au vert', `Un aller simple et six mois d’avance. Il ne reviendra pas, et l’équipe retient que tu protèges même les faibles.`, a); }},
+      {t:'Le sortir du circuit sèchement', s:'Équipe − · chaleur ++', fait(){ const a=snap();
+        S.loyaute-=14; S.chaleur+=15;
+        resultat('Rupture', `Il disparaît du quartier en une nuit. Personne ne pose de question devant toi, beaucoup en posent ailleurs, et la criminelle ouvre un dossier.`, a); }},
+      {t:'Ne rien faire, on verra bien', s:'Gratuit', fait(){ const a=snap();
+        if(chance(.5)){ programme(2,'descente'); S.chaleur+=6;
+          resultat('On verra', `Tu ne bouges pas. Trois semaines plus tard, six heures du matin, ils savent exactement où chercher.`, a); }
+        else { S.loyaute+=4; resultat('Il n’a rien dit', `Il n’avait effectivement rien dit. Tu as eu raison de ne pas transformer un soupçon en ennemi.`, a); }}}]}
+};
+function choisitEvenement(){
+  const ok = Object.keys(EVENTS).filter(k=>{ const e=EVENTS[k]; return !e.cond || e.cond(); });
+  return pioche(ok);
+}
+function lanceEvenement(id){
+  const e = EVENTS[id];
+  if(!e) return;
+  ouvre({lab:'Semaine '+S.semaine, titre:e.titre, recit:e.txt(), opts:e.opts(), ferme:'Plus tard'});
+}
+
+/* ── territoire ───────────────────────────────────────────────── */
+function ouvreTerritoire(){
+  if(!S || ouvert) return;
+  const {r, dep, net} = revenus();
+  const mien = S.role === 'maire' ? 'ville' : 'gang';
+  let aMoi = 0, total = 0;
+  for(const t of grille){ if(!t.b || B[t.b.t].vide || B[t.b.t].vert) continue;
+    total++; if(t.b.prop === mien) aMoi++; }
+  const c = document.createElement('canvas');
+  c.width = 180; c.height = 180;
+  c.style.cssText = 'width:100%;max-width:260px;margin:12px auto 0;display:block;image-rendering:pixelated;border:1px solid var(--trait);border-radius:4px';
+  const g = c.getContext('2d');
+  g.fillStyle = '#0E1116'; g.fillRect(0,0,180,180);
+  for(const t of grille){
+    let col = '#1B1F25';
+    if(t.sol==='eau') col = '#1E465F';
+    else if(t.sol==='route') col = '#2C3138';
+    else if(t.b){
+      if(t.b.prop==='gang') col = '#C7503F';
+      else if(t.b.prop==='ville') col = '#5B87C4';
+      else if(B[t.b.t].vide) col = '#4A443C';
+      else if(B[t.b.t].vert) col = '#4C7247';
+      else col = '#6E6A62';
+    }
+    g.fillStyle = col; g.fillRect(t.x*6, t.y*6, 6, 6);
+  }
+  g.fillStyle = '#E8A13A';
+  g.fillRect(Math.round(joueur.x)*6-1, Math.round(joueur.y)*6-1, 8, 8);
+  const box = document.createElement('div'); box.appendChild(c);
+  ouvre({lab:'Vue d’ensemble', titre:'Ton territoire',
+    sous: S.role==='maire' ? 'Bleu : tes équipements publics. Rouge : ce que le milieu contrôle.'
+                           : 'Rouge : ce que tu tiens. Bleu : les équipements de la mairie.',
+    fiches:[['Bâtiments à toi', `${aMoi} / ${total}`],
+            ['Solde hebdomadaire', `${net>=0?'+':'−'}${Math.abs(net).toLocaleString('fr-FR')} €`],
+            ['Recettes', r.toLocaleString('fr-FR')+' €'],
+            ['Charges', dep.toLocaleString('fr-FR')+' €']],
+    corps: box});
+}
+
+/* ── fins ─────────────────────────────────────────────────────── */
+function verifieFin(){
+  if(S.role === 'parrain'){
+    if(S.chaleur >= 100){ fin('prison'); return true; }
+    if(S.emprise >= 100){ fin('empire'); return true; }
+    if(S.loyaute <= 0){ fin('abandonne'); return true; }
+  } else {
+    if(S.popularite <= 0){ fin('destitue'); return true; }
+    if(S.semaine >= 40 * S.mandat){ lanceEvenement('election'); return true; }
+  }
+  if(S.argent < -150000){ fin('ruine'); return true; }
+  return false;
+}
+function finElection(score){
+  if(score >= 52){
+    S.mandat++; S.popularite = clamp(S.popularite - 6, 0, 100); S.crimin = clamp(S.crimin-4,0,100);
+    ouvre({lab:'Résultat du scrutin', titre:'Réélu',
+      recit:`Tu passes au second tour avec un score serré. Six ans de plus, une majorité plus courte, et une ville qui attend désormais des résultats plutôt que des promesses.`,
+      fiches:[['Mandat', S.mandat], ['Popularité', Math.round(S.popularite)], ['Criminalité', Math.round(S.crimin)]],
+      ferme:'Reprendre le travail'});
+  } else fin('battu');
+  majHUD();
+}
+const FINS = {
+  prison:{t:'Mis en examen', s:'La chaleur est montée jusqu’en haut.',
+    d:`Vingt-trois interpellations simultanées un mardi à six heures. Ton avocat parle de dix ans, le procureur de quinze. Ton QG est sous scellés et la ville continue exactement comme avant.`},
+  empire:{t:'Tu tiens la ville', s:'Emprise totale.',
+    d:`Plus une rue ne t’échappe. Les commerçants paient sans qu’on ait à passer, la police a d’autres priorités, et deux élus te doivent leur campagne. C’est le sommet — et personne n’y est jamais resté longtemps.`},
+  abandonne:{t:'Plus personne', s:'L’équipe est partie.',
+    d:`Ils sont partis les uns après les autres, sans esclandre. Un patron sans hommes n’est pas un patron : c’est un homme seul avec des murs qu’il ne peut plus tenir.`},
+  destitue:{t:'Fin de partie', s:'La ville ne te suit plus.',
+    d:`Motion de défiance, démission de six adjoints, préfecture qui reprend la main. Tu signes les derniers arrêtés dans un bureau où plus personne n’entre sans frapper fort.`},
+  battu:{t:'Battu', s:'Le scrutin a tranché.',
+    d:`Onze cents voix d’écart. La salle se vide en vingt minutes, ton successeur fait un discours généreux, et tu apprends que la moitié de tes chantiers seront annulés en juillet.`},
+  condamne:{t:'Condamné', s:'Corruption et prise illégale d’intérêts.',
+    d:`Quatre ans dont deux ferme, cinq ans d’inéligibilité, et ta photo à la une du quotidien régional pendant une semaine. La ville, elle, a déjà un autre maire.`},
+  ruine:{t:'Ruine', s:'Plus rien à engager.',
+    d:`Les créanciers d’abord, les hommes ensuite. Ce que tu as bâti reste debout et appartient désormais à d’autres.`}
+};
+function fin(type){
+  S.fini = type; modeBuild = false;
+  document.getElementById('t-build').setAttribute('aria-pressed','false');
+  const f = FINS[type];
+  const mien = S.role==='maire'?'ville':'gang';
+  let aMoi = 0; for(const t of grille) if(t.b && t.b.prop===mien) aMoi++;
+  ouvre({lab:`Semaine ${S.semaine} · ${ROLES[S.role].nom}`, titre:f.t, sous:f.s, recit:f.d,
+    fiches:[['Semaines tenues', S.stats.semaines], ['Bâtiments construits', S.stats.construits],
+            ['Territoire final', aMoi], ['Trésorerie', Math.round(S.argent).toLocaleString('fr-FR')+' €']],
+    opts:[{t:'Recommencer une partie', s:'Autre rôle, autre ville', cls:'gain',
+      fait(){ ferme(); ecranTitre(); }}],
+    ferme:'Regarder la ville une dernière fois', surFerme:()=>{ ferme(); }});
+}
+
+/* ── HUD ──────────────────────────────────────────────────────── */
+const hud = document.getElementById('hud'), dock = document.getElementById('dock');
+function majHUD(){
+  if(!S) return;
+  document.getElementById('r-nom').textContent =
+    ROLES[S.role].nom + (S.role==='maire' ? ` · mandat ${S.mandat}` : '');
+  document.getElementById('r-argent').textContent = Math.round(S.argent).toLocaleString('fr-FR')+' €';
+  document.getElementById('r-argent').className = 'v ' + (S.argent<0 ? 'rouge':'or');
+  document.getElementById('r-date').textContent = S.semaine;
+  const b = document.getElementById('r-barres'); b.innerHTML = '';
+  for(const [k, nom, col] of ROLES[S.role].barres){
+    const d = document.createElement('div'); d.className = 'bar';
+    d.innerHTML = `<div class="t">${nom} <b>${Math.round(S[k])}</b></div>
+      <div class="r"><div class="f" style="width:${clamp(S[k],0,100)}%;background:${col}"></div></div>`;
+    b.appendChild(d);
+  }
+}
+
+/* ── boucle ───────────────────────────────────────────────────── */
+let dernier = 0;
+function boucle(ts){
+  const dt = Math.min(0.05, (ts - dernier)/1000 || 0);
+  dernier = ts;
+  tempsTotal += dt;
+  if(S && !ouvert && !S.fini){
+    S.heure += dt * 0.42;                       // un jour ≈ 57 s
+    if(S.heure >= 24){ S.heure -= 24; S.jour++;
+      if(S.jour >= 7){ S.jour = 0; semaineSuivante(); } }
+    avanceEntite(joueur, dt);
+    for(const p of pietons){ erre(p); avanceEntite(p, dt); }
+    for(const v of voitures) avanceVoiture(v, dt);
+    if(joueur.chemin.length === 0 && cibleBati && proche(cibleBati)){
+      const t = cibleBati; cibleBati = null;
+      if(modeBuild) tapBuild(t); else { cibleBati = t; interagir(); }
+    }
+  }
+  if(S && suivi){
+    const p = iso(joueur.x+0.5, joueur.y+0.5);
+    cam.x = lerp(cam.x, p.sx, 1 - Math.pow(0.0016, dt));
+    cam.y = lerp(cam.y, p.sy, 1 - Math.pow(0.0016, dt));
+  }
+  dessine();
+  requestAnimationFrame(boucle);
+}
+
+/* ── écran titre ──────────────────────────────────────────────── */
+const elTitre = document.getElementById('titre');
+function ecranTitre(){
+  S = null; hud.hidden = true; dock.hidden = true; elCible.hidden = true;
+  elTitre.hidden = false;
+  elTitre.innerHTML = `<div class="in">
+    <div class="lab">Ville de 900 bâtiments · vue isométrique · déplacement libre</div>
+    <h1>Territoire</h1>
+    <p class="ch">Une ville, deux façons de la tenir. Tu te déplaces dans les rues, tu entres dans les bâtiments, tu construis — et la ville change de forme sous tes décisions.</p>
+    <div class="role-c" id="choix-role"></div>
+    <div class="aide">
+      <b>Se déplacer</b> : touche une rue, ton personnage y va. Fais glisser pour regarder ailleurs, pince pour zoomer.<br>
+      <b>Entrer quelque part</b> : touche un bâtiment — il s’approche puis le panneau s’ouvre.<br>
+      <b>Construire</b> : bouton <b>Construire</b>, puis un terrain vague (hachuré de jaune). Ce que tu bâtis apparaît dans la rue et produit chaque semaine.<br>
+      <b>Le temps passe tout seul</b> : un jour dure une minute, la semaine se solde toute seule — ou d’un coup avec <b>Semaine suivante</b>.
+    </div></div>`;
+  const c = document.getElementById('choix-role');
+  for(const k of ['maire','parrain']){
+    const r = ROLES[k];
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'role-b';
+    b.innerHTML = `<b>${r.nom}</b><span>${r.but}</span>
+      <div class="st"><span>${r.argent.toLocaleString('fr-FR')} € au départ</span>
+      <span>Base : ${r.titre}</span><span>${r.peut.length} constructions</span></div>`;
+    b.addEventListener('click', ()=>demarre(k));
+    c.appendChild(b);
+  }
+}
+
+/* ── démarrage ────────────────────────────────────────────────── */
+function demarre(role){
+  elTitre.hidden = true;
+  S = nouvelEtat(role); S.mandat = 1; S.pret = null;
+  genereVille(); peuplerVille();
+  let base = null;
+  if(role === 'maire'){ for(const t of grille) if(t.b && t.b.t==='mairie') base = t; }
+  else {
+    const cands = grille.filter(t => t.b && B[t.b.t].vide && t.y < N-6 && routeVoisine(t));
+    base = pioche(cands) || grille.find(t => t.b && B[t.b.t].vide);
+    base.b = bat('qg'); base.b.prop = 'gang';
+    // trois immeubles déjà tenus autour du QG
+    let n = 0;
+    for(const t of grille){
+      if(n >= 3) break;
+      if(t.b && !B[t.b.t].cle && !B[t.b.t].vide && !B[t.b.t].vert &&
+         Math.abs(t.x-base.x)+Math.abs(t.y-base.y) < 5){ t.b.prop = 'gang'; n++; }
+    }
+  }
+  const dep = routeVoisine(base) || grille.find(t=>t.sol==='route');
+  joueur.x = dep.x; joueur.y = dep.y; joueur.chemin = [];
+  cibleBati = null; suivi = true; cam.z = 1.15;
+  const p = iso(joueur.x+0.5, joueur.y+0.5); cam.x = p.sx; cam.y = p.sy;
+  hud.hidden = false; dock.hidden = false;
+  majHUD();
+  ouvre({lab:'Début de partie', titre: role==='maire' ? 'Tu prends la mairie' : 'Tu tiens trois rues',
+    recit: role==='maire'
+      ? `Tu viens d’être élu. La ville compte trente mille habitants, un budget tendu, une criminalité qui monte depuis quatre ans, et une opposition qui attend ta première erreur.<br><br>Ton personnage est en bas des marches de l’hôtel de ville. <b>Touche une rue pour marcher</b>, touche un bâtiment pour y entrer.`
+      : `Ton QG, trois immeubles, et une équipe qui attend de voir ce que tu vaux. La police ne te connaît pas encore : c’est ton seul vrai capital.<br><br>Ton personnage est devant le QG. <b>Touche une rue pour marcher</b>, touche un bâtiment pour le mettre sous protection.`,
+    ferme:'Commencer'});
+}
+
+/* ── câblage ──────────────────────────────────────────────────── */
+document.getElementById('t-action').addEventListener('click', interagir);
+document.getElementById('t-build').addEventListener('click', basculeBuild);
+document.getElementById('t-passer').addEventListener('click', semaineSuivante);
+document.getElementById('t-carte').addEventListener('click', ouvreTerritoire);
+voile.addEventListener('click', e=>{ if(e.target === voile) ferme(); });
+
+redim();
+genereVille(); peuplerVille();
+cam.x = 0; cam.y = N*TH/2*0.5;
+ecranTitre();
+requestAnimationFrame(boucle);
+</script>
