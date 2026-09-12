@@ -1,7 +1,7 @@
 # Application de recherche de stratégies — EUR/USD
 
 Statut : **cadrage, aucune ligne de code**. Document de spécification, à contredire avant de construire.
-Dernière mise à jour : 2026-09-11.
+Dernière mise à jour : 2026-09-12.
 
 ---
 
@@ -15,6 +15,25 @@ Une application qui :
 
 **Les points 2, 3 et 4 tels qu'écrits produisent une machine à fabriquer de fausses découvertes.**
 Ce document explique pourquoi, et ce qu'il faut construire à la place. Le point 1 est bon.
+
+---
+
+## 1 bis. Décisions actées — 2026-09-12
+
+| Décision | Choix retenu | Conséquence |
+|---|---|---|
+| Périmètre | **EUR/USD seul**, extension envisagée plus tard | Coupe l'accès aux avantages transversaux (§5.1). Accepté comme coût d'apprentissage |
+| Finalité | **Outil de recherche personnel. Aucun capital engagé, aucun trade réel** | Le risque financier tombe à zéro. Le risque restant est le temps (§7) |
+| Validation | Damien examine les résultats lui-même | **Encadré par un protocole strict** — voir §6.3, sinon ce point ruine tout le dispositif |
+| Traçabilité | Journal obligatoire dans tous les cas | §6.1 |
+| Explicabilité | L'application doit justifier chaque signal | §6.2 — avec une contrainte contre-intuitive : l'explication vient **avant** le test, jamais après |
+| Unités de temps | **Tranché : H1 minimum en génération de signal** | Voir ci-dessous |
+
+**Sur les unités de temps, la raison a changé.** Sans trading réel, l'argument « les frais mangent
+le gain » n'est plus un argument de perte d'argent — c'est un argument de **budget statistique**.
+Tester M1-M15 revient à dépenser la moitié de ton budget de tests (§6.4) sur des hypothèses
+arithmétiquement condamnées d'avance. Le coût n'est plus financier, il est méthodologique :
+chaque test inutile rend les vrais résultats moins crédibles. La décision tient, pour une meilleure raison.
 
 ---
 
@@ -218,7 +237,127 @@ L'extension multiplie le coût de développement par ~1,2 et l'espace d'avantage
 
 ---
 
-## 6. Architecture technique proposée
+## 6. Journal, explicabilité et rôle humain
+
+C'est la partie que tu as ajoutée, et c'est la plus délicate des trois. Chacune des trois exigences
+est bonne, et chacune a une version naïve qui produit l'inverse de l'effet recherché.
+
+### 6.1 Le journal — trois propriétés non négociables
+
+Un journal n'a de valeur que s'il est impossible à embellir. Trois contraintes techniques :
+
+1. **Ajout seul (append-only), haché en chaîne.** Chaque ligne contient le hachage de la précédente.
+   Une modification rétroactive casse la chaîne et se voit. Sans ça, tu réécriras l'histoire
+   sans même t'en rendre compte — tout le monde le fait.
+2. **Horodatage du signal avant le prix suivant.** Le signal est écrit en base, scellé, *puis*
+   la bougie suivante est lue. Un journal qui enregistre le signal après avoir vu le résultat
+   ne prouve rien. C'est l'erreur qui invalide 90 % des journaux de trading personnels.
+3. **Les échecs y sont, au même titre que les succès.** Hypothèses rejetées, stratégies abandonnées,
+   tests interrompus. Un journal qui ne garde que ce qui a marché est un outil d'auto-persuasion.
+
+Contenu minimal par entrée : identifiant d'hypothèse, horodatage UTC, prix bid et ask au signal,
+direction, taille, stop, objectif, régime détecté, et l'intégralité des valeurs d'indicateurs
+au moment de la décision.
+
+### 6.2 L'explicabilité — le piège de l'explication a posteriori
+
+Ton exigence : « l'application devra expliquer ses choix ». Bonne exigence, piège sérieux.
+
+**Une explication générée après coup sur une stratégie issue de fouille de données est une
+rationalisation, pas une explication.** Elle rend le bruit convaincant. C'est strictement pire
+que pas d'explication du tout : tu auras une courbe de capital fausse *et* un récit crédible
+pour y croire.
+
+La seule forme honnête : **l'explication est écrite avant le test, pas après.**
+
+L'application n'explique donc jamais *pourquoi elle a choisi une stratégie*. Elle rapporte
+une seule chose : **le mécanisme déclaré à l'avance s'est-il vérifié, oui ou non.**
+
+Rapport type pour un signal :
+
+```
+Hypothèse H-047  (déclarée le 2026-09-20, avant tout test)
+Mécanisme déclaré : les gérants actions couvrent leur exposition change en fin de mois
+                    -> pression vendeuse sur la devise du marché actions surperformant,
+                       concentrée avant le fixing de 16h Londres.
+Condition remplie : dernier jour ouvré du mois, T-90 min avant fixing,
+                    écart de performance S&P500 / EuroStoxx sur le mois = +3,1 %
+Régime détecté   : volatilité basse, absence d'annonce macro a moins de 4 h
+Base statistique : 58 occurrences (2020-2023). Hors-echantillon 2024-2025 : 24 occurrences
+Espérance        : +11 pips  [IC 95 % : -2 a +24]
+Ce qui invaliderait : espérance hors-echantillon negative sur 20 occurrences consecutives
+```
+
+Trois règles de présentation, à imposer dans le code :
+
+- **Toute statistique est affichée en intervalle de confiance, jamais en valeur ponctuelle.**
+  « +11 pips » est malhonnête. « +11 pips [IC 95 % : −2 à +24] » dit la vérité : le résultat
+  est compatible avec zéro.
+- **Le nombre d'occurrences est affiché à côté de chaque chiffre.** Une espérance calculée
+  sur 12 trades ne veut rien dire, quelle que soit sa valeur.
+- **La condition de falsification est affichée avec le signal**, pas dans une annexe.
+
+### 6.3 Ton rôle — protocole d'examen humain
+
+Tu as écrit : « je regarde moi-même si c'est juste ou pas ». **Tel quel, ça détruit le dispositif.**
+
+Raison : si l'application te remonte 50 stratégies et que tu gardes celles qui « te semblent justes »,
+tu viens d'exécuter 50 tests supplémentaires non comptabilisés, avec un filtre humain opaque.
+Le compteur N est faussé, le Sharpe déflaté ne vaut plus rien, et tu auras sélectionné
+les stratégies **les plus convaincantes**, qui ne sont pas les plus vraies — juste les mieux
+racontées.
+
+Ton jugement a pourtant une valeur réelle, mais à un seul endroit : **avant le test, sur le
+mécanisme économique.** Un humain sait dire « cette règle n'a aucune cause plausible ».
+Aucune machine ne sait le faire.
+
+D'où le protocole :
+
+| Moment | Ce que tu fais | Ce que tu n'as pas le droit de faire |
+|---|---|---|
+| **Avant le test** | Valider ou refuser le mécanisme économique déclaré. C'est ton vrai apport | — |
+| **Avant de voir le résultat** | **Noter ta prédiction** : marchera / ne marchera pas, et ton niveau de confiance | — |
+| **Pendant** | Rien | Ajuster les paramètres, prolonger la période, relancer |
+| **Après** | Lire. Éventuellement déclarer une **nouvelle** hypothèse, qui incrémente N | Choisir les gagnantes dans une liste de résultats |
+
+L'étape « noter ta prédiction avant de voir » est le point le plus utile du projet pour toi.
+Au bout de 50 hypothèses, l'application calcule ta **calibration** : quand tu dis « 80 % sûr »,
+as-tu raison 80 % du temps ? C'est la seule façon de transformer « je regarde moi-même si c'est juste »
+en donnée mesurable au lieu d'une impression. Réponse probable la première année : tu es
+mal calibré, comme tout le monde. La valeur est de le savoir.
+
+Le journal enregistre donc **deux** flux : les décisions de l'application, et les tiennes.
+
+### 6.4 Le budget de tests — à fixer maintenant, pas à découvrir plus tard
+
+Puisque N détermine si un résultat est réel (§2.3), il doit être une **décision consciente**,
+pas un compteur qu'on découvre à la fin.
+
+Seuil de Sharpe en dessous duquel un résultat est indiscernable du hasard, sur 5 ans de données :
+
+| Budget de tests | Sharpe minimal crédible |
+|---|---|
+| 50 hypothèses | **1,25** |
+| 200 hypothèses | **1,45** |
+| 1 000 hypothèses | **1,66** |
+| 10 000 hypothèses | **1,93** |
+
+Estimation (approximation `√(2·ln N) / √années`, tests supposés indépendants et rendements normaux).
+Les stratégies réelles sont corrélées entre elles, donc le seuil effectif est un peu plus bas —
+mais l'ordre de grandeur tient, et c'est une borne prudente.
+
+**Recommandation : budget de 200 hypothèses, seuil de crédibilité fixé à Sharpe 1,45.**
+Tout ce qui sort en dessous est classé « non concluant », jamais « prometteur ».
+À titre de repère : les meilleurs gérants de suivi de tendance tournent autour de **0,75**
+de Sharpe (§5.2). Un résultat à 1,45 sur EUR/USD seul doit donc être considéré
+comme **suspect par défaut**, pas comme une découverte.
+
+L'application affiche en permanence : `tests consommés / budget`. Budget épuisé =
+plus aucun accès aux données de validation. C'est verrouillé dans le code.
+
+---
+
+## 7. Architecture technique proposée
 
 | Couche | Choix | Motif |
 |---|---|---|
@@ -234,50 +373,73 @@ Un backtest vectoriel ment sur la microstructure ; il sert à écarter, pas à c
 
 ---
 
-## 7. Objection de fond, à trancher avant de commencer
+## 8. Objection de fond — état au 2026-09-12
 
-`STRATEGIE.md` élimine explicitement le trading, motif « espérance négative ».
-Les données confirment ce classement :
+`STRATEGIE.md` élimine le trading, motif « espérance négative ». Les données le confirment :
+**74 à 89 %** des comptes retail CFD perdent de l'argent (publication obligatoire ESMA) ;
+étude AMF sur **14 799 clients actifs sur 4 ans : 89 % en perte, 10 887 € de perte moyenne**
+par client perdant. Ton épargne est de 3 000 €.
 
-- **74 à 89 %** des comptes retail CFD perdent de l'argent (obligation de publication ESMA,
-  affichée par chaque courtier).
-- Étude AMF sur **14 799 clients actifs sur 4 ans : 89 % en perte, perte moyenne 10 887 €**
-  par client perdant.
-- Ton épargne est de **3 000 €**. Une perte de 10 887 € est hors de portée ; une perte de 3 000 €
-  repousse le départ de **deux mois**.
+### 8.1 Risque financier — **levé**
 
-Il faut donc séparer deux projets qui n'ont pas le même verdict :
+Tu as tranché : outil de recherche, aucun capital engagé, aucun trade réel. L'objection
+principale de `STRATEGIE.md` ne s'applique plus. Le projet est légitime sous cette forme.
 
-| Projet | Verdict |
+Condition maintenue, sans exception : **zéro euro engagé tant que le moteur n'a pas produit
+une stratégie survivant aux 5 filtres (§4.4) *et* à 6 mois de réel simulé.** Le jour où cette
+question se reposera, elle se reposera avec des données, pas avec une envie.
+
+### 8.2 Risque de temps — **ouvert, c'est la seule décision qui reste**
+
+Estimation : **80 à 150 h** pour construire ce moteur correctement en partant novice en Python,
+soit 2 à 4 mois à 10 h/semaine. Sur un horizon de 12 mois, c'est un quart du chemin vers
+2 000 €/mois récurrents.
+
+| Option | Conséquence |
 |---|---|
-| **Trader l'EUR/USD avec ton épargne** | **Non.** Contredit `FEUILLE-DE-ROUTE.md`, engage le capital de départ, espérance négative documentée |
-| **Construire le moteur de recherche décrit ici** | **Oui, sous conditions.** Aucun capital risqué, et tu construis exactement les compétences vendables de la priorité 4 : Python, données, statistiques, automatisation |
+| **A — hors des 20 h/semaine** (recommandée) | La feuille de route de revenu est intacte. Le projet avance plus lentement. C'est le seul scénario où les deux tiennent |
+| **B — dedans, en arbitrage assumé contre la priorité 2** | Repousse la première vente de 2 à 4 mois, donc la démission d'autant. Acceptable **si** tu le décides explicitement |
+| **C — dedans, sans le dire** | Le scénario par défaut, et le seul vraiment mauvais. La priorité 2 s'érode sans décision, et tu ne t'en apercevras qu'au mois 6 |
 
-**Conditions :**
-1. Zéro euro engagé sur les marchés tant que le moteur n'a pas produit une stratégie survivant
-   aux 5 filtres **et** à 6 mois de réel simulé.
-2. Le temps passé dessus sort des ~20 h/semaine. Chaque heure ici est une heure de moins
-   sur la certification Klaviyo (`PLAN-MOIS-1.md`), qui est le seul chemin chiffré vers
-   2 000 €/mois en 12 mois.
-3. Si tu vends un jour des signaux ou du conseil en investissement, c'est une activité
-   réglementée en France (statut CIF, AMF). À vérifier avant toute monétisation.
+**Recommandation unique : option A.** Ce projet construit de vraies compétences vendables
+(Python, données, statistiques, automatisation) — ce sont exactement celles de la priorité 4
+de `FEUILLE-DE-ROUTE.md`. Mais elles ne paient qu'une fois vendues à un client, et ce moteur
+n'a pas de client. Il ne remplace pas la priorité 2, il s'y ajoute.
 
-**Recommandation unique :** construis-le comme projet technique et projet de preuve de compétence,
-en dehors des 20 h. Ne l'insère pas dans la feuille de route de revenu.
-Si tu veux l'y insérer, alors il faut le dire — et arbitrer explicitement contre la priorité 2,
-pas en plus d'elle.
+### 8.3 Risque réglementaire — à vérifier avant toute monétisation
+
+Tant que l'outil reste personnel, aucun sujet. Si un jour tu vends des signaux, un abonnement
+ou du conseil en investissement en France, c'est une activité réglementée (statut CIF, AMF).
+À vérifier **avant** d'en parler à qui que ce soit, pas après.
 
 ---
 
-## 8. Prochaine étape
+## 9. Prochaine étape
 
-Aucune ligne de code. Trois décisions à prendre, dans cet ordre :
+Une seule décision reste ouverte, et c'est la plus importante : **§8.2 — ce projet sort-il
+des 20 h/semaine, ou mange-t-il la priorité 2 ?**
 
-1. **EUR/USD seul, ou EUR/USD puis extension à 8 majeures ?** (§5.1 — l'extension conditionne l'architecture)
-2. **Projet technique hors feuille de route, ou arbitrage contre la priorité 2 ?** (§7)
-3. **Acceptes-tu la suppression des unités M1-M15 en génération de signal ?** (§3)
+Le risque financier est désormais nul : tu ne trades pas. Le risque restant est entièrement
+un risque de temps, et il est réel — construire ce moteur correctement représente une
+estimation de **80 à 150 h** pour un novice en Python, soit 2 à 4 mois à 10 h/semaine.
+Sur 12 mois, c'est le quart du chemin vers 2 000 €/mois.
 
-Tant que ces trois points ne sont pas tranchés, écrire du code produit du code à jeter.
+Ce n'est pas un argument pour renoncer. C'est un arbitrage à poser à voix haute, pas à subir.
+
+Ordre de construction, une fois la question tranchée :
+
+| Étape | Livrable | Estimation |
+|---|---|---|
+| 1 | Chargeur Dukascopy + stockage Parquet/DuckDB, EUR/USD H1 à W1, 2020-2026 | 10-15 h |
+| 2 | Journal append-only haché + schéma d'hypothèses pré-enregistrées | 10-15 h |
+| 3 | Moteur de backtest avec spread bid/ask réel, une seule stratégie de référence triviale | 15-25 h |
+| 4 | Verrou sur les données de validation + compteur de budget de tests | 5-10 h |
+| 5 | Sharpe déflaté, walk-forward purgé, robustesse paramétrique | 20-30 h |
+| 6 | Rapport explicable + suivi de calibration humaine | 15-25 h |
+
+**L'étape 3 ne teste qu'une stratégie volontairement banale** (croisement de moyennes mobiles,
+par exemple), dont on attend qu'elle échoue. Objectif : vérifier que le moteur sait dire non.
+Un moteur validé sur une stratégie gagnante ne prouve rien.
 
 ---
 
